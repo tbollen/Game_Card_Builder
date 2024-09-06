@@ -4,6 +4,7 @@
 	// Import Components
 	import Gamecard from '$lib/components/Gamecard.svelte';
 	import GamecardBack from '$lib/components/GamecardBack.svelte';
+	import Navbar from '$lib/components/Navbar.svelte';
 	import DiceIcon from '$lib/components/coreComponents/DiceIcon.svelte';
 
 	// Import Item Store
@@ -30,6 +31,7 @@
 <main id="main">
 	<!-- Header -->
 	<section id="header" class="hideOnPrint">
+		<Navbar />
 		<h1>Game Card Builder</h1>
 		<div class="buttonRow">
 			<Button click={toggleEditMode} icon={editMode ? 'mdi:eye' : 'mdi:pencil'}
