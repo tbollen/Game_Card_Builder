@@ -16,6 +16,20 @@
 } */
 
 @font-face {
+	font-family: 'Jacquard 12';
+	src: url('/fonts/Jacquard_12/Jacquard12.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'Jacquard 24';
+	src: url('/fonts/Jacquard_24/Jacquard12.ttf') format('truetype');
+}
+
+/* @import url('https://fonts.googleapis.com/css2?family=Jacquard+12&display=swap'); */
+
+/* @import url('https://fonts.googleapis.com/css2?family=Jacquard+12&family=Jacquard+24&display=swap'); */
+
+@font-face {
 	font-family: 'JetBrains';
 	src: url('/fonts/JetBrains/JetBrainsMono-VariableFont_wghtt.ttf') format('truetype');
 }
@@ -68,4 +82,9 @@
 	/* Box Styling */
 	--border-radius: 0.7em;
 	--padding: 0.5em;
+}
+
+.displayText {
+	font-family: 'Jacquard 24', serif;
+	font-weight: 600;
 }
