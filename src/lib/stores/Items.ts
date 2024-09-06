@@ -98,6 +98,11 @@ class ItemStore {
 		console.log(`New${_item ? '' : ' empty'} item added to database:`, newItem);
 	}
 
+	duplicateItem(_id: string) {
+		const _item = this.getItem(_id);
+		this.addNewItem(_item);
+	}
+
 	destroy(_id: string) {
 		let _idSet = this.idSet;
 		let _items = this.items;
@@ -116,6 +121,19 @@ class ItemStore {
 		// Update Items
 		this.items = _items;
 		this.idSet = _idSet;
+	}
+
+	getItem(_id?: string): StoredItem {
+		return this.items.find((item) => item.id === _id) || this.items[0];
+	}
+
+	setItem(_id: string, updates: StoredItem) {
+		const _item = this.items.find((item) => item.id === _id);
+		if (!_item) return console.error(`Item with id: ${_id} not found in items`);
+		Object.assign(_item, updates);
+		this.items = [...this.items];
+		// Update items
+		this.updateItems();
 	}
 
 	// Active Item Stuff
@@ -229,4 +247,4 @@ if (typeof window !== 'undefined' && window.localStorage) {
 // Init store
 // export let items = new ItemStore();
 export let items = localStoreItems instanceof ItemStore ? localStoreItems : new ItemStore();
-export let activeItem = writable<StoredItem>(items.getActiveItem());
+export let activeItem = writable<StoredItem>(items.getItem());
