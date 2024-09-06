@@ -28,7 +28,7 @@ jobs:
 
       - name: build
         env:
-          BASE_PATH: '/Game_Card_Builder'
+          BASE_PATH: '/${{ github.event.repository.name }}'
         run: |
           npm run build
 
