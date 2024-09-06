@@ -19,7 +19,7 @@
 		window.print();
 	}
 
-	let editMode = false;
+	let editMode = true;
 
 	function newEmptyItem() {}
 	function toggleEditMode() {
