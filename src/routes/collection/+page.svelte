@@ -6,6 +6,13 @@
 	import GamecardBack from '$lib/components/GamecardBack.svelte';
 
 	import { items } from '$lib/stores/Items';
+
+	// Svelte stuff
+	import { onMount } from 'svelte';
+	import { fly } from 'svelte/transition';
+	import { expoOut } from 'svelte/easing';
+
+	//
 	$: cards = items.items;
 
 	let selectedCards = new Set();
@@ -23,8 +30,7 @@
 
 	function deleteCard(id: string) {
 		// Confirmation
-		if (!confirm('Are you sure you want to delete this card?')) return;
-		// items.destroy(id);
+		items.destroy(id);
 	}
 
 	function editCard(id: string) {
@@ -32,6 +38,11 @@
 		// Navigate to editor
 		// window.location.href = '/editor';
 	}
+
+	let renderCards = false;
+	onMount(() => {
+		renderCards = true;
+	});
 </script>
 
 <main>
@@ -41,32 +52,37 @@
 	<section id="controls">
 		controls - {selectedCards.size} cards selected
 	</section>
-	<section id="viewer">
-		{#each cards as card}
-			<button
-				class="cardInViewer"
-				class:isSelected={selectedCards.has(card.id)}
-				id={card.id}
-				on:click={() => toggleCardSelection(card.id)}
-			>
-				<!-- Edit Options -->
-				{#if selectedCards.size < 2}
-					<div class="editOptions">
-						<Button icon="mdi:zoom-in" />
-						<Button icon="mdi:pencil" click={() => editCard(card.id)} />
-						<Button icon="mdi:content-copy" />
-						<Button icon="mdi:trash-can" color="threat" click={() => deleteCard(card.id)} />
+	{#if renderCards}
+		<section
+			id="viewer"
+			transition:fly={{ delay: 200, duration: 1200, opacity: 0, y: 40, easing: expoOut }}
+		>
+			{#each cards as card}
+				<button
+					class="cardInViewer"
+					class:isSelected={selectedCards.has(card.id)}
+					id={card.id}
+					on:click={() => toggleCardSelection(card.id)}
+				>
+					<!-- Edit Options -->
+					{#if selectedCards.size < 2}
+						<div class="editOptions">
+							<Button icon="mdi:zoom-in" />
+							<Button icon="mdi:pencil" click={() => editCard(card.id)} />
+							<Button icon="mdi:content-copy" />
+							<Button icon="mdi:trash-can" color="threat" click={() => deleteCard(card.id)} />
+						</div>
+					{/if}
+					<div class="frontSideCard">
+						<Gamecard item={card} />
 					</div>
-				{/if}
-				<div class="frontSideCard">
-					<Gamecard item={card} />
-				</div>
-				<div class="backSideCard">
-					<GamecardBack item={card} />
-				</div>
-			</button>
-		{/each}
-	</section>
+					<div class="backSideCard">
+						<GamecardBack item={card} />
+					</div>
+				</button>
+			{/each}
+		</section>
+	{/if}
 </main>
 
 <style>
