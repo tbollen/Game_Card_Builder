@@ -12,7 +12,8 @@
 		"test:integration": "playwright test",
 		"test:unit": "vitest",
 		"lint": "prettier --check .",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"gh-pages": "npm run build && npx gh-pages -d build"
 	},
 	"devDependencies": {
 		"@iconify/svelte": "^4.0.2",
@@ -33,6 +34,7 @@
 	"type": "module",
 	"dependencies": {
 		"@floating-ui/dom": "^1.6.10",
+		"gh-pages": "^6.1.1",
 		"html2canvas": "^1.4.1",
 		"jspdf": "^2.5.1"
 	}
