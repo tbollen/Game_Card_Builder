@@ -6,29 +6,51 @@
 
 	import { items } from '$lib/stores/Items';
 	$: cards = items.items;
+
+	let selectedCards = new Set();
+
+	function toggleCardSelection(id: string) {
+		console.debug(`${!selectedCards.has(id) ? 'added' : 'removed'} card selection: ${id}`);
+		if (selectedCards.has(id)) {
+			selectedCards.delete(id);
+		} else {
+			selectedCards.add(id);
+		}
+		// Force svelte to recognise changes
+		selectedCards = selectedCards;
+	}
 </script>
 
 <main>
 	<section id="header">
 		<Navbar />
 	</section>
-	<section id="controls">Controls</section>
+	<section id="controls">
+		controls - {selectedCards.size} cards selected
+	</section>
 	<section id="viewer">
 		{#each cards as card}
-			<div class="cardInViewer" class:isSelected={card.isSelected} id={card.id}>
+			<button
+				class="cardInViewer"
+				class:isSelected={selectedCards.has(card.id)}
+				id={card.id}
+				on:click={() => toggleCardSelection(card.id)}
+			>
 				<div class="frontSideCard">
 					<Gamecard item={card} />
 				</div>
 				<div class="backSideCard">
 					<GamecardBack item={card} />
 				</div>
-			</div>
+			</button>
 		{/each}
 	</section>
 </main>
 
 <style>
 	.cardInViewer {
+		/* Reset button stuff */
+		all: unset;
 		/* Positioning */
 		position: relative;
 		/* Scaling down */
