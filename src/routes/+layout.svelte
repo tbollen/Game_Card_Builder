@@ -4,3 +4,9 @@
 </script>
 
 <slot />
+
+<style>
+	:global(main section) {
+		padding: var(--padding);
+	}
+</style>
