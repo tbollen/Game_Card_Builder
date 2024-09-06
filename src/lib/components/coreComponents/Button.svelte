@@ -13,6 +13,7 @@
 	export let variant: 'filled' | 'outlined' | 'flipped' | 'contrast-outlined' = 'filled';
 	export let disableTransition: boolean = false;
 	export let hideSlotOnHover: boolean = false;
+	export let stopPropagation: boolean = false;
 
 	let isHovering: boolean = false;
 
@@ -20,7 +21,8 @@
 </script>
 
 <button
-	on:click={clickFunc}
+	on:click|stopPropagation={stopPropagation ? () => {} : clickFunc}
+	on:click|stopPropagation={!stopPropagation ? () => {} : clickFunc}
 	class="coreButton {color} {variant} {placement} {size}"
 	class:disableTransition
 	class:stateOff={!stateOn}
