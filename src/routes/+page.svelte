@@ -11,6 +11,7 @@
 	import ItemEditor from '$lib/components/ItemEditor.svelte';
 
 	import { items } from '$lib/stores/Items';
+	import { slide } from 'svelte/transition';
 
 	// Export to PDF section
 	var cardSection: HTMLElement;
@@ -18,24 +19,37 @@
 		window.print();
 	}
 
+	let editMode = false;
+
 	function newEmptyItem() {}
+	function toggleEditMode() {
+		editMode = !editMode;
+	}
 </script>
 
 <main id="main">
 	<!-- Header -->
 	<section id="header" class="hideOnPrint">
 		<h1>Game Card Builder</h1>
-		<Button click={newEmptyItem} icon="mdi:plus">New Card</Button>
-		<a class="mobileOnly" href="#editor">Go to editor</a>
-	</section>
-	<!-- Editor Pane -->
-	<section id="editor" class="hideOnPrint">
-		<h2>Card Editor</h2>
-		<ItemEditor />
-		<div id="editorFooter">
-			<Button click={printCards} icon="mdi:printer">Print Card</Button>
+		<div class="buttonRow">
+			<Button click={toggleEditMode} icon={editMode ? 'mdi:eye' : 'mdi:pencil'}
+				>{editMode ? 'Viewing Mode' : 'Edit Card'}</Button
+			>
+			<Button click={newEmptyItem} icon="mdi:plus">New Card</Button>
+
+			<a class="mobileOnly" href="#editor">Go to editor</a>
 		</div>
 	</section>
+	<!-- Editor Pane -->
+	{#if editMode}
+		<section id="editor" class="hideOnPrint" transition:slide={{ duration: 200 }}>
+			<h2>Card Editor</h2>
+			<ItemEditor />
+			<div id="editorFooter">
+				<Button click={printCards} icon="mdi:printer">Print Card</Button>
+			</div>
+		</section>
+	{/if}
 
 	<!-- Card Pane -->
 	<section id="cardView">
@@ -125,5 +139,10 @@
 		flex-wrap: wrap;
 		justify-content: center;
 		align-items: center;
+	}
+
+	.buttonRow {
+		display: flex;
+		gap: var(--padding);
 	}
 </style>
