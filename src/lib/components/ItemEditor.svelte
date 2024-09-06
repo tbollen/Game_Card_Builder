@@ -78,6 +78,13 @@
 		window.print();
 	}
 
+	function saveItem() {
+		// Save Item
+		items.save();
+		// Turn off edit mode
+		// editMode = false;
+	}
+
 	onMount(() => {
 		loadIconFromIconify($activeItem.icon);
 	});
@@ -106,9 +113,7 @@
 		</Button>
 
 		<!-- Save -->
-		<Button click={() => alert('Coming Soon!')} variant="filled" icon="memory:floppy-disk">
-			Save
-		</Button>
+		<Button click={saveItem} variant="filled" icon="memory:floppy-disk">Save</Button>
 		<!-- Print -->
 		<Button click={printCards} icon="mdi:printer">Print Card</Button>
 	</div>

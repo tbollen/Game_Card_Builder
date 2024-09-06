@@ -1,5 +1,9 @@
-import { derived, writable } from 'svelte/store';
+import { writable } from 'svelte/store';
 import { Item } from '$lib/methods/Item';
+
+// Env variables
+const replaceString = 'replaceMe';
+const defaultUser = 'Guest';
 
 export let testItem = new Item({
 	name: 'Card name',
@@ -44,13 +48,15 @@ class StoredItem extends Item {
 	creator: string;
 	dateCreated: Date;
 
-	constructor(_id: string, _item?: Item) {
-		super(_item);
+	constructor(_storedItem?: Partial<StoredItem>, _id?: string) {
+		// Apply values from Item
+		super(_storedItem as Partial<Item>);
+		// Set ID
+		this.id = _id || _storedItem?.id || replaceString;
 		// Set Creator (placeholder for now)
-		this.creator = 'User';
+		this.creator = _storedItem?.creator || defaultUser;
 		// Set Date Created to now
-		this.dateCreated = new Date();
-		this.id = _id;
+		this.dateCreated = _storedItem?.dateCreated || new Date();
 	}
 }
 class ItemStore {
@@ -62,8 +68,9 @@ class ItemStore {
 	};
 	activeItem: StoredItem;
 
-	constructor(items?: StoredItem[]) {
-		this.items = items || [];
+	constructor(_items?: StoredItem[]) {
+		// Set Items
+		this.items = _items || [];
 		if (this.items.length == 0) this.addNewItem();
 		if (this.items.length > 0) this.setActiveItem(this.items[0].id);
 
@@ -75,7 +82,7 @@ class ItemStore {
 	// Item Management
 	addNewItem(_item?: Item) {
 		const newItemId = this.generateUniqueId();
-		const newItem = new StoredItem(newItemId, _item);
+		const newItem = new StoredItem(_item, newItemId);
 		this.items.push(newItem);
 		// Add id to idSet
 		this.idSet.add(newItemId);
@@ -180,8 +187,30 @@ class ItemStore {
 	private updateItems() {
 		activeItem.update(() => this.getActiveItem());
 	}
+
+	save() {
+		const stringifiedItems = JSON.stringify(this.items);
+		console.error(this.items);
+		localStorage.setItem('items', stringifiedItems);
+
+		// Check
+		const localStoreItems = localStorage.getItem('items');
+		if (!localStoreItems) return;
+		console.log('Items saved to local storage:', localStoreItems);
+	}
 }
 
-// Store
-export let items = new ItemStore();
+// Get items from local storage
+let localStoreItems = undefined;
+if (typeof window !== 'undefined' && window.localStorage) {
+	localStoreItems = localStorage.getItem('items');
+	if (localStoreItems) {
+		localStoreItems = new ItemStore(JSON.parse(localStoreItems));
+		console.log('Items loaded from local storage:', localStoreItems);
+	}
+}
+
+// Init store
+// export let items = new ItemStore();
+export let items = localStoreItems instanceof ItemStore ? localStoreItems : new ItemStore();
 export let activeItem = writable<StoredItem>(items.getActiveItem());
