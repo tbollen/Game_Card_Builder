@@ -144,6 +144,9 @@
 		flex-wrap: wrap;
 		justify-content: center;
 		align-items: center;
+		/* Gap */
+		gap: 5mm;
+		padding: 5mm;
 	}
 
 	.buttonRow {
