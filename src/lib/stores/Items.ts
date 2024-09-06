@@ -162,7 +162,10 @@ class ItemStore {
 
 	destroy(_id?: string) {
 		// Ask for confirmation
-		const confirmed = window.confirm('Are you sure you want to delete this item?');
+		const itemName = this.itemGetProperty('name', _id);
+		const confirmed = window.confirm(
+			`Are you sure you want to delete the card "${itemName}?" (id: ${_id})`
+		);
 		if (!confirmed) return;
 		// Remove from items
 		const _itemId = _id || this.getActiveItem().id;
