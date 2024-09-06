@@ -5,15 +5,14 @@
 	import Gamecard from '$lib/components/Gamecard.svelte';
 	import GamecardBack from '$lib/components/GamecardBack.svelte';
 
+	import { activeItem } from '$lib/stores/Items';
 	import { items } from '$lib/stores/Items';
+	$: _items = items;
 
 	// Svelte stuff
 	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
 	import { expoOut } from 'svelte/easing';
-
-	//
-	$: cards = items.items;
 
 	let selectedCards = new Set();
 
@@ -30,13 +29,40 @@
 
 	function deleteCard(id: string) {
 		// Confirmation
+		console.error(items.items);
 		items.destroy(id);
+		// Remove from selected cards
+		selectedCards.delete(id);
+		selectedCards = selectedCards;
+	}
+
+	function removeUnavailableCardsFromSelection() {
+		// if the ID's in the set are not in items anymore, remove them
+		for (const id of selectedCards as Set<string>) {
+			if (!items.idSet.has(id)) {
+				selectedCards.delete(id);
+			}
+		}
 	}
 
 	function editCard(id: string) {
-		items.setActiveItem(id);
+		$activeItem = items.getItem(id);
 		// Navigate to editor
 		// window.location.href = '/editor';
+	}
+
+	function duplicateCard(id: string) {
+		items.duplicateItem(id);
+	}
+
+	function addNew() {
+		items.addNewItem();
+		// goto editor
+		updateItems();
+	}
+
+	function updateItems() {
+		_items = items;
 	}
 
 	let renderCards = false;
@@ -50,6 +76,7 @@
 		<Navbar />
 	</section>
 	<section id="controls">
+		<Button icon="mdi:plus" click={addNew}>New Card</Button>
 		controls - {selectedCards.size} cards selected
 	</section>
 	{#if renderCards}
@@ -57,7 +84,7 @@
 			id="viewer"
 			transition:fly={{ delay: 200, duration: 1200, opacity: 0, y: 40, easing: expoOut }}
 		>
-			{#each cards as card}
+			{#each _items.items as card}
 				<button
 					class="cardInViewer"
 					class:isSelected={selectedCards.has(card.id)}
@@ -67,10 +94,19 @@
 					<!-- Edit Options -->
 					{#if selectedCards.size < 2}
 						<div class="editOptions">
-							<Button icon="mdi:zoom-in" />
-							<Button icon="mdi:pencil" click={() => editCard(card.id)} />
-							<Button icon="mdi:content-copy" />
-							<Button icon="mdi:trash-can" color="threat" click={() => deleteCard(card.id)} />
+							<Button icon="mdi:zoom-in" stopPropagation />
+							<Button icon="mdi:pencil" stopPropagation click={() => editCard(card.id)} />
+							<Button
+								icon="mdi:content-copy"
+								stopPropagation
+								click={() => duplicateCard(card.id)}
+							/>
+							<Button
+								icon="mdi:trash-can"
+								color="threat"
+								stopPropagation
+								click={() => deleteCard(card.id)}
+							/>
 						</div>
 					{/if}
 					<div class="frontSideCard">
@@ -100,17 +136,23 @@
 		cursor: pointer;
 	}
 
+	.cardInViewer:hover,
+	.cardInViewer:focus-visible {
+		z-index: 100;
+	}
+
 	.editOptions {
 		/* Placement */
 		position: absolute;
-		bottom: 5%;
-		left: 70%;
+		bottom: -20px;
+		width: 100%;
 		z-index: 1;
 		/* Layout */
 		display: flex;
 		gap: 3px;
 		justify-content: center;
 		align-items: center;
+		padding: 10px;
 		/* Styling */
 		font-size: 2em;
 		/* Effect */
@@ -141,13 +183,15 @@
 		transition: all 0.4s ease-in-out;
 	}
 
-	.cardInViewer:focus .frontSideCard,
+	.cardInViewer:focus-visible .frontSideCard,
 	.cardInViewer:hover .frontSideCard {
 		box-shadow: 10px 10px 15px var(--color-text-1);
 		transform: rotate(-5deg);
+		/* Move effect for other cards */
+		margin-right: 25px;
 	}
 
-	.cardInViewer:focus .backSideCard,
+	.cardInViewer:focus-visible .backSideCard,
 	.cardInViewer:hover .backSideCard {
 		left: 60%;
 		transform: rotate(5deg);
