@@ -22,10 +22,11 @@
 	const routeNames = Object.keys(routes);
 
 	let currentRoute: string;
-	$: currentRoute = window.location.pathname;
+	$: currentRoute = $page.url.pathname;
 
 	// Imports
 	import Icon from '@iconify/svelte';
+	import { page } from '$app/stores';
 </script>
 
 <nav>
