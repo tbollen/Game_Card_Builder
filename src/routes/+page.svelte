@@ -23,7 +23,7 @@
 
 <main id="main">
 	<!-- Header -->
-	<section id="header">
+	<section id="header" class="hideOnPrint">
 		<h1>Game Card Builder</h1>
 		<Button click={newEmptyItem} icon="mdi:plus">New Card</Button>
 	</section>
