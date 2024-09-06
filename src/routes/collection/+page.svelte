@@ -119,7 +119,8 @@
 		transition: all 0.2s ease-in-out;
 	}
 
-	.cardInViewer:hover .editOptions {
+	.cardInViewer:hover .editOptions,
+	.editOptions:focus-within {
 		transform: translateY(0px);
 		opacity: 1;
 	}
@@ -140,11 +141,13 @@
 		transition: all 0.4s ease-in-out;
 	}
 
+	.cardInViewer:focus .frontSideCard,
 	.cardInViewer:hover .frontSideCard {
 		box-shadow: 10px 10px 15px var(--color-text-1);
 		transform: rotate(-5deg);
 	}
 
+	.cardInViewer:focus .backSideCard,
 	.cardInViewer:hover .backSideCard {
 		left: 60%;
 		transform: rotate(5deg);

@@ -76,6 +76,10 @@
 		transition: all 0.2s ease-in-out;
 	}
 
+	.coreButton:focus-visible {
+		outline: 2px solid var(--color-text-0);
+	}
+
 	.noGap {
 		gap: 0;
 	}
