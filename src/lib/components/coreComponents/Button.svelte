@@ -24,6 +24,7 @@
 	class="coreButton {color} {variant} {placement} {size}"
 	class:disableTransition
 	class:stateOff={!stateOn}
+	class:noGap={!$$slots.default || !icon}
 	{disabled}
 	on:mouseenter={() => (isHovering = true)}
 	on:mouseleave={() => (isHovering = false)}
@@ -73,6 +74,10 @@
 
 		/* Transition */
 		transition: all 0.2s ease-in-out;
+	}
+
+	.noGap {
+		gap: 0;
 	}
 
 	.slot {
