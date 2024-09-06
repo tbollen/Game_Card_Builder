@@ -1,0 +1,71 @@
+/* @font-face {
+	font-family: 'Gotham';
+	src: url('/fonts/Gotham/Gotham-Medium.otf') format('opentype');
+}
+
+@font-face {
+	font-family: 'Gotham';
+	src: url('/fonts/Gotham/Gotham-Bold.otf') format('opentype');
+	font-weight: bold;
+}
+
+@font-face {
+	font-family: 'Gotham';
+	src: url('/fonts/Gotham/Gotham-Black.otf') format('opentype');
+	font-weight: 900;
+} */
+
+@font-face {
+	font-family: 'JetBrains';
+	src: url('/fonts/JetBrains/JetBrainsMono-VariableFont_wghtt.ttf') format('truetype');
+}
+
+/* Color */
+:root {
+	font-family: 'Gotham', sans-serif;
+	/* Color scheme */
+	/* Mains */
+	--pearl: #f7f6f1;
+	--obsidian: #00273c;
+	--blossom: #4f97d1;
+	--weave: #683e86;
+	--threat: #9f332b;
+	/* Surface (Pearl) */
+	--color-surface-0: #302a17;
+	--color-surface-1: #5f5741;
+	--color-surface-2: #949088;
+	--color-surface-3: #f3f0e9;
+	--color-surface-4: var(--pearl);
+
+	/* Text (Obsidian) */
+	--color-text-0: var(--obsidian);
+	--color-text-1: #4e6571;
+	--color-text-2: #708088;
+	--color-text-3: #d5dde1;
+	--color-text-4: #fafdff;
+
+	/* Accent (Blossom) */
+	--color-blossom-0: #183852;
+	--color-blossom-1: #36658d;
+	--color-blossom-2: var(--blossom);
+	--color-blossom-3: #bbdcf4;
+	--color-blossom-4: #e4ebf1;
+
+	/* Accent (Weave) */
+	--color-weave-0: #402754;
+	--color-weave-1: #2b1a38;
+	--color-weave-2: var(--weave);
+	--color-weave-3: #9c76b4;
+	--color-weave-4: #cfb4d7;
+
+	/* Accent (Threat) */
+	--color-threat-0: #411612;
+	--color-threat-1: #752720;
+	--color-threat-2: var(--threat);
+	--color-threat-3: #c0625a;
+	--color-threat-4: #ebd1ce;
+
+	/* Box Styling */
+	--border-radius: 0.7em;
+	--padding: 0.5em;
+}

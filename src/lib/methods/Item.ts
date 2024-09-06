@@ -1,0 +1,48 @@
+import { skillList } from '$lib/modules/skillCheckList';
+const characteristics = Object.values(skillList).flat();
+
+export type ItemFields = {
+	name?: string;
+	description?: string;
+};
+
+export type SkillCheck = {
+	characteristic?: keyof typeof skillList;
+	skill?: (typeof characteristics)[number];
+};
+
+// Class for the Item
+export class Item {
+	// Initialise
+	name: string = 'New Item';
+	type: string = 'Item';
+	subtitle?: string;
+	icon?: string;
+	description: string = 'Item Description';
+	aspects?: ItemFields[];
+	specials?: ItemFields[];
+	skillCheck?: SkillCheck;
+	fields?: ItemFields[];
+	image: {
+		url?: string;
+		encodedImage?: string;
+		name?: string;
+		alt?: string;
+		rotation: number;
+		scale: number;
+		x_offset: number;
+		y_offset: number;
+	} = {
+		rotation: 0,
+		scale: 100,
+		x_offset: 0,
+		y_offset: 0
+	};
+	constructor(_item?: Partial<Item>) {
+		// for each given property, assign it to the item
+		if (_item) Object.assign(this, _item);
+	}
+	// Methods
+}
+
+export type ItemType = typeof Item;
