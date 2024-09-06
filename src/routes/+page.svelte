@@ -26,6 +26,7 @@
 	<section id="header" class="hideOnPrint">
 		<h1>Game Card Builder</h1>
 		<Button click={newEmptyItem} icon="mdi:plus">New Card</Button>
+		<a class="mobileOnly" href="#editor">Go to editor</a>
 	</section>
 	<!-- Editor Pane -->
 	<section id="editor" class="hideOnPrint">
@@ -69,6 +70,23 @@
 		}
 		.showOnPrint {
 			display: block;
+		}
+	}
+
+	/* Changed layout for mobile */
+	.mobileOnly {
+		display: none;
+	}
+	@media screen and (max-width: 750px) {
+		#main {
+			grid-template-areas: 'header' 'cardView' 'editor';
+			grid-template-rows: min-content min-content min-content;
+			grid-template-columns: 1fr;
+			height: fit-content;
+		}
+
+		.mobileOnly {
+			display: initial;
 		}
 	}
 
