@@ -24,7 +24,7 @@
 <main id="main">
 	<!-- Header -->
 	<section id="header">
-		<h1>Game Card Builder</h1>
+		<h1>Game Card Builder v2</h1>
 		<Button click={newEmptyItem} icon="mdi:plus">New Card</Button>
 	</section>
 	<!-- Editor Pane -->
