@@ -14,6 +14,7 @@
 	import { fly } from 'svelte/transition';
 	import { expoOut } from 'svelte/easing';
 	import { goto } from '$app/navigation';
+	import { base } from '$app/paths';
 
 	let selectedCards = new Set();
 
@@ -50,7 +51,7 @@
 		items.setActiveItem(id);
 		$editItem = items.getActiveItem();
 		// Navigate to editor
-		goto('/edit');
+		goto(`${base}/edit`);
 	}
 
 	function duplicateCard(id: string) {
