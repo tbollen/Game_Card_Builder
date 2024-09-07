@@ -256,14 +256,33 @@ class ItemStore {
 	}
 
 	save() {
-		const stringifiedItems = JSON.stringify(this.items);
-		console.error(this.items);
-		localStorage.setItem('items', stringifiedItems);
+		const _items = JSON.stringify(this.items);
+		console.debug('Saving the items to localStorage', this.items);
+		localStorage.setItem('items', _items);
 
 		// Check
 		const localStoreItems = localStorage.getItem('items');
 		if (!localStoreItems) return;
 		console.log('Items saved to local storage:', localStoreItems);
+	}
+
+	download() {
+		const _items = JSON.stringify(this.items);
+		const blob = new Blob([_items], { type: 'application/json' });
+		const url = URL.createObjectURL(blob);
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = 'items.json';
+		link.click();
+	}
+
+	upload() {
+		// TODO
+	}
+
+	private serialize(): JSON {
+		const stringifiedItems = JSON.stringify(this.items);
+		return JSON.parse(stringifiedItems);
 	}
 }
 
@@ -279,6 +298,5 @@ if (typeof window !== 'undefined' && window.localStorage) {
 
 // Init store
 // export let items = new ItemStore();
-// export let items = localStoreItems instanceof ItemStore ? localStoreItems : new ItemStore();
-export let items = new ItemStore();
+export let items = localStoreItems instanceof ItemStore ? localStoreItems : new ItemStore();
 export let editItem = writable<StoredItem>(items.getFirstItem());

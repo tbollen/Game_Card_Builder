@@ -20,7 +20,7 @@
 	import { skillList, characteristics } from '$lib/modules/skillCheckList';
 
 	// Advanced Mode for more flexible editing
-	export let advancedMode: boolean = true;
+	export let advancedMode: boolean = false;
 
 	// Iconify
 	function loadIconFromIconify(icon: string | undefined) {
@@ -80,29 +80,68 @@
 
 	function downloadItem() {
 		// find if the item already exists
+		items.download();
 	}
 
 	function saveItem() {
 		items.setItem($editItem.id, $editItem);
+		items.save();
+	}
+
+	function toggleAdvancedMode() {
+		advancedMode = !advancedMode;
+		// Set configs
+		if (typeof window !== 'undefined' && window.localStorage) {
+			localStorage.setItem('advancedMode', advancedMode ? 'true' : 'false');
+		}
 	}
 
 	$: console.debug('Logging the editItem', $editItem);
 
+	let localDate: string = '';
+	let mounted = false;
 	onMount(() => {
 		loadIconFromIconify($editItem.icon);
+		mounted = true;
+
+		// Load configs
+		if (typeof window !== 'undefined' && window.localStorage) {
+			localStorage.getItem('advancedMode');
+			advancedMode = localStorage.getItem('advancedMode') == 'true';
+		}
 	});
+
+	$: if (mounted) {
+		localDate = new Date($editItem.dateCreated).toLocaleDateString();
+	}
 </script>
 
 <div id="editFields">
 	<div id="cardInfo" class="editorRow">
-		{$editItem.name} - {$editItem.id}
+		<div class="cardInfoBlock">
+			<div id="cardName" class="infoBlockMajor">
+				{$editItem?.name}
+			</div>
+			<div id="cardId" class="infoBlockMinor">
+				id: {$editItem?.id}
+			</div>
+		</div>
+
+		<div class="cardInfoBlock">
+			<div id="cardCreator" class="infoBlockMajor">
+				{$editItem?.creator}
+			</div>
+			<div id="cardDate" class="infoBlockMinor">
+				{localDate}
+			</div>
+		</div>
 	</div>
 	<hr class="divider" />
 	<!-- Editing Options -->
 	<div id="editHeader" class="editorRow">
 		<!-- Advanced -->
 		<Button
-			click={() => (advancedMode = !advancedMode)}
+			click={toggleAdvancedMode}
 			stateOn={advancedMode}
 			variant="flipped"
 			color="weave"
@@ -393,6 +432,40 @@
 </div>
 
 <style>
+	/* Card Info */
+	#cardInfo {
+		display: flex;
+		gap: 0.5em;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		align-items: center;
+	}
+	.cardInfoBlock {
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+		font-size: 0.8rem;
+		text-align: center;
+	}
+
+	.cardInfoBlock:first-child {
+		text-align: left;
+	}
+
+	.cardInfoBlock:last-child {
+		text-align: right;
+	}
+
+	.infoBlockMinor {
+		color: var(--color-text-2);
+	}
+
+	.infoBlockMajor {
+		font-weight: 500;
+		font-size: 1rem;
+	}
+
+	/*  */
 	.editorRow {
 		display: flex;
 		align-items: center;
