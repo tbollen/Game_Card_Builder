@@ -79,6 +79,13 @@
 	--color-threat-3: #c0625a;
 	--color-threat-4: #ebd1ce;
 
+	/* Success */
+	--color-success-0: #2e862e;
+	--color-success-1: #3e8e3e;
+	--color-success-2: #5ca85c;
+	--color-success-3: #7fcc7f;
+	--color-success-4: #a2efa2;
+
 	/* Box Styling */
 	--border-radius: 0.7em;
 	--padding: 0.5em;
