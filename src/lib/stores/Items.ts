@@ -158,7 +158,7 @@ class ItemStore {
 	//
 
 	// Item Management
-	addNewItem(_item?: Partial<StoredItem>) {
+	addNewItem(_item?: Partial<StoredItem>): string {
 		let _items = this.items;
 		let _idSet = this.idSet;
 		const newItemId = this.generateUniqueId();
@@ -174,13 +174,19 @@ class ItemStore {
 		this.setActiveItem(newItemId);
 		// Logging
 		console.log(`New${_item ? '' : ' empty'} item added to database:`, newItem);
+		return newItemId;
 	}
 
 	duplicateItem(_base: string | StoredItem) {
-		const _item = this.getItem(_base);
-		// Extract only the properties that should be duplicated
-		const _newItem = { ..._item };
-		this.addNewItem(_newItem);
+		try {
+			const _targetItem = this.getItem(_base);
+			const _newItem = { ..._targetItem };
+			this.addNewItem(_newItem);
+			this.updateItems();
+			this.save();
+		} catch (error) {
+			throw error;
+		}
 	}
 
 	destroy(_id: string) {
@@ -205,6 +211,8 @@ class ItemStore {
 			// Update Items
 			this.items = _items;
 			this.idSet = _idSet;
+			// Save Changes
+			this.save();
 		} catch (error) {
 			// If item not found, re-throw error
 			console.error(error);

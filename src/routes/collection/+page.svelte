@@ -56,6 +56,7 @@
 
 	function duplicateCard(id: string) {
 		items.duplicateItem(id);
+		updateItems();
 	}
 
 	function addNew() {
