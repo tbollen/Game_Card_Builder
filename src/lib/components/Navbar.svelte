@@ -36,7 +36,7 @@
 		{#each routeNames as routeName}
 			{#if !routes[routeName].hidden}
 				<div class="navItem navUnderline" class:active={currentRoute === routes[routeName].path}>
-					<a href="{base}/{routes[routeName].path}">
+					<a href="{base}{routes[routeName].path}">
 						<!-- <Icon icon={routes[routeName].icon} /> -->
 						{routeName}
 					</a>
