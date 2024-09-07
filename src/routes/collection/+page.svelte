@@ -7,7 +7,7 @@
 
 	import { editItem } from '$lib/stores/Items';
 	import { items } from '$lib/stores/Items';
-	$: _items = items;
+	let _items = items;
 
 	// Svelte stuff
 	import { onMount } from 'svelte';
@@ -36,6 +36,7 @@
 		// Remove from selected cards
 		selectedCards.delete(id);
 		selectedCards = selectedCards;
+		updateItems();
 	}
 
 	function removeUnavailableCardsFromSelection() {
@@ -59,6 +60,13 @@
 		updateItems();
 	}
 
+	import { type Item } from '$lib/methods/Item';
+	import Icon from '@iconify/svelte';
+	function createFromTemplate(base: Item) {
+		items.addNewItem(base);
+		updateItems();
+	}
+
 	function addNew() {
 		items.addNewItem();
 		// goto editor
@@ -67,6 +75,13 @@
 
 	function updateItems() {
 		_items = items;
+	}
+
+	// UI
+
+	let showTemplates = false;
+	function toggleTemplates() {
+		showTemplates = !showTemplates;
 	}
 
 	let renderCards = false;
@@ -81,6 +96,7 @@
 	</section>
 	<section id="controls">
 		<Button icon="mdi:plus" click={addNew}>New Card</Button>
+		<Button icon="mdi:plus" click={toggleTemplates}>Show Templates</Button>
 		controls - {selectedCards.size} cards selected
 	</section>
 	{#if renderCards}
@@ -88,6 +104,33 @@
 			id="viewer"
 			transition:fly={{ delay: 200, duration: 1200, opacity: 0, y: 40, easing: expoOut }}
 		>
+			<!-- TEMPLATES -->
+			{#if showTemplates}
+				{#each _items.templates as card}
+					<button class="cardInViewer cardTemplate">
+						<!-- Edit Options -->
+						<div class="templateLabel">
+							<Icon icon="mdi:clipboard-outline" />
+							Template
+						</div>
+						<div class="editOptions">
+							<Button icon="mdi:zoom-in" stopPropagation />
+							<Button
+								color="weave"
+								icon="mdi:content-copy"
+								stopPropagation
+								click={() => createFromTemplate(card)}
+							/>
+						</div>
+						<div class="frontSideCard">
+							<Gamecard item={card} />
+						</div>
+						<div class="backSideCard">
+							<GamecardBack item={card} />
+						</div>
+					</button>
+				{/each}
+			{/if}
 			{#each _items.items as card}
 				<button
 					class="cardInViewer"
@@ -187,6 +230,11 @@
 		transition: all 0.4s ease-in-out;
 	}
 
+	.cardTemplate > .frontSideCard,
+	.cardTemplate > .backSideCard {
+		scale: 0.9;
+	}
+
 	.cardInViewer:focus-visible .frontSideCard,
 	.cardInViewer:hover .frontSideCard {
 		box-shadow: 10px 10px 15px var(--color-text-1);
@@ -210,5 +258,24 @@
 		background-color: var(--color-blossom-2);
 		opacity: 1;
 		z-index: -1;
+	}
+
+	.templateLabel {
+		/* Placement */
+		position: absolute;
+		left: 0;
+		top: 0;
+		z-index: 1;
+		/* Layout */
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 5px;
+		/* Styling */
+		padding: 5px;
+		font-weight: 500;
+		border-radius: 1em;
+		color: var(--color-text-2);
+		background: var(--color-surface-3);
 	}
 </style>
