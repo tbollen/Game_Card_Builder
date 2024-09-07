@@ -6,7 +6,7 @@ export const imageAttributionList: ImageAttribution[] = [
 		name: 'Pixel Art Village',
 		fileUrl: 'cliff_village_background.png',
 		webUrl: 'https://www.flickr.com/photos/deathhell/53711571492',
-		creator: 'deathhell',
+		creator: '紅色死神',
 		date: new Date(2024, 4, 10),
 		alt: 'Pixel Art Village',
 		license: 'cc'
