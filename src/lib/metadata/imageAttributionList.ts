@@ -8,7 +8,8 @@ export const imageAttributionList: ImageAttribution[] = [
 		webUrl: 'https://www.flickr.com/photos/deathhell/53711571492',
 		creator: 'deathhell',
 		date: new Date(2024, 4, 10),
-		alt: 'Pixel Art Village'
+		alt: 'Pixel Art Village',
+		license: 'cc'
 	}
 ];
 

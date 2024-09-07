@@ -7,4 +7,5 @@ export type ImageAttribution = {
 	creator: string | 'unknown';
 	date?: Date;
 	alt?: string;
+	license: 'cc' | 'free' | 'commercial' | 'personal' | 'unknown';
 };
