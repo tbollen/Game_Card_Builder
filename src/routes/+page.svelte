@@ -4,6 +4,7 @@
 	// Import Components
 	import Gamecard from '$lib/components/Gamecard.svelte';
 	import GamecardBack from '$lib/components/GamecardBack.svelte';
+	import Navbar from '$lib/components/Navbar.svelte';
 	import DiceIcon from '$lib/components/coreComponents/DiceIcon.svelte';
 
 	// Import Item Store
@@ -30,15 +31,7 @@
 <main id="main">
 	<!-- Header -->
 	<section id="header" class="hideOnPrint">
-		<h1>Game Card Builder</h1>
-		<div class="buttonRow">
-			<Button click={toggleEditMode} icon={editMode ? 'mdi:eye' : 'mdi:pencil'}
-				>{editMode ? 'Viewing Mode' : 'Edit Card'}</Button
-			>
-			<Button click={newEmptyItem} icon="mdi:plus">New Card</Button>
-
-			<a class="mobileOnly" href="#editor">Go to editor</a>
-		</div>
+		<Navbar />
 	</section>
 	<!-- Editor Pane -->
 	{#if editMode}
@@ -53,6 +46,14 @@
 
 	<!-- Card Pane -->
 	<section id="cardView">
+		<div class="buttonRow hideOnPrint">
+			<Button click={toggleEditMode} icon={editMode ? 'mdi:eye' : 'mdi:pencil'}
+				>{editMode ? 'Viewing Mode' : 'Edit Card'}</Button
+			>
+			<Button click={newEmptyItem} icon="mdi:plus">New Card</Button>
+
+			<a class="mobileOnly" href="#editor">Go to editor</a>
+		</div>
 		<div id="cardArea" bind:this={cardSection}>
 			<Gamecard item={$activeItem} />
 			<GamecardBack item={$activeItem} />
@@ -70,7 +71,7 @@
 		/* Section with scroll */
 		height: 100dvh;
 		overflow-y: hidden;
-		grid-template-areas: 'header editor' 'cardView editor';
+		grid-template-areas: 'header header' 'cardView editor';
 		grid-template-columns: fit-content max(2fr, fit-content);
 		grid-template-rows: min-content 1fr;
 	}
@@ -110,6 +111,10 @@
 		overflow-y: auto;
 	}
 
+	section#header {
+		grid-area: header;
+	}
+
 	section#editor {
 		grid-area: editor;
 		background-color: aliceblue;
@@ -139,6 +144,9 @@
 		flex-wrap: wrap;
 		justify-content: center;
 		align-items: center;
+		/* Gap */
+		gap: 5mm;
+		padding: 5mm;
 	}
 
 	.buttonRow {

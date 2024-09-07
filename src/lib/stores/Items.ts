@@ -81,15 +81,59 @@ class ItemStore {
 
 	// Item Management
 	addNewItem(_item?: Item) {
+		let _items = this.items;
+		let _idSet = this.idSet;
 		const newItemId = this.generateUniqueId();
 		const newItem = new StoredItem(_item, newItemId);
-		this.items.push(newItem);
+		// Add to items
+		_items = [..._items, newItem];
 		// Add id to idSet
-		this.idSet.add(newItemId);
+		_idSet.add(newItemId);
+		// Trigger reactivity
+		this.items = _items;
+		this.idSet = _idSet;
 		// Set Active Item
 		this.setActiveItem(newItemId);
 		// Logging
-		console.log('New item added to database:', newItem);
+		console.log(`New${_item ? '' : ' empty'} item added to database:`, newItem);
+	}
+
+	duplicateItem(_id: string) {
+		const _item = this.getItem(_id);
+		this.addNewItem(_item);
+	}
+
+	destroy(_id: string) {
+		let _idSet = this.idSet;
+		let _items = this.items;
+		if (!_items.find((item) => item.id === _id))
+			return console.error(`Item with id: ${_id} not found in items`);
+		if (!_idSet.has(_id)) return console.error(`ID (${_id}) not found in idSet`);
+		const itemName = this.itemGetProperty('name', _id);
+		// Ask for confirmation
+		const confirmed = window.confirm(
+			`Are you sure you want to delete the card "${itemName}?" (id: ${_id})`
+		);
+		if (!confirmed) return;
+		// Remove from items
+		_items = _items.filter((item) => item.id !== _id);
+		_idSet.delete(_id);
+		// Update Items
+		this.items = _items;
+		this.idSet = _idSet;
+	}
+
+	getItem(_id?: string): StoredItem {
+		return this.items.find((item) => item.id === _id) || this.items[0];
+	}
+
+	setItem(_id: string, updates: StoredItem) {
+		const _item = this.items.find((item) => item.id === _id);
+		if (!_item) return console.error(`Item with id: ${_id} not found in items`);
+		Object.assign(_item, updates);
+		this.items = [...this.items];
+		// Update items
+		this.updateItems();
 	}
 
 	// Active Item Stuff
@@ -160,21 +204,10 @@ class ItemStore {
 
 	// DB Editing
 
-	destroy(_id?: string) {
-		// Ask for confirmation
-		const confirmed = window.confirm('Are you sure you want to delete this item?');
-		if (!confirmed) return;
-		// Remove from items
-		const _itemId = _id || this.getActiveItem().id;
-		this.items = this.items.filter((item) => item.id !== _itemId);
-		this.idSet.delete(_itemId);
-		this.updateItems();
-	}
-
 	// ID Stuff
 	private generateUniqueId(): string {
 		let _itemId = generateShortID(this.idSettings.idLength, this.idSettings.setName);
-		while (this.idIsUnique(_itemId) && this.idSet.size > 0) {
+		while (this.idSet.has(_itemId)) {
 			_itemId = generateShortID(this.idSettings.idLength, this.idSettings.setName);
 		}
 		return _itemId;
@@ -186,6 +219,7 @@ class ItemStore {
 
 	private updateItems() {
 		activeItem.update(() => this.getActiveItem());
+		this.items = [...this.items];
 	}
 
 	save() {
@@ -213,4 +247,4 @@ if (typeof window !== 'undefined' && window.localStorage) {
 // Init store
 // export let items = new ItemStore();
 export let items = localStoreItems instanceof ItemStore ? localStoreItems : new ItemStore();
-export let activeItem = writable<StoredItem>(items.getActiveItem());
+export let activeItem = writable<StoredItem>(items.getItem());

@@ -1,6 +1,6 @@
 .card {
 	/* Margin Around Card */
-	margin: 5mm;
+	/* margin: 5mm; */
 
 	/* Standard Poker Size */
 	height: 88mm;
@@ -15,6 +15,7 @@
 	--border: 2px solid var(--obsidian);
 	border: var(--border);
 	color: var(--obsidian);
+	background-color: white;
 
 	/* Sizing */
 	--icon-size: 14pt;
