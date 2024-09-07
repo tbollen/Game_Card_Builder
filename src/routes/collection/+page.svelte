@@ -95,13 +95,17 @@
 		<Navbar />
 	</section>
 	<section id="controls">
-		<Button icon="mdi:plus" click={addNew}>New Card</Button>
+		<Button icon="mdi:plus" color="threat" click={addNew}>New Card</Button>
 		<Button
 			icon={showTemplates ? 'mdi:clipboard-outline' : 'mdi:clipboard-off-outline'}
 			stateOn={showTemplates}
 			click={toggleTemplates}>Show Templates</Button
 		>
-		controls - {selectedCards.size} cards selected
+		{#if selectedCards.size > 0}
+			<Button icon="mdi:content-copy" click={() => (selectedCards = new Set())}>
+				{selectedCards.size} cards selected
+			</Button>
+		{/if}
 	</section>
 	{#if renderCards}
 		<section
@@ -168,6 +172,10 @@
 </main>
 
 <style>
+	section#controls {
+		display: flex;
+		gap: 10px;
+	}
 	.cardInViewer {
 		/* Reset button stuff */
 		all: unset;
