@@ -2,7 +2,6 @@
 	// Core Components
 	import Button from '$lib/components/coreComponents/Button.svelte';
 	import Accordion from '$lib/components/coreComponents/Accordion.svelte';
-	import Input from '$lib/components/coreComponents/EditInput.svelte';
 
 	// DEPRECATED
 	import { editItem } from '$lib/stores/Items';
@@ -124,8 +123,12 @@
 		<h1 slot="head">Name and Type</h1>
 		<div slot="content" class="inputGrid">
 			<!-- Name -->
-			<Input property="name" />
-			<Input property="subtitle" />
+			<label for="name">Name</label>
+			<input type="text" id="name" bind:value={$editItem.name} placeholder="Name" />
+			<!-- Subtitle -->
+			<label for="subtitle">Subtitle</label>
+			<input type="text" id="subtitle" bind:value={$editItem.subtitle} placeholder="Subtitle" />
+
 			<!-- Type -->
 			<label for="type">Type</label>
 			<select
@@ -162,11 +165,13 @@
 		<h1 slot="head">Main Text</h1>
 		<!-- Description -->
 		<div slot="content" class="mainFields">
-			<Input
-				property="description"
-				type="textarea"
-				rows="5"
+			<label for="description">Description</label>
+			<textarea
+				name="description"
+				id="description"
+				rows="3"
 				placeholder="Edit the description here"
+				bind:value={$editItem.description}
 			/>
 			<!-- Aspects -->
 			<label for="editorAspects" class="category buttonLine"> Aspects </label>
