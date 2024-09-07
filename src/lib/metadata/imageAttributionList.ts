@@ -4,10 +4,19 @@ import { type ImageAttribution } from '$lib/types/imageAttribution';
 export const imageAttributionList: ImageAttribution[] = [
 	{
 		name: 'Pixel Art Village',
-		fileUrl: '$lib/images/Pixel_Art_Village.png',
+		fileUrl: 'cliff_village_background.png',
 		webUrl: 'https://www.flickr.com/photos/deathhell/53711571492',
 		creator: 'deathhell',
 		date: new Date(2024, 4, 10),
 		alt: 'Pixel Art Village'
 	}
 ];
+
+export function getImageData(name: string): ImageAttribution {
+	const image = imageAttributionList.find((image) => image.name === name);
+	if (!image) {
+		// Error on line where called: image does not exist in list
+		throw new Error(`image with name '${name}' does not exist in list`);
+	}
+	return image;
+}
