@@ -13,6 +13,7 @@
 	export let variant: 'filled' | 'outlined' | 'flipped' | 'contrast-outlined' = 'filled';
 	export let disableTransition: boolean = false;
 	export let hideSlotOnHover: boolean = false;
+	export let stopPropagation: boolean = false;
 
 	let isHovering: boolean = false;
 
@@ -20,10 +21,12 @@
 </script>
 
 <button
-	on:click={clickFunc}
+	on:click|stopPropagation={stopPropagation ? () => {} : clickFunc}
+	on:click|stopPropagation={!stopPropagation ? () => {} : clickFunc}
 	class="coreButton {color} {variant} {placement} {size}"
 	class:disableTransition
 	class:stateOff={!stateOn}
+	class:noGap={!$$slots.default || !icon}
 	{disabled}
 	on:mouseenter={() => (isHovering = true)}
 	on:mouseleave={() => (isHovering = false)}
@@ -73,6 +76,14 @@
 
 		/* Transition */
 		transition: all 0.2s ease-in-out;
+	}
+
+	.coreButton:focus-visible {
+		outline: 2px solid var(--color-text-0);
+	}
+
+	.noGap {
+		gap: 0;
 	}
 
 	.slot {
