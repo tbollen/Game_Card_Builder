@@ -2,10 +2,9 @@
 	// Core Components
 	import Button from '$lib/components/coreComponents/Button.svelte';
 	import Accordion from '$lib/components/coreComponents/Accordion.svelte';
-	import Input from '$lib/components/coreComponents/EditInput.svelte';
 
 	// DEPRECATED
-	import { activeItem } from '$lib/stores/Items';
+	import { editItem } from '$lib/stores/Items';
 
 	// Load selected item
 	import { items } from '$lib/stores/Items';
@@ -33,14 +32,14 @@
 
 	//
 
-	let selectedSkill: (typeof characteristics)[number] | undefined = $activeItem.skillCheck?.skill;
-	let selectedChar: keyof typeof skillList | undefined = $activeItem.skillCheck?.characteristic;
+	let selectedSkill: (typeof characteristics)[number] | undefined = $editItem.skillCheck?.skill;
+	let selectedChar: keyof typeof skillList | undefined = $editItem.skillCheck?.characteristic;
 	$: selectedChar && updateSkill('char');
 	$: selectedSkill && updateSkill('skill');
 
 	function updateSkill(priority?: 'char' | 'skill') {
 		if (selectedChar == undefined && selectedSkill == undefined) {
-			$activeItem.skillCheck = undefined;
+			$editItem.skillCheck = undefined;
 			return;
 		}
 		if (
@@ -62,37 +61,41 @@
 				skillList[char as keyof typeof skillList].some((skill) => skill == selectedSkill)
 			) as keyof typeof skillList;
 		}
-		$activeItem.skillCheck = { characteristic: selectedChar, skill: selectedSkill };
+		$editItem.skillCheck = { characteristic: selectedChar, skill: selectedSkill };
 	}
 
 	function resetSkill() {
-		$activeItem.skillCheck = undefined;
+		$editItem.skillCheck = undefined;
 		selectedSkill = undefined;
 		selectedChar = undefined;
 	}
 
 	// Button to add new fields
 	import { onMount } from 'svelte';
+	import { derived } from 'svelte/store';
 
 	async function printCards() {
 		window.print();
 	}
 
-	function saveItem() {
-		// Save Item
-		items.save();
-		// Turn off edit mode
-		// editMode = false;
+	function downloadItem() {
+		// find if the item already exists
 	}
 
+	function saveItem() {
+		items.setItem($editItem.id, $editItem);
+	}
+
+	$: console.debug('Logging the editItem', $editItem);
+
 	onMount(() => {
-		loadIconFromIconify($activeItem.icon);
+		loadIconFromIconify($editItem.icon);
 	});
 </script>
 
 <div id="editFields">
 	<div id="cardInfo" class="editorRow">
-		{$activeItem.name} - {$activeItem.id}
+		{$editItem.name} - {$editItem.id}
 	</div>
 	<hr class="divider" />
 	<!-- Editing Options -->
@@ -108,9 +111,7 @@
 			Advanced
 		</Button>
 		<!-- Download -->
-		<Button click={() => alert('Coming Soon!')} variant="filled" icon="memory:download">
-			Download
-		</Button>
+		<Button click={downloadItem} variant="filled" icon="memory:download">Download</Button>
 
 		<!-- Save -->
 		<Button click={saveItem} variant="filled" icon="memory:floppy-disk">Save</Button>
@@ -124,16 +125,15 @@
 		<h1 slot="head">Name and Type</h1>
 		<div slot="content" class="inputGrid">
 			<!-- Name -->
-			<Input property="name" />
-			<Input property="subtitle" />
+			<label for="name">Name</label>
+			<input type="text" id="name" bind:value={$editItem.name} placeholder="Name" />
+			<!-- Subtitle -->
+			<label for="subtitle">Subtitle</label>
+			<input type="text" id="subtitle" bind:value={$editItem.subtitle} placeholder="Subtitle" />
+
 			<!-- Type -->
 			<label for="type">Type</label>
-			<select
-				id="type"
-				bind:value={$activeItem.type}
-				on:change={() => items.itemSet({ type: $activeItem.type })}
-				placeholder="Type"
-			>
+			<select id="type" bind:value={$editItem.type} placeholder="Type">
 				{#each cardTypes as cardType}
 					<option value={cardType.name}>{cardType.name}</option>
 				{/each}
@@ -147,10 +147,10 @@
 				<input
 					type="text"
 					id="iconOverride"
-					class:warning={!iconExists($activeItem?.icon || 'mdi:sack')}
-					bind:value={$activeItem.icon}
-					on:input={() => loadIconFromIconify($activeItem.icon)}
-					placeholder={cardTypes.find((type) => type.name == $activeItem.type)?.icon ||
+					class:warning={!iconExists($editItem?.icon || 'mdi:sack')}
+					bind:value={$editItem.icon}
+					on:input={() => loadIconFromIconify($editItem.icon)}
+					placeholder={cardTypes.find((type) => type.name == $editItem.type)?.icon ||
 						'Icon from Iconify'}
 				/>
 			{/if}
@@ -162,17 +162,19 @@
 		<h1 slot="head">Main Text</h1>
 		<!-- Description -->
 		<div slot="content" class="mainFields">
-			<Input
-				property="description"
-				type="textarea"
-				rows="5"
+			<label for="description">Description</label>
+			<textarea
+				name="description"
+				id="description"
+				rows="3"
 				placeholder="Edit the description here"
+				bind:value={$editItem.description}
 			/>
 			<!-- Aspects -->
 			<label for="editorAspects" class="category buttonLine"> Aspects </label>
-			{#if $activeItem.aspects?.length}
+			{#if $editItem.aspects?.length}
 				<div class="fieldList">
-					{#each $activeItem.aspects as aspect, i}
+					{#each $editItem.aspects as aspect, i}
 						<div class="fieldItem">
 							<label for="aspect-{i}-name">Name</label>
 							<input type="text" id="aspect-{i}-name" bind:value={aspect.name} />
@@ -189,20 +191,22 @@
 									color="plain"
 									icon="mdi:trash"
 									size="small"
-									click={() => items.removeField('aspects', i)}
+									click={() => $editItem.removeField('aspects', i)}
 								/>
 							</div>
 						</div>
 					{/each}
 				</div>
 			{/if}
-			<Button icon="mdi:plus" size="small" click={() => items.addEmptyField('aspects')}>Add</Button>
+			<Button icon="mdi:plus" size="small" click={() => $editItem.addEmptyField('aspects')}
+				>Add</Button
+			>
 			<hr class="divider" />
 			<!-- Specials -->
 			<label for="editorSpecials" class="category buttonLine"> Specials </label>
-			{#if $activeItem.specials?.length}
+			{#if $editItem.specials?.length}
 				<div class="fieldList">
-					{#each $activeItem.specials as special, i}
+					{#each $editItem.specials as special, i}
 						<div class="fieldItem">
 							<label for="special-{i}-name">Name</label>
 							<input type="text" id="special-{i}-name" bind:value={special.name} />
@@ -219,14 +223,15 @@
 									color="plain"
 									icon="mdi:trash"
 									size="small"
-									click={() => items.removeField('specials', i)}
+									click={() => $editItem.removeField('specials', i)}
 								/>
 							</div>
 						</div>
 					{/each}
 				</div>
 			{/if}
-			<Button icon="mdi:plus" size="small" click={() => items.addEmptyField('specials')}>Add</Button
+			<Button icon="mdi:plus" size="small" click={() => $editItem.addEmptyField('specials')}
+				>Add</Button
 			>
 		</div>
 	</Accordion>
@@ -260,8 +265,8 @@
 					</div>
 				</div>
 				<hr class="divider" />
-				{#if $activeItem.fields?.length}
-					{#each $activeItem.fields as field, i}
+				{#if $editItem.fields?.length}
+					{#each $editItem.fields as field, i}
 						<div class="fieldItem">
 							<label for="special-{i}-name">Name</label>
 							<input type="text" id="special-{i}-name" bind:value={field.name} />
@@ -270,7 +275,7 @@
 									color="plain"
 									icon="mdi:trash"
 									size="small"
-									click={() => items.removeField('fields', i)}
+									click={() => $editItem.removeField('fields', i)}
 								/>
 							</div>
 							<label for="special-{i}-description">Value</label>
@@ -280,7 +285,7 @@
 				{/if}
 			</div>
 			<label for="editorSpecials" class="category buttonLine">
-				<Button icon="mdi:plus" size="small" click={() => items.addEmptyField('fields')}
+				<Button icon="mdi:plus" size="small" click={() => $editItem.addEmptyField('fields')}
 					>Add Field</Button
 				>
 			</label>
@@ -300,8 +305,8 @@
 				<input
 					type="text"
 					id="imgName"
-					bind:value={$activeItem.image.name}
-					placeholder={$activeItem.name}
+					bind:value={$editItem.image.name}
+					placeholder={$editItem.name}
 				/>
 			{/if}
 
@@ -310,28 +315,28 @@
 			<input
 				type="text"
 				id="url"
-				bind:value={$activeItem.image.url}
+				bind:value={$editItem.image.url}
 				placeholder="Paste image URL here"
 			/>
 
 			<!-- Position X -->
-			<label for="xPosition">X Offset: {Math.round($activeItem.image.x_offset || 0)}</label>
+			<label for="xPosition">X Offset: {Math.round($editItem.image.x_offset || 0)}</label>
 			<input
 				type="range"
 				name="xPosition"
 				id="xPosition"
-				bind:value={$activeItem.image.x_offset}
+				bind:value={$editItem.image.x_offset}
 				min="-50"
 				max="50"
 				list="positions"
 			/>
 			<!-- Position Y -->
-			<label for="yPosition">Y Offset: {Math.round($activeItem.image.y_offset || 0)}</label>
+			<label for="yPosition">Y Offset: {Math.round($editItem.image.y_offset || 0)}</label>
 			<input
 				type="range"
 				name="yPosition"
 				id="yPosition"
-				bind:value={$activeItem.image.y_offset}
+				bind:value={$editItem.image.y_offset}
 				min="-50"
 				max="50"
 				list="positions"
@@ -342,24 +347,24 @@
 				<option value="10" />
 			</datalist>
 			<!-- Rotation -->
-			<label for="rotation">Rotation: {Math.round($activeItem.image.rotation || 0)}°</label>
+			<label for="rotation">Rotation: {Math.round($editItem.image.rotation || 0)}°</label>
 			<input
 				type="range"
 				name="rotation"
 				id="rotation"
-				bind:value={$activeItem.image.rotation}
+				bind:value={$editItem.image.rotation}
 				min="-180"
 				max="180"
 				list="rotations"
 			/>
 			<!-- Scale -->
-			<label for="scale">Scale: {$activeItem.image.scale}%</label>
+			<label for="scale">Scale: {$editItem.image.scale}%</label>
 			<input
 				type="range"
 				name="scale"
 				id="scale"
 				list="scales"
-				bind:value={$activeItem.image.scale}
+				bind:value={$editItem.image.scale}
 				min="25"
 				max="300"
 			/>
@@ -379,7 +384,7 @@
 				color="plain"
 				icon="mdi:refresh"
 				size="small"
-				click={() => items.resetImagePosition()}
+				click={() => $editItem.resetImagePosition()}
 			>
 				Reset Position</Button
 			>
