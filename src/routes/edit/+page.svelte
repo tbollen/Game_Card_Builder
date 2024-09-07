@@ -13,6 +13,7 @@
 
 	import { items } from '$lib/stores/Items';
 	import { slide } from 'svelte/transition';
+	import { onMount } from 'svelte';
 
 	// Export to PDF section
 	var cardSection: HTMLElement;
@@ -22,10 +23,24 @@
 
 	let editMode = true;
 
-	function newEmptyItem() {}
+	function newEmptyItem() {
+		const saveFirst = window.confirm('Do you want to save before creating a New Card?');
+		if (saveFirst) {
+			items.save();
+		}
+		items.addNewItem();
+		$editItem = items.getActiveItem();
+	}
 	function toggleEditMode() {
 		editMode = !editMode;
 	}
+
+	onMount(() => {
+		// Load configs
+		if (typeof window !== 'undefined' && window.localStorage) {
+			localStorage.getItem('advancedMode');
+		}
+	});
 </script>
 
 <main id="main">
@@ -36,7 +51,7 @@
 	<!-- Editor Pane -->
 	{#if editMode}
 		<section id="editor" class="hideOnPrint" transition:slide={{ duration: 200 }}>
-			<h2>Card Editor</h2>
+			<div class="displayText editorTitle">Card Editor</div>
 			<ItemEditor />
 			<div id="editorFooter">
 				<Button click={printCards} icon="mdi:printer">Print Card</Button>
@@ -117,7 +132,9 @@
 
 	section#editor {
 		grid-area: editor;
-		background-color: aliceblue;
+		/* Styling */
+		background-color: var(--color-surface-4);
+		border-top-left-radius: 1em;
 		/* Layout */
 		display: flex;
 		flex-direction: column;
@@ -152,5 +169,10 @@
 	.buttonRow {
 		display: flex;
 		gap: var(--padding);
+	}
+
+	.editorTitle {
+		text-align: center;
+		font-size: 2em;
 	}
 </style>
