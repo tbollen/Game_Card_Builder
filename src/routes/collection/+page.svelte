@@ -96,13 +96,17 @@
 	</section>
 	<section id="controls">
 		<Button icon="mdi:plus" click={addNew}>New Card</Button>
-		<Button icon="mdi:plus" click={toggleTemplates}>Show Templates</Button>
+		<Button
+			icon={showTemplates ? 'mdi:clipboard-outline' : 'mdi:clipboard-off-outline'}
+			stateOn={showTemplates}
+			click={toggleTemplates}>Show Templates</Button
+		>
 		controls - {selectedCards.size} cards selected
 	</section>
 	{#if renderCards}
 		<section
 			id="viewer"
-			transition:fly={{ delay: 200, duration: 1200, opacity: 0, y: 40, easing: expoOut }}
+			transition:fly={{ delay: 200, duration: 800, opacity: 0, y: 40, easing: expoOut }}
 		>
 			<!-- TEMPLATES -->
 			{#if showTemplates}
@@ -139,23 +143,18 @@
 					on:click={() => toggleCardSelection(card.id)}
 				>
 					<!-- Edit Options -->
-					{#if selectedCards.size < 2}
-						<div class="editOptions">
-							<Button icon="mdi:zoom-in" stopPropagation />
-							<Button icon="mdi:pencil" stopPropagation click={() => editCard(card.id)} />
-							<Button
-								icon="mdi:content-copy"
-								stopPropagation
-								click={() => duplicateCard(card.id)}
-							/>
-							<Button
-								icon="mdi:trash-can"
-								color="threat"
-								stopPropagation
-								click={() => deleteCard(card.id)}
-							/>
-						</div>
-					{/if}
+
+					<div class="editOptions">
+						<Button icon="mdi:zoom-in" stopPropagation />
+						<Button icon="mdi:pencil" stopPropagation click={() => editCard(card.id)} />
+						<Button icon="mdi:content-copy" stopPropagation click={() => duplicateCard(card.id)} />
+						<Button
+							icon="mdi:trash-can"
+							color="threat"
+							stopPropagation
+							click={() => deleteCard(card.id)}
+						/>
+					</div>
 					<div class="frontSideCard">
 						<Gamecard item={card} />
 					</div>
