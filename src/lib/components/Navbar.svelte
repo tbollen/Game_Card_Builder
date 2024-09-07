@@ -1,5 +1,6 @@
 <script lang="ts">
 	// Set Routes
+	import { base } from '$app/paths';
 	const routes: Record<string, { path: string; icon: string; hidden?: boolean }> = {
 		Home: {
 			path: '/',
@@ -30,12 +31,12 @@
 </script>
 
 <section id="navigation" class="navbar">
-	<a href="/" id="logo" class="displayText websiteLogo">Card Builder</a>
+	<a href="{base}/" id="logo" class="displayText websiteLogo">Card Builder</a>
 	<nav>
 		{#each routeNames as routeName}
 			{#if !routes[routeName].hidden}
 				<div class="navItem navUnderline" class:active={currentRoute === routes[routeName].path}>
-					<a href={routes[routeName].path}>
+					<a href="{base}/{routes[routeName].path}">
 						<!-- <Icon icon={routes[routeName].icon} /> -->
 						{routeName}
 					</a>
