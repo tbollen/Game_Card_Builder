@@ -8,7 +8,7 @@
 	import DiceIcon from '$lib/components/coreComponents/DiceIcon.svelte';
 
 	// Import Item Store
-	import { activeItem } from '$lib/stores/Items';
+	import { editItem } from '$lib/stores/Items';
 	import ItemEditor from '$lib/components/ItemEditor.svelte';
 
 	import { items } from '$lib/stores/Items';
@@ -55,8 +55,8 @@
 			<a class="mobileOnly" href="#editor">Go to editor</a>
 		</div>
 		<div id="cardArea" bind:this={cardSection}>
-			<Gamecard item={$activeItem} />
-			<GamecardBack item={$activeItem} />
+			<Gamecard item={$editItem} />
+			<GamecardBack item={$editItem} />
 		</div>
 	</section>
 </main>

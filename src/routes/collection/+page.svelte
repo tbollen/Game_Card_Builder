@@ -5,7 +5,7 @@
 	import Gamecard from '$lib/components/Gamecard.svelte';
 	import GamecardBack from '$lib/components/GamecardBack.svelte';
 
-	import { activeItem } from '$lib/stores/Items';
+	import { editItem } from '$lib/stores/Items';
 	import { items } from '$lib/stores/Items';
 	$: _items = items;
 
@@ -46,7 +46,7 @@
 	}
 
 	function editCard(id: string) {
-		$activeItem = items.getItem(id);
+		$editItem = items.getItem(id);
 		// Navigate to editor
 		// window.location.href = '/editor';
 	}

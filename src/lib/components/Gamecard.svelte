@@ -1,8 +1,8 @@
 <script lang="ts">
 	// Import Item Store
-	import { activeItem } from '$lib/stores/Items';
+	import { editItem } from '$lib/stores/Items';
 	//
-	export let item = $activeItem;
+	export let item = $editItem;
 	export let print: boolean = true;
 
 	// Card Components

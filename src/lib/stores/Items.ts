@@ -218,7 +218,7 @@ class ItemStore {
 	}
 
 	private updateItems() {
-		activeItem.update(() => this.getActiveItem());
+		editItem.update(() => this.getActiveItem());
 		this.items = [...this.items];
 	}
 
@@ -247,4 +247,4 @@ if (typeof window !== 'undefined' && window.localStorage) {
 // Init store
 // export let items = new ItemStore();
 export let items = localStoreItems instanceof ItemStore ? localStoreItems : new ItemStore();
-export let activeItem = writable<StoredItem>(items.getItem());
+export let editItem = writable<StoredItem>(items.getItem());
