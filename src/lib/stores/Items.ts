@@ -258,7 +258,7 @@ class ItemStore {
 	save() {
 		const _items = JSON.stringify(this.items);
 		console.debug('Saving the items to localStorage', this.items);
-		localStorage.setItem('items', JSON.parse(_items));
+		localStorage.setItem('items', _items);
 
 		// Check
 		const localStoreItems = localStorage.getItem('items');
