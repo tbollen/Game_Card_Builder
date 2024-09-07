@@ -8,15 +8,15 @@
 			hidden: true
 		},
 		Editor: {
-			path: '/edit',
+			path: 'edit',
 			icon: 'mdi:pencil'
 		},
 		Collection: {
-			path: '/collection',
+			path: 'collection',
 			icon: 'mdi:book-outline'
 		},
 		About: {
-			path: '/about',
+			path: 'about',
 			icon: 'mdi:information-outline'
 		}
 	};
@@ -36,7 +36,7 @@
 		{#each routeNames as routeName}
 			{#if !routes[routeName].hidden}
 				<div class="navItem navUnderline" class:active={currentRoute === routes[routeName].path}>
-					<a href="{base}{routes[routeName].path}">
+					<a href="{base}/{routes[routeName].path}">
 						<!-- <Icon icon={routes[routeName].icon} /> -->
 						{routeName}
 					</a>
