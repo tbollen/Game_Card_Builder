@@ -13,7 +13,10 @@ const config = {
 		appDir: 'src',
 		adapter: adapter(),
 		paths: {
-			base: process.env.BASE_PATH
+			base: process.argv.includes('dev') ? '' : process.env.BASE_PATH
+		},
+		prerender: {
+			handleHttpError: 'warn'
 		}
 	}
 };
