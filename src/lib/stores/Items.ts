@@ -71,7 +71,8 @@ class StoredItem extends Item {
 			_fields = [emptyField];
 		}
 		// Update to match
-		this[fieldType] = _fields;
+		this[fieldType] = [..._fields];
+		this.update();
 	}
 
 	removeField(fieldType: FieldTypes, index: number) {
@@ -80,7 +81,7 @@ class StoredItem extends Item {
 		// If there are already fields, remove
 		_fields.splice(index, 1);
 		// Update to match
-		this[fieldType] = _fields;
+		this[fieldType] = [..._fields];
 		this.update();
 	}
 
@@ -95,10 +96,9 @@ class StoredItem extends Item {
 		this.update();
 	}
 
-	update() {
-		// Trigger reactivity
-		const _storedItem = this;
-		Object.assign(_storedItem, this);
+	private update() {
+		// Trigger reactivity (hacky, but effective)
+		editItem.update(() => this);
 	}
 }
 class ItemStore {
