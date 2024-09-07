@@ -72,17 +72,21 @@
 
 	// Button to add new fields
 	import { onMount } from 'svelte';
+	import { derived } from 'svelte/store';
 
 	async function printCards() {
 		window.print();
 	}
 
-	function saveItem() {
-		// Save Item
-		items.save();
-		// Turn off edit mode
-		// editMode = false;
+	function downloadItem() {
+		// find if the item already exists
 	}
+
+	function saveItem() {
+		items.setItem($editItem.id, $editItem);
+	}
+
+	$: console.debug('Logging the editItem', $editItem);
 
 	onMount(() => {
 		loadIconFromIconify($editItem.icon);
@@ -107,9 +111,7 @@
 			Advanced
 		</Button>
 		<!-- Download -->
-		<Button click={() => alert('Coming Soon!')} variant="filled" icon="memory:download">
-			Download
-		</Button>
+		<Button click={downloadItem} variant="filled" icon="memory:download">Download</Button>
 
 		<!-- Save -->
 		<Button click={saveItem} variant="filled" icon="memory:floppy-disk">Save</Button>
@@ -131,12 +133,7 @@
 
 			<!-- Type -->
 			<label for="type">Type</label>
-			<select
-				id="type"
-				bind:value={$editItem.type}
-				on:change={() => items.itemSet({ type: $editItem.type })}
-				placeholder="Type"
-			>
+			<select id="type" bind:value={$editItem.type} placeholder="Type">
 				{#each cardTypes as cardType}
 					<option value={cardType.name}>{cardType.name}</option>
 				{/each}
@@ -194,14 +191,16 @@
 									color="plain"
 									icon="mdi:trash"
 									size="small"
-									click={() => items.removeField('aspects', i)}
+									click={() => $editItem.removeField('aspects', i)}
 								/>
 							</div>
 						</div>
 					{/each}
 				</div>
 			{/if}
-			<Button icon="mdi:plus" size="small" click={() => items.addEmptyField('aspects')}>Add</Button>
+			<Button icon="mdi:plus" size="small" click={() => $editItem.addEmptyField('aspects')}
+				>Add</Button
+			>
 			<hr class="divider" />
 			<!-- Specials -->
 			<label for="editorSpecials" class="category buttonLine"> Specials </label>
@@ -224,14 +223,15 @@
 									color="plain"
 									icon="mdi:trash"
 									size="small"
-									click={() => items.removeField('specials', i)}
+									click={() => $editItem.removeField('specials', i)}
 								/>
 							</div>
 						</div>
 					{/each}
 				</div>
 			{/if}
-			<Button icon="mdi:plus" size="small" click={() => items.addEmptyField('specials')}>Add</Button
+			<Button icon="mdi:plus" size="small" click={() => $editItem.addEmptyField('specials')}
+				>Add</Button
 			>
 		</div>
 	</Accordion>
@@ -275,7 +275,7 @@
 									color="plain"
 									icon="mdi:trash"
 									size="small"
-									click={() => items.removeField('fields', i)}
+									click={() => $editItem.removeField('fields', i)}
 								/>
 							</div>
 							<label for="special-{i}-description">Value</label>
@@ -285,7 +285,7 @@
 				{/if}
 			</div>
 			<label for="editorSpecials" class="category buttonLine">
-				<Button icon="mdi:plus" size="small" click={() => items.addEmptyField('fields')}
+				<Button icon="mdi:plus" size="small" click={() => $editItem.addEmptyField('fields')}
 					>Add Field</Button
 				>
 			</label>
@@ -384,7 +384,7 @@
 				color="plain"
 				icon="mdi:refresh"
 				size="small"
-				click={() => items.resetImagePosition()}
+				click={() => $editItem.resetImagePosition()}
 			>
 				Reset Position</Button
 			>
