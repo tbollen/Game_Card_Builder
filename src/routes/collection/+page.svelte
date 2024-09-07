@@ -13,6 +13,7 @@
 	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
 	import { expoOut } from 'svelte/easing';
+	import { goto } from '$app/navigation';
 
 	let selectedCards = new Set();
 
@@ -46,9 +47,10 @@
 	}
 
 	function editCard(id: string) {
-		$editItem = items.getItem(id);
+		items.setActiveItem(id);
+		$editItem = items.getActiveItem();
 		// Navigate to editor
-		// window.location.href = '/editor';
+		goto('/edit');
 	}
 
 	function duplicateCard(id: string) {
