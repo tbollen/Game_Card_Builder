@@ -80,6 +80,7 @@
 
 	function downloadItem() {
 		// find if the item already exists
+		items.download();
 	}
 
 	function saveItem() {
