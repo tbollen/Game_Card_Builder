@@ -1,5 +1,7 @@
 import { writable } from 'svelte/store';
 import { Item } from '$lib/methods/Item';
+import { defaultTemplates } from '$lib/stores/defaultTemplates';
+import { startingItems } from '$lib/stores/defaultTemplates';
 
 // Env variables
 const replaceString = 'replaceMe';
@@ -103,6 +105,7 @@ class StoredItem extends Item {
 }
 class ItemStore {
 	items: StoredItem[] = [];
+	templates: Item[] = [];
 	idSet: Set<string> = new Set();
 	idSettings = {
 		idLength: 8,
@@ -110,11 +113,17 @@ class ItemStore {
 	};
 	activeItem: StoredItem;
 
-	constructor(_items?: StoredItem[]) {
+	constructor(_items?: StoredItem[], _templates?: Item[]) {
 		// Set Items
 		this.items = _items || [];
-		if (this.items.length == 0) this.addNewItem();
+		if (this.items.length == 0) {
+			// for each item in startingItems, add to items
+			startingItems.forEach((item) => this.addNewItem(item));
+		}
 		if (this.items.length > 0) this.setActiveItem(this.items[0].id);
+
+		// Set Templates
+		this.templates = _templates || defaultTemplates;
 
 		// Make the idSet
 		this.idSet = new Set(this.items.map((item) => item.id));
@@ -158,7 +167,7 @@ class ItemStore {
 	//
 
 	// Item Management
-	addNewItem(_item?: Partial<StoredItem>) {
+	addNewItem(_item?: Partial<StoredItem>): string {
 		let _items = this.items;
 		let _idSet = this.idSet;
 		const newItemId = this.generateUniqueId();
@@ -174,13 +183,22 @@ class ItemStore {
 		this.setActiveItem(newItemId);
 		// Logging
 		console.log(`New${_item ? '' : ' empty'} item added to database:`, newItem);
+		// Save
+		this.save();
+		// Return ID
+		return newItemId;
 	}
 
 	duplicateItem(_base: string | StoredItem) {
-		const _item = this.getItem(_base);
-		// Extract only the properties that should be duplicated
-		const _newItem = { ..._item };
-		this.addNewItem(_newItem);
+		try {
+			const _targetItem = this.getItem(_base);
+			const _newItem = { ..._targetItem };
+			this.addNewItem(_newItem);
+			this.updateItems();
+			this.save();
+		} catch (error) {
+			throw error;
+		}
 	}
 
 	destroy(_id: string) {
@@ -205,6 +223,8 @@ class ItemStore {
 			// Update Items
 			this.items = _items;
 			this.idSet = _idSet;
+			// Save Changes
+			this.save();
 		} catch (error) {
 			// If item not found, re-throw error
 			console.error(error);
@@ -256,6 +276,9 @@ class ItemStore {
 	}
 
 	save() {
+		// Wait for localStorage to init
+		if (typeof window === 'undefined' || !window.localStorage)
+			return console.error('Cannot save to localStorage: localStorage not Initialized');
 		const _items = JSON.stringify(this.items);
 		console.debug('Saving the items to localStorage', this.items);
 		localStorage.setItem('items', _items);

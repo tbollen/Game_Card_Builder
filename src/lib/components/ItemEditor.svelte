@@ -83,9 +83,13 @@
 		items.download();
 	}
 
+	let showSaved: boolean = false;
+
 	function saveItem() {
 		items.setItem($editItem.id, $editItem);
 		items.save();
+		showSaved = true;
+		setTimeout(() => (showSaved = false), 2000);
 	}
 
 	function toggleAdvancedMode() {
@@ -153,7 +157,12 @@
 		<Button click={downloadItem} variant="filled" icon="memory:download">Download</Button>
 
 		<!-- Save -->
-		<Button click={saveItem} variant="filled" icon="memory:floppy-disk">Save</Button>
+		<Button
+			click={saveItem}
+			color={showSaved ? 'success' : 'blossom'}
+			variant="filled"
+			icon={showSaved ? 'mdi:check' : 'memory:floppy-disk'}>Save</Button
+		>
 		<!-- Print -->
 		<Button click={printCards} icon="mdi:printer">Print Card</Button>
 	</div>

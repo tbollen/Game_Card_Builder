@@ -9,7 +9,7 @@
 	export let iconClick: undefined | (() => void) = undefined;
 	export let placement: 'left' | 'right' = 'left';
 	export let stateOn: boolean = true;
-	export let color: 'plain' | 'blossom' | 'weave' | 'threat' = 'blossom';
+	export let color: 'plain' | 'blossom' | 'weave' | 'threat' | 'success' = 'blossom';
 	export let variant: 'filled' | 'outlined' | 'flipped' | 'contrast-outlined' = 'filled';
 	export let disableTransition: boolean = false;
 	export let hideSlotOnHover: boolean = false;
@@ -198,5 +198,12 @@
 		--highlight-color: var(--color-threat-2);
 		--contrast-color: white;
 		--neutral-color: var(--color-threat-4);
+	}
+
+	.success {
+		--main-color: var(--color-success-3);
+		--highlight-color: var(--color-success-2);
+		--contrast-color: white;
+		--neutral-color: var(--color-success-4);
 	}
 </style>
