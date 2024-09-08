@@ -9,12 +9,12 @@
 		'https://64.media.tumblr.com/6d54812f7cd2e4ef1edce4b0f4c2ea2f/d234e2e2d3d0be5b-3d/s1280x1920/7db18f6c90f00e81f45f79ba20a30c464528b85e.jpg';
 </script>
 
-<div class="card" style="border-color: {item.style.color.cardBorder};">
-	<div
-		class="imgWrapper"
-		style="border-color: {item.style.color.cardBorder}; background-color: {item.style.color
-			.background};"
-	>
+<div
+	class="card"
+	style="border-color: {item.style.color.cardBorder}; background-color: {item.style.color
+		.background};"
+>
+	<div class="imgWrapper" style="border-color: {item.style.color.cardBorder}; ">
 		{#if nameOnBack}
 			<div class="cardName">{item.name}</div>
 		{/if}

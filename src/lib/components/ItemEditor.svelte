@@ -502,7 +502,7 @@
 
 				<!-- Color Suggestions -->
 				<datalist id="colorSuggestions">
-					<option value="#fffffff" />
+					<option value="#ffffff" />
 					{#each suggestedColors as c}
 						<option value={c} />
 					{/each}
