@@ -25,6 +25,9 @@
 		} else {
 			selectedCards.add(id);
 		}
+		// Set last clicked card to be active
+		items.setActiveItem(id);
+		updateItems();
 		// Force svelte to recognise changes
 		selectedCards = selectedCards;
 	}
@@ -103,7 +106,7 @@
 		>
 		{#if selectedCards.size > 0}
 			<Button icon="mdi:content-copy" click={() => (selectedCards = new Set())}>
-				{selectedCards.size} cards selected
+				Deselect cards ({selectedCards.size})
 			</Button>
 		{/if}
 	</section>
@@ -117,7 +120,7 @@
 				{#each _items.templates as card}
 					<button class="cardInViewer cardTemplate">
 						<!-- Edit Options -->
-						<div class="templateLabel">
+						<div class="templateLabel cardLabel">
 							<Icon icon="mdi:clipboard-outline" />
 							Template
 						</div>
@@ -146,8 +149,15 @@
 					id={card.id}
 					on:click={() => toggleCardSelection(card.id)}
 				>
-					<!-- Edit Options -->
+					<!-- Is Active Label -->
+					{#if items.getActiveItem().id === card.id && selectedCards.size < 2}
+						<div class="cardLabel activeLabel">
+							<Icon icon="mdi:pencil" />
+							Editor
+						</div>
+					{/if}
 
+					<!-- Edit Options -->
 					<div class="editOptions">
 						<Button icon="mdi:zoom-in" stopPropagation />
 						<Button icon="mdi:pencil" stopPropagation click={() => editCard(card.id)} />
@@ -267,7 +277,7 @@
 		z-index: -1;
 	}
 
-	.templateLabel {
+	.cardLabel {
 		/* Placement */
 		position: absolute;
 		left: 0;
@@ -282,7 +292,19 @@
 		padding: 5px;
 		font-weight: 500;
 		border-radius: 1em;
+		color: var(--color-blossom-2);
+		background: var(--color-blossom-3);
+	}
+
+	.templateLabel {
 		color: var(--color-text-2);
 		background: var(--color-surface-3);
+	}
+
+	.activeLabel {
+		left: -10px;
+		top: -10px;
+		color: var(--color-blossom-2);
+		background: var(--color-blossom-3);
 	}
 </style>
