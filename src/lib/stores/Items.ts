@@ -1,6 +1,7 @@
 import { writable } from 'svelte/store';
 import { Item } from '$lib/methods/Item';
 import { defaultTemplates } from '$lib/stores/defaultTemplates';
+import { startingItems } from '$lib/stores/defaultTemplates';
 
 // Env variables
 const replaceString = 'replaceMe';
@@ -115,7 +116,10 @@ class ItemStore {
 	constructor(_items?: StoredItem[], _templates?: Item[]) {
 		// Set Items
 		this.items = _items || [];
-		if (this.items.length == 0) this.addNewItem();
+		if (this.items.length == 0) {
+			// for each item in startingItems, add to items
+			startingItems.forEach((item) => this.addNewItem(item));
+		}
 		if (this.items.length > 0) this.setActiveItem(this.items[0].id);
 
 		// Set Templates
