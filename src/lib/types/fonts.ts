@@ -1,1 +1,1 @@
-export type AvailableFonts = 'Default' | 'Gotham' | 'Jacquard_12' | 'Jacquard_24';
+export type AvailableFonts = 'default' | 'Gotham' | 'Jacquard 12' | 'Jacquard 24';
