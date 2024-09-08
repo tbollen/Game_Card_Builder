@@ -7,7 +7,7 @@
 
 	import { editItem } from '$lib/stores/Items';
 	import { items } from '$lib/stores/Items';
-	$: _items = items;
+	let _items = items;
 
 	// Svelte stuff
 	import { onMount } from 'svelte';
@@ -25,6 +25,9 @@
 		} else {
 			selectedCards.add(id);
 		}
+		// Set last clicked card to be active
+		items.setActiveItem(id);
+		updateItems();
 		// Force svelte to recognise changes
 		selectedCards = selectedCards;
 	}
@@ -36,6 +39,7 @@
 		// Remove from selected cards
 		selectedCards.delete(id);
 		selectedCards = selectedCards;
+		updateItems();
 	}
 
 	function removeUnavailableCardsFromSelection() {
@@ -59,6 +63,13 @@
 		updateItems();
 	}
 
+	import { type Item } from '$lib/methods/Item';
+	import Icon from '@iconify/svelte';
+	function createFromTemplate(base: Item) {
+		items.addNewItem(base);
+		updateItems();
+	}
+
 	function addNew() {
 		items.addNewItem();
 		// goto editor
@@ -67,6 +78,13 @@
 
 	function updateItems() {
 		_items = items;
+	}
+
+	// UI
+
+	let showTemplates = false;
+	function toggleTemplates() {
+		showTemplates = !showTemplates;
 	}
 
 	let renderCards = false;
@@ -80,14 +98,50 @@
 		<Navbar />
 	</section>
 	<section id="controls">
-		<Button icon="mdi:plus" click={addNew}>New Card</Button>
-		controls - {selectedCards.size} cards selected
+		<Button icon="mdi:plus" color="threat" click={addNew}>New Card</Button>
+		<Button
+			icon={showTemplates ? 'mdi:clipboard-outline' : 'mdi:clipboard-off-outline'}
+			stateOn={showTemplates}
+			click={toggleTemplates}>Show Templates</Button
+		>
+		{#if selectedCards.size > 0}
+			<Button icon="mdi:content-copy" click={() => (selectedCards = new Set())}>
+				Deselect cards ({selectedCards.size})
+			</Button>
+		{/if}
 	</section>
 	{#if renderCards}
 		<section
 			id="viewer"
-			transition:fly={{ delay: 200, duration: 1200, opacity: 0, y: 40, easing: expoOut }}
+			transition:fly={{ delay: 200, duration: 800, opacity: 0, y: 40, easing: expoOut }}
 		>
+			<!-- TEMPLATES -->
+			{#if showTemplates}
+				{#each _items.templates as card}
+					<button class="cardInViewer cardTemplate">
+						<!-- Edit Options -->
+						<div class="templateLabel cardLabel">
+							<Icon icon="mdi:clipboard-outline" />
+							Template
+						</div>
+						<div class="editOptions">
+							<Button icon="mdi:zoom-in" stopPropagation />
+							<Button
+								color="weave"
+								icon="mdi:content-copy"
+								stopPropagation
+								click={() => createFromTemplate(card)}
+							/>
+						</div>
+						<div class="frontSideCard">
+							<Gamecard item={card} />
+						</div>
+						<div class="backSideCard">
+							<GamecardBack item={card} />
+						</div>
+					</button>
+				{/each}
+			{/if}
 			{#each _items.items as card}
 				<button
 					class="cardInViewer"
@@ -95,24 +149,26 @@
 					id={card.id}
 					on:click={() => toggleCardSelection(card.id)}
 				>
-					<!-- Edit Options -->
-					{#if selectedCards.size < 2}
-						<div class="editOptions">
-							<Button icon="mdi:zoom-in" stopPropagation />
-							<Button icon="mdi:pencil" stopPropagation click={() => editCard(card.id)} />
-							<Button
-								icon="mdi:content-copy"
-								stopPropagation
-								click={() => duplicateCard(card.id)}
-							/>
-							<Button
-								icon="mdi:trash-can"
-								color="threat"
-								stopPropagation
-								click={() => deleteCard(card.id)}
-							/>
+					<!-- Is Active Label -->
+					{#if items.getActiveItem().id === card.id && selectedCards.size < 2}
+						<div class="cardLabel activeLabel">
+							<Icon icon="mdi:pencil" />
+							Editor
 						</div>
 					{/if}
+
+					<!-- Edit Options -->
+					<div class="editOptions">
+						<Button icon="mdi:zoom-in" stopPropagation />
+						<Button icon="mdi:pencil" stopPropagation click={() => editCard(card.id)} />
+						<Button icon="mdi:content-copy" stopPropagation click={() => duplicateCard(card.id)} />
+						<Button
+							icon="mdi:trash-can"
+							color="threat"
+							stopPropagation
+							click={() => deleteCard(card.id)}
+						/>
+					</div>
 					<div class="frontSideCard">
 						<Gamecard item={card} />
 					</div>
@@ -126,6 +182,10 @@
 </main>
 
 <style>
+	section#controls {
+		display: flex;
+		gap: 10px;
+	}
 	.cardInViewer {
 		/* Reset button stuff */
 		all: unset;
@@ -187,6 +247,11 @@
 		transition: all 0.4s ease-in-out;
 	}
 
+	.cardTemplate > .frontSideCard,
+	.cardTemplate > .backSideCard {
+		scale: 0.9;
+	}
+
 	.cardInViewer:focus-visible .frontSideCard,
 	.cardInViewer:hover .frontSideCard {
 		box-shadow: 10px 10px 15px var(--color-text-1);
@@ -210,5 +275,36 @@
 		background-color: var(--color-blossom-2);
 		opacity: 1;
 		z-index: -1;
+	}
+
+	.cardLabel {
+		/* Placement */
+		position: absolute;
+		left: 0;
+		top: 0;
+		z-index: 1;
+		/* Layout */
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 5px;
+		/* Styling */
+		padding: 5px;
+		font-weight: 500;
+		border-radius: 1em;
+		color: var(--color-blossom-2);
+		background: var(--color-blossom-3);
+	}
+
+	.templateLabel {
+		color: var(--color-text-2);
+		background: var(--color-surface-3);
+	}
+
+	.activeLabel {
+		left: -10px;
+		top: -10px;
+		color: var(--color-blossom-2);
+		background: var(--color-blossom-3);
 	}
 </style>
