@@ -1,33 +1,12 @@
-/* @font-face {
-	font-family: 'Gotham';
-	src: url('/fonts/Gotham/Gotham-Medium.otf') format('opentype');
-}
-
-@font-face {
-	font-family: 'Gotham';
-	src: url('/fonts/Gotham/Gotham-Bold.otf') format('opentype');
-	font-weight: bold;
-}
-
-@font-face {
-	font-family: 'Gotham';
-	src: url('/fonts/Gotham/Gotham-Black.otf') format('opentype');
-	font-weight: 900;
-} */
-
 @font-face {
 	font-family: 'Jacquard 12';
-	src: url('/fonts/Jacquard_12/Jacquard12.ttf') format('truetype');
+	src: url('/fonts/Jacquard_12/Jacquard12-Regular.ttf') format('truetype');
 }
 
 @font-face {
 	font-family: 'Jacquard 24';
-	src: url('/fonts/Jacquard_24/Jacquard12.ttf') format('truetype');
+	src: url('/fonts/Jacquard_24/Jacquard24-Regular.ttf') format('truetype');
 }
-
-/* @import url('https://fonts.googleapis.com/css2?family=Jacquard+12&display=swap'); */
-
-/* @import url('https://fonts.googleapis.com/css2?family=Jacquard+12&family=Jacquard+24&display=swap'); */
 
 @font-face {
 	font-family: 'JetBrains';
