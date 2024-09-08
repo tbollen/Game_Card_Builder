@@ -15,6 +15,8 @@
 	// Import card types for editing options
 	import { cardTypes } from '$lib/modules/cardTypes';
 	import Icon, { iconExists, loadIcon } from '@iconify/svelte';
+	import { type Color, cardStylePresets } from '$lib/types/colors';
+	import { colorScheme, suggestedColors, type ThemeColor } from '$lib/styles/colorScheme';
 
 	// Get charactersistics and skills
 	import { skillList, characteristics } from '$lib/modules/skillCheckList';
@@ -438,6 +440,75 @@
 			>
 		</div>
 	</Accordion>
+	<!-- Styling -->
+	<hr class="divider" />
+	<Accordion>
+		<h1 slot="head">Styling</h1>
+		<div slot="content" class="inputGridButton">
+			<!-- Preset -->
+			<label for="preset">Preset</label>
+			<select id="preset" bind:value={$editItem.stylePreset}>
+				{#each Object.keys(cardStylePresets) as preset}
+					<option value={preset}>{preset}</option>
+				{/each}
+				{#if advancedMode}
+					<!-- Text Color -->
+					<label for="textColor">Text</label>
+					<input
+						list="colorSuggestions"
+						type="color"
+						id="textColor"
+						bind:value={$editItem.style.color.text}
+					/>
+					<div>{$editItem.style.color.text}</div>
+					<!-- Background Color -->
+					<label for="backgroundColor">Background</label>
+					<input
+						list="colorSuggestions"
+						type="color"
+						id="backgroundColor"
+						bind:value={$editItem.style.color.background}
+					/>
+					<div>{$editItem.style.color.background}</div>
+					<!-- Border Color -->
+					<label for="borderColor">Border</label>
+					<input
+						list="colorSuggestions"
+						type="color"
+						id="borderColor"
+						bind:value={$editItem.style.color.cardBorder}
+					/>
+					<div>{$editItem.style.color.cardBorder}</div>
+					<!-- Icon Color -->
+					<label for="iconColor">Icon</label>
+					<input
+						list="colorSuggestions"
+						type="color"
+						id="iconColor"
+						bind:value={$editItem.style.color.icon}
+					/>
+					<div>{$editItem.style.color.icon}</div>
+					<!-- Accent Color -->
+					<label for="accentColor">Accent</label>
+					<input
+						list="colorSuggestions"
+						type="color"
+						id="accentColor"
+						bind:value={$editItem.style.color.accent}
+					/>
+					<div>{$editItem.style.color.accent}</div>
+
+					<!-- Color Suggestions -->
+					<datalist id="colorSuggestions">
+						<option value="#fffffff" />
+						{#each suggestedColors as c}
+							<option value={c} />
+						{/each}
+					</datalist>
+				{/if}
+			</select>
+		</div>
+	</Accordion>
 </div>
 
 <style>
@@ -484,6 +555,13 @@
 	.inputGrid {
 		display: grid;
 		grid-template-columns: 6em 1fr;
+		align-items: center;
+		gap: 0.2em;
+	}
+
+	.inputGridButton {
+		display: grid;
+		grid-template-columns: 6em 2fr 1fr;
 		align-items: center;
 		gap: 0.2em;
 	}
