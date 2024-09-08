@@ -1,4 +1,5 @@
 import { type AvailableFonts } from './fonts';
+import { colorScheme } from '$lib/styles/colorScheme';
 
 // Color Types
 export type RGB = `rgb(${number}, ${number}, ${number})`;
@@ -9,29 +10,18 @@ export type HSLA = `hsla(${number}, ${number}%, ${number}%, ${number})`;
 export type Color = RGB | RGBA | HEX | HSL | HSLA;
 export type cssVariable = `var(--${string})`;
 
-// Arcane Rift Colors
-export const arcaneRiftColorOptions: string[] = [
-	'weave',
-	'blossom',
-	'threat',
-	'success',
-	'obsidian',
-	'pearl'
-];
-export type ArcaneRiftColors = (typeof arcaneRiftColorOptions)[number];
-
 export type CardStyleOptions = {
 	color: {
-		accent: Color | cssVariable;
-		icon: Color | cssVariable;
-		text: Color | cssVariable;
-		background: Color | cssVariable;
-		cardBorder: Color | cssVariable;
+		accent: Color;
+		icon: Color;
+		text: Color;
+		background: Color;
+		cardBorder: Color;
 	};
 	font: {
-		name: AvailableFonts | cssVariable;
-		accents: AvailableFonts | cssVariable;
-		text: AvailableFonts | cssVariable;
+		name: AvailableFonts;
+		accents: AvailableFonts;
+		text: AvailableFonts;
 	};
 	fontsize: {
 		text: number;
@@ -45,11 +35,11 @@ export type CardStyleOptions = {
 // Style Presets
 export const defaultCardStyle: CardStyleOptions = {
 	color: {
-		accent: 'var(--threat)',
-		icon: 'var(--threat)',
-		text: '#000000',
+		accent: colorScheme.threat[2],
+		icon: colorScheme.threat[2],
+		text: colorScheme.obsidian[0],
 		background: '#ffffff',
-		cardBorder: 'var(--obsidian)'
+		cardBorder: colorScheme.obsidian[0]
 	},
 	font: {
 		name: 'default',
@@ -68,11 +58,11 @@ export const cardStylePresets: Record<string, Partial<CardStyleOptions>> = {
 	default: defaultCardStyle,
 	enchanted: {
 		color: {
-			accent: 'var(--weave)',
-			icon: 'var(--weave)',
+			accent: colorScheme.weave[2],
+			icon: colorScheme.weave[2],
 			text: '#000000',
 			background: '#ffffff',
-			cardBorder: 'var(--weave)'
+			cardBorder: colorScheme.weave[2]
 		},
 		font: {
 			name: 'default',

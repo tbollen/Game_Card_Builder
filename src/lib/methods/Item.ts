@@ -3,7 +3,12 @@ const characteristics = Object.values(skillList).flat();
 
 // Styling Types
 import { type Color } from '$lib/types/colors';
-import { type ArcaneRiftColors } from '$lib/types/colors';
+import {
+	type CardStylePreset,
+	defaultCardStyle,
+	cardStylePresets,
+	type CardStyleOptions
+} from '$lib/types/colors';
 import { type AvailableFonts } from '$lib/types/fonts';
 
 export type ItemFields = {
@@ -44,26 +49,8 @@ export class Item {
 		x_offset: 0,
 		y_offset: 0
 	};
-	style: {
-		// Changeable colors
-		colorAccent: ArcaneRiftColors | Color;
-		colorIcon?: ArcaneRiftColors | Color;
-		colorText?: ArcaneRiftColors | Color;
-		colorBackground?: ArcaneRiftColors | Color;
-		colorCardBorder?: ArcaneRiftColors | Color;
-		// Changeable fonts
-		fontName?: AvailableFonts;
-		fontAccents?: AvailableFonts;
-		fontText?: AvailableFonts;
-		// Font Sizes
-		fontsizeName?: number;
-		fontsizeSubtitle?: number;
-		fontsizeText?: number;
-		fontsizeCheck?: number;
-	} = {
-		// Defaults for style
-		colorAccent: 'threat'
-	};
+	stylePreset: CardStylePreset = 'default';
+	style: CardStyleOptions = defaultCardStyle;
 
 	constructor(_item?: Partial<Item>) {
 		// for each given property, assign it to the item
