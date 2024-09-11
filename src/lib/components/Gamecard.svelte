@@ -152,7 +152,7 @@
 	.name {
 		/* Font */
 		text-align: center;
-		font-weight: bold;
+		font-weight: 500;
 		font-size: var(--name-size);
 		/* Position */
 		grid-column: 2;
@@ -161,7 +161,7 @@
 	}
 
 	.inTextName {
-		font-weight: 700;
+		font-weight: 600;
 	}
 	.inTextName::after {
 		content: ': ';

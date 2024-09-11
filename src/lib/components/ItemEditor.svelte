@@ -177,7 +177,7 @@
 	<!-- Editing -->
 	<!-- Main Fields -->
 	<Accordion>
-		<h1 slot="head">Name and Type</h1>
+		<div slot="head">Name and Type</div>
 		<div slot="content" class="inputGrid">
 			<!-- Name -->
 			<label for="name">Name</label>
@@ -214,7 +214,7 @@
 	<!-- END -->
 	<hr class="divider" />
 	<Accordion>
-		<h1 slot="head">Main Text</h1>
+		<div slot="head">Main Text</div>
 		<!-- Description -->
 		<div slot="content" class="mainFields">
 			<label for="description">Description</label>
@@ -293,7 +293,7 @@
 	<!-- Fields -->
 	<hr class="divider" />
 	<Accordion>
-		<h1 slot="head">Fields</h1>
+		<div slot="head">Fields</div>
 		<div slot="content" class="mainFields">
 			<!-- Fields -->
 			<div class="fieldList">
@@ -349,7 +349,7 @@
 	<!-- Image -->
 	<hr class="divider" />
 	<Accordion>
-		<h1 slot="head">Image</h1>
+		<div slot="head">Image</div>
 		<div slot="content" class="inputGrid">
 			{#if advancedMode}
 				<!-- Image Name -->
@@ -448,7 +448,7 @@
 	<!-- Styling -->
 	<hr class="divider" />
 	<Accordion>
-		<h1 slot="head">Styling</h1>
+		<div slot="head">Styling</div>
 		<div slot="content" class="inputGridButton">
 			<!-- Preset -->
 			<label for="preset">Preset</label>
@@ -622,14 +622,8 @@
 		align-items: center;
 	}
 
-	h1 {
-		font-weight: bold;
-		font-size: 1em;
-		margin: 0;
-	}
-
 	label {
-		font-weight: bold;
+		font-weight: 600;
 		font-size: 0.8em;
 		justify-self: start;
 	}
@@ -647,13 +641,8 @@
 		font-size: 1.2em;
 	}
 
-	option:not(.preferred) + .preferred {
-		font-weight: thin;
-		color: var(--color-text-2);
-	}
-
 	option.preferredOption {
-		font-weight: bold;
+		font-weight: 600;
 	}
 
 	input.warning {
