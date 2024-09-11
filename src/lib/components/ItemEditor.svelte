@@ -463,7 +463,8 @@
 				{/each}
 			</select>
 			<div />
-			{#if advancedMode}
+			<!-- Feature not working properly -->
+			{#if advancedMode && false}
 				<!-- Text Color -->
 				<label for="textColor">Text</label>
 				<input
