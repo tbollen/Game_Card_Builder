@@ -2,6 +2,12 @@ import { writable } from 'svelte/store';
 import { Item } from '$lib/methods/Item';
 import { defaultTemplates } from '$lib/stores/defaultTemplates';
 import { startingItems } from '$lib/stores/defaultTemplates';
+import {
+	type CardStyleOptions,
+	type CardStylePreset,
+	cardStylePresets,
+	defaultCardStyle
+} from '$lib/types/colors';
 
 // Env variables
 const replaceString = 'replaceMe';
@@ -95,6 +101,14 @@ class StoredItem extends Item {
 		this.image.y_offset = 0;
 		this.image.rotation = 0;
 		this.image.scale = 100;
+		this.update();
+	}
+
+	// Styling
+	useStylePreset(preset: CardStylePreset) {
+		let _style = this.style;
+		_style = Object.assign(_style, cardStylePresets[preset]);
+		this.style = _style;
 		this.update();
 	}
 
