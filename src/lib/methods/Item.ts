@@ -50,6 +50,7 @@ export class Item {
 		y_offset: 0
 	};
 	stylePreset: CardStylePreset = 'default';
+	styleCustomCss: string = '';
 	style: CardStyleOptions = defaultCardStyle;
 
 	constructor(_item?: Partial<Item>) {
