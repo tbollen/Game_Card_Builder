@@ -466,7 +466,7 @@
 			{#if advancedMode}
 				<div class="fullLine headerLine">
 					<Icon class="advancedIcon" icon="memory:anvil" />
-					Custom Styling Option
+					Custom Styling Options
 				</div>
 				<!-- Text Color -->
 				<label for="textColor">Text</label>
@@ -593,7 +593,7 @@
 	.headerLine {
 		font-weight: 500;
 		font-size: 0.9rem;
-		padding: 0.4em 0 0.2em 0;
+		padding: 0.6em 0 0.2em 0;
 		margin-bottom: 0.2em;
 		border-bottom: 1px solid currentColor;
 	}
