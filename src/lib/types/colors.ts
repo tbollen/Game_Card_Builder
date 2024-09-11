@@ -55,7 +55,8 @@ export const defaultCardStyle: CardStyleOptions = {
 	}
 };
 export const cardStylePresets: Record<string, Partial<CardStyleOptions>> = {
-	default: defaultCardStyle,
+	custom: {},
+	default: defaultCardStyle as Partial<CardStyleOptions>,
 	enchanted: {
 		color: {
 			accent: colorScheme.weave[2],
