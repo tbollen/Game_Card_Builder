@@ -102,6 +102,11 @@
 		}
 	}
 
+	function presetToCustom() {
+		$editItem.stylePreset = 'custom';
+		$editItem.useStylePreset($editItem.stylePreset);
+	}
+
 	$: console.debug('Logging the editItem', $editItem);
 
 	let localDate: string = '';
@@ -447,9 +452,14 @@
 		<div slot="content" class="inputGridButton">
 			<!-- Preset -->
 			<label for="preset">Preset</label>
-			<select id="preset" bind:value={$editItem.stylePreset}>
+			<select
+				id="preset"
+				bind:value={$editItem.stylePreset}
+				on:change={() => $editItem.useStylePreset($editItem.stylePreset)}
+				placeholder="Preset"
+			>
 				{#each Object.keys(cardStylePresets) as preset}
-					<option value={preset}>{preset}</option>
+					<option value={preset} disabled={preset === 'custom'}>{preset}</option>
 				{/each}
 			</select>
 			<div />
@@ -461,6 +471,7 @@
 					type="color"
 					id="textColor"
 					bind:value={$editItem.style.color.text}
+					on:change={presetToCustom}
 				/>
 				<div>{$editItem.style.color.text}</div>
 				<!-- Background Color -->
@@ -470,6 +481,7 @@
 					type="color"
 					id="backgroundColor"
 					bind:value={$editItem.style.color.background}
+					on:change={presetToCustom}
 				/>
 				<div>{$editItem.style.color.background}</div>
 				<!-- Border Color -->
@@ -479,6 +491,7 @@
 					type="color"
 					id="borderColor"
 					bind:value={$editItem.style.color.cardBorder}
+					on:change={presetToCustom}
 				/>
 				<div>{$editItem.style.color.cardBorder}</div>
 				<!-- Icon Color -->
@@ -488,6 +501,7 @@
 					type="color"
 					id="iconColor"
 					bind:value={$editItem.style.color.icon}
+					on:change={presetToCustom}
 				/>
 				<div>{$editItem.style.color.icon}</div>
 				<!-- Accent Color -->
@@ -497,6 +511,7 @@
 					type="color"
 					id="accentColor"
 					bind:value={$editItem.style.color.accent}
+					on:change={presetToCustom}
 				/>
 				<div>{$editItem.style.color.accent}</div>
 
