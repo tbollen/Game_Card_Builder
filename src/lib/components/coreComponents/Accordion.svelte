@@ -13,7 +13,7 @@
 
 <div class="accordion" class:open>
 	<button class="header" class:open on:click={handleClick}>
-		<slot name="head"></slot>
+		<slot name="head" class="accordionHead"></slot>
 		<div class="icon" class:open>
 			<Icon {icon} />
 		</div>
@@ -50,6 +50,8 @@
 		/* Styling */
 		padding: 0.3em;
 		border-radius: var(--border-radius);
+		/* Text */
+		font-weight: 600;
 	}
 
 	.header:hover {
