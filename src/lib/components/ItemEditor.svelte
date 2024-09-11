@@ -464,6 +464,10 @@
 			</select>
 			<div />
 			{#if advancedMode}
+				<div class="fullLine headerLine">
+					<Icon class="advancedIcon" icon="memory:anvil" />
+					Custom Styling Option
+				</div>
 				<!-- Text Color -->
 				<label for="textColor">Text</label>
 				<input
@@ -580,6 +584,18 @@
 		grid-template-columns: 6em 2fr 1fr;
 		align-items: center;
 		gap: 0.2em;
+	}
+
+	.fullLine {
+		grid-column: 1 / -1;
+	}
+
+	.headerLine {
+		font-weight: 500;
+		font-size: 0.9rem;
+		padding: 0.4em 0 0.2em 0;
+		margin-bottom: 0.2em;
+		border-bottom: 1px solid currentColor;
 	}
 
 	.fieldList {
