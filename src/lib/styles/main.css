@@ -1,16 +1,21 @@
 @font-face {
 	font-family: 'Jacquard 12';
-	src: url('/fonts/Jacquard_12/Jacquard12-Regular.ttf') format('truetype');
+	src: url('./fonts/Jacquard_12/Jacquard12-Regular.ttf') format('truetype');
 }
 
 @font-face {
 	font-family: 'Jacquard 24';
-	src: url('/fonts/Jacquard_24/Jacquard24-Regular.ttf') format('truetype');
+	src: url('./fonts/Jacquard_24/Jacquard24-Regular.ttf') format('truetype');
 }
 
 @font-face {
 	font-family: 'JetBrains';
-	src: url('/fonts/JetBrains/JetBrainsMono-VariableFont_wghtt.ttf') format('truetype');
+	src: url('./fonts/JetBrains/JetBrainsMono-VariableFont_wghtt.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'Gotham';
+	src: url('./fonts/Gotham/Gotham-Book.otf') format('truetype');
 }
 
 /* Color */
