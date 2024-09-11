@@ -1,6 +1,16 @@
 import { skillList } from '$lib/modules/skillCheckList';
 const characteristics = Object.values(skillList).flat();
 
+// Styling Types
+import { type Color } from '$lib/types/colors';
+import {
+	type CardStylePreset,
+	defaultCardStyle,
+	cardStylePresets,
+	type CardStyleOptions
+} from '$lib/types/colors';
+import { type AvailableFonts } from '$lib/types/fonts';
+
 export type ItemFields = {
 	name?: string;
 	description?: string;
@@ -33,11 +43,15 @@ export class Item {
 		x_offset: number;
 		y_offset: number;
 	} = {
+		// Defaults for image
 		rotation: 0,
 		scale: 100,
 		x_offset: 0,
 		y_offset: 0
 	};
+	stylePreset: CardStylePreset = 'default';
+	style: CardStyleOptions = defaultCardStyle;
+
 	constructor(_item?: Partial<Item>) {
 		// for each given property, assign it to the item
 		if (_item) Object.assign(this, _item);

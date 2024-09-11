@@ -29,19 +29,24 @@
 	$: iconOverride = item?.icon && iconExists(item.icon) ? item.icon : undefined;
 </script>
 
-<div class="card" class:print>
+<div
+	class="card"
+	style="border-color: {item.style.color.cardBorder};color: {item.style.color
+		.text}; background-color: {item.style.color.background};"
+	class:print
+>
 	<div id="topbanner">
-		<div class="typeIcon left-{cardType.iconOrientation}" style="color: {cardType.color}">
+		<div class="typeIcon left-{cardType.iconOrientation}" style="color: {item.style.color.icon}">
 			<Icon icon={iconOverride || cardType.icon} />
 		</div>
 		<h1 class="name">
 			{item.name}
 		</h1>
-		<div class="typeIcon right-{cardType.iconOrientation}" style="color: {cardType.color}">
+		<div class="typeIcon right-{cardType.iconOrientation}" style="color: {item.style.color.icon}">
 			<Icon icon={iconOverride || cardType.icon} />
 		</div>
 		{#if item?.subtitle}
-			<h3 class="subtitle">
+			<h3 class="subtitle" style="color: {item.style.color.text}">
 				{item.subtitle}
 			</h3>
 		{/if}
@@ -75,7 +80,11 @@
 			</div>
 		{/each}
 	{/if}
+
 	<div id="fields" data-field-number={item?.fields?.length} class:hasSkillCheck={item?.skillCheck}>
+		{#if item?.fields || item?.skillCheck}
+			<div class="fieldDivider" />
+		{/if}
 		{#if item?.fields}
 			{#each item.fields as field, i}
 				<div class="field" id="field-{i}">
@@ -83,11 +92,14 @@
 					<div class="fieldValue">{@html renderMarkdown(field.description)}</div>
 				</div>
 			{/each}
-			<!-- <div class="fieldDivider" /> -->
 		{/if}
+		<!-- Skill Check -->
 		{#if item?.skillCheck}
-			<div id="skillcheck">
-				<Skill card={item} />
+			<div id="skillcheck" class="field">
+				<div id="characteristic">{item.skillCheck.characteristic}</div>
+				<div id="skill" style="background: {item.style.color.accent}">
+					{item.skillCheck.skill}
+				</div>
 			</div>
 		{/if}
 	</div>
@@ -103,10 +115,6 @@
 		& > :last-child {
 			margin-top: auto;
 		}
-	}
-
-	.card:not(.print) {
-		background-color: var(--pearl);
 	}
 
 	.description {
@@ -223,15 +231,37 @@
 
 	.fieldName {
 		font-size: 8pt;
-		color: var(--color-text-2);
+		color: color-mix(in srgb, currentColor 70%, transparent);
 	}
 
 	.fieldValue {
 		font-size: 9pt;
 	}
 
+	#skillcheck > * {
+		-webkit-print-color-adjust: exact; /* For WebKit browsers */
+		print-color-adjust: exact; /* For WebKit browsers */
+		color-adjust: exact; /* Standard property */
+	}
+
 	#skillcheck {
+		display: flex;
+		flex-direction: column;
+		/* Placement */
 		align-items: flex-start;
-		grid-column: 1/3;
+		grid-column-start: 1;
+		grid-column-end: 3;
+	}
+
+	#skillcheck > #characteristic {
+		font-size: 10pt;
+		font-weight: 500;
+	}
+
+	#skillcheck > #skill {
+		font-size: 14pt;
+		font-weight: bold;
+		color: white;
+		padding: 0.18em;
 	}
 </style>
