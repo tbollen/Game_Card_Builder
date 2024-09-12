@@ -54,7 +54,10 @@ export const defaultCardStyle: CardStyleOptions = {
 		icon: 14
 	}
 };
-export const cardStylePresets: Record<string, Partial<CardStyleOptions>> = {
+export const cardStylePresets: Record<
+	string,
+	Partial<Record<keyof CardStyleOptions, Partial<CardStyleOptions[keyof CardStyleOptions]>>>
+> = {
 	custom: {},
 	default: defaultCardStyle as Partial<CardStyleOptions>,
 	enchanted: {
