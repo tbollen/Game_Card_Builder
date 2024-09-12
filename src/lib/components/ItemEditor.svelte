@@ -15,7 +15,7 @@
 	// Import card types for editing options
 	import { cardTypes } from '$lib/modules/cardTypes';
 	import Icon, { iconExists, loadIcon } from '@iconify/svelte';
-	import { cardStylePresets } from '$lib/types/colors';
+	import { cardStylePresets, defaultCardStyle } from '$lib/types/colors';
 	import { suggestedColors } from '$lib/styles/colorScheme';
 
 	// Get charactersistics and skills
@@ -466,6 +466,16 @@
 					<option value={preset}>{preset}</option>
 				{/each}
 			</select>
+			<div class="buttonLine">
+				{#if $editItem.stylePreset !== 'default'}
+					<Button
+						color="plain"
+						icon="mdi:backup-restore"
+						size="small"
+						click={() => $editItem.useStylePreset('default')}
+					/>
+				{/if}
+			</div>
 			<div />
 			{#if advancedMode}
 				<div class="fullLine headerLine">
@@ -476,15 +486,29 @@
 				<!-- MANUAL COLOR SHIT -->
 				{#each availableColorOptions as colorType}
 					<label for="color-{colorType}">{colorType}</label>
-					<input
-						type="color"
-						id="color-{colorType}"
-						bind:value={$editItem.style.color[colorType]}
-						on:change={presetToCustom}
-						list="colorSuggestions"
-					/>
-					<!-- @ts-ignore -->
-					<div>{$editItem.style.color[colorType]}</div>
+					<div class="colorPickerLine">
+						<input
+							type="color"
+							id="color-{colorType}"
+							bind:value={$editItem.style.color[colorType]}
+							on:change={presetToCustom}
+							list="colorSuggestions"
+						/>
+						<span>{$editItem.style.color[colorType]}</span>
+					</div>
+					<div class="buttonLine">
+						{#if $editItem.stylePreset === 'custom'}
+							<Button
+								color="plain"
+								icon="mdi:restore"
+								size="small"
+								click={() => {
+									$editItem.style.color[colorType] = defaultCardStyle.color[colorType];
+									presetToCustom();
+								}}
+							/>
+						{/if}
+					</div>
 				{/each}
 
 				<!-- Color Suggestions -->
@@ -631,5 +655,16 @@
 
 	input.warning {
 		background-color: var(--color-threat-4) !important;
+	}
+
+	.colorPickerLine {
+		display: flex;
+		gap: 0.5em;
+		align-items: center;
+	}
+
+	.colorPickerLine > span {
+		font-size: 0.8em;
+		color: var(--color-text-1);
 	}
 </style>
