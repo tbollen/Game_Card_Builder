@@ -21,6 +21,20 @@ export type SkillCheck = {
 	skill?: (typeof characteristics)[number];
 };
 
+const defaultCard: Item = {
+	name: 'New Item',
+	type: 'Item',
+	description: 'Item Description',
+	image: {
+		rotation: 0,
+		scale: 100,
+		x_offset: 0,
+		y_offset: 0
+	},
+	stylePreset: 'default',
+	style: defaultCardStyle
+};
+
 // Class for the Item
 export class Item {
 	// Initialise
@@ -53,8 +67,11 @@ export class Item {
 	style: CardStyleOptions = defaultCardStyle;
 
 	constructor(_item?: Partial<Item>) {
-		// for each given property, assign it to the item
-		if (_item) Object.assign(this, _item);
+		let _itemReference: Item = defaultCard;
+		if (_item) {
+			_itemReference = JSON.parse(JSON.stringify(_item)); // JSON methods for deep cloning
+		}
+		Object.assign(this, _itemReference);
 	}
 	// Methods
 }
