@@ -105,10 +105,20 @@ class StoredItem extends Item {
 	}
 
 	// Styling
-	useStylePreset(preset: CardStylePreset) {
-		let _style = this.style;
-		_style = Object.assign(_style, cardStylePresets[preset]);
-		this.style = _style;
+	useStylePreset(preset: CardStylePreset | 'random') {
+		if (preset == 'random') {
+			const _presets = Object.keys(cardStylePresets).filter(
+				(key) => key != 'custom' && key != 'default'
+			);
+			preset = _presets[Math.floor(Math.random() * _presets.length)];
+		}
+		const _stylePreset = cardStylePresets[preset];
+		// Assign for each category the values from the preset
+		this.style.color = Object.assign(this.style.color, _stylePreset.color);
+		this.style.font = Object.assign(this.style.font, _stylePreset.font);
+		this.style.fontsize = Object.assign(this.style.fontsize, _stylePreset.fontsize);
+		// Set preset
+		this.stylePreset = preset;
 		this.update();
 	}
 

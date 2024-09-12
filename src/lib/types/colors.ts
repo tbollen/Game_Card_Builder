@@ -17,9 +17,11 @@ export type CardStyleOptions = {
 		text: Color;
 		background: Color;
 		cardBorder: Color;
+		imageBackground: Color;
 	};
 	font: {
 		name: AvailableFonts;
+		subtitle: AvailableFonts;
 		accents: AvailableFonts;
 		text: AvailableFonts;
 	};
@@ -39,12 +41,14 @@ export const defaultCardStyle: CardStyleOptions = {
 		icon: colorScheme.threat[2],
 		text: colorScheme.obsidian[0],
 		background: '#ffffff',
-		cardBorder: colorScheme.obsidian[0]
+		cardBorder: colorScheme.obsidian[0],
+		imageBackground: 'rgba(0, 0, 0, 0)'
 	},
 	font: {
-		name: 'default',
-		accents: 'default',
-		text: 'default'
+		name: 'Gotham',
+		subtitle: 'Gotham',
+		accents: 'Gotham',
+		text: 'Gotham'
 	},
 	fontsize: {
 		text: 9,
@@ -54,7 +58,10 @@ export const defaultCardStyle: CardStyleOptions = {
 		icon: 14
 	}
 };
-export const cardStylePresets: Record<string, Partial<CardStyleOptions>> = {
+export const cardStylePresets: Record<
+	string,
+	Partial<Record<keyof CardStyleOptions, Partial<CardStyleOptions[keyof CardStyleOptions]>>>
+> = {
 	custom: {},
 	default: defaultCardStyle as Partial<CardStyleOptions>,
 	enchanted: {
@@ -66,9 +73,9 @@ export const cardStylePresets: Record<string, Partial<CardStyleOptions>> = {
 			cardBorder: colorScheme.weave[2]
 		},
 		font: {
-			name: 'default',
-			accents: 'default',
-			text: 'default'
+			name: 'Gotham',
+			accents: 'Gotham',
+			text: 'Gotham'
 		}
 	}
 };
