@@ -473,25 +473,19 @@
 					Custom Styling Options
 				</div>
 
-				{#if $editItem.stylePreset === 'custom' || true}
-					<!-- MANUAL COLOR SHIT -->
-					{#each availableColorOptions as colorType}
-						{#if $editItem.style.color.hasOwnProperty(colorType)}
-							<label for="color-{colorType}">{colorType}</label>
-							<input
-								type="color"
-								id="color-{colorType}"
-								bind:value={$editItem.style.color[colorType]}
-								on:change={presetToCustom}
-								list="colorSuggestions"
-							/>
-							<!-- @ts-ignore -->
-							<div>{$editItem.style.color[colorType]}</div>
-						{/if}
-					{/each}
-				{:else}
-					<div class="fullLine">Set preset to 'custom' to manually edit</div>
-				{/if}
+				<!-- MANUAL COLOR SHIT -->
+				{#each availableColorOptions as colorType}
+					<label for="color-{colorType}">{colorType}</label>
+					<input
+						type="color"
+						id="color-{colorType}"
+						bind:value={$editItem.style.color[colorType]}
+						on:change={presetToCustom}
+						list="colorSuggestions"
+					/>
+					<!-- @ts-ignore -->
+					<div>{$editItem.style.color[colorType]}</div>
+				{/each}
 
 				<!-- Color Suggestions -->
 				<datalist id="colorSuggestions">
