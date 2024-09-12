@@ -17,6 +17,7 @@
 	import Icon, { iconExists, loadIcon } from '@iconify/svelte';
 	import { cardStylePresets, defaultCardStyle } from '$lib/types/colors';
 	import { suggestedColors } from '$lib/styles/colorScheme';
+	import { availableFonts } from '$lib/types/fonts';
 
 	// Get charactersistics and skills
 	import { skillList, characteristics } from '$lib/modules/skillCheckList';
@@ -107,9 +108,16 @@
 		$editItem.useStylePreset('custom');
 	}
 
+	// Style components for looping
 	const availableColorOptions = Object.keys(
 		$editItem.style.color
 	) as (keyof typeof $editItem.style.color)[];
+	const availableFontOptions = Object.keys(
+		$editItem.style.font
+	) as (keyof typeof $editItem.style.font)[];
+	const availableFontSizeOptions = Object.keys(
+		$editItem.style.fontsize
+	) as (keyof typeof $editItem.style.fontsize)[];
 
 	$: console.debug('Logging the editItem', $editItem);
 
@@ -493,7 +501,8 @@
 					Custom Styling Options
 				</div>
 
-				<!-- MANUAL COLOR SHIT -->
+				<!-- Color Options -->
+				<div class="fullLine headerLine">Color</div>
 				{#each availableColorOptions as colorType}
 					<label for="color-{colorType}">{colorType}</label>
 					<div class="colorPickerLine">
@@ -538,7 +547,31 @@
 						<option value={c} />
 					{/each}
 				</datalist>
+
+				<!-- Font Size Options -->
+				<div class="fullLine headerLine">Text Size</div>
+				{#each availableFontSizeOptions as fontSizeOption}
+					<label for="fontSize-{fontSizeOption}">{fontSizeOption}</label>
+					<input
+						type="number"
+						id="fontSize-{fontSizeOption}"
+						bind:value={$editItem.style.fontsize[fontSizeOption]}
+					/>
+					<div>...</div>
+				{/each}
 			{/if}
+
+			<!-- Font Options -->
+			<div class="fullLine headerLine">Fonts</div>
+			{#each availableFontOptions as fontOption}
+				<label for="font-{fontOption}">{fontOption}</label>
+				<select id="font-{fontOption}" bind:value={$editItem.style.font[fontOption]}>
+					{#each availableFonts as font}
+						<option value={font}>{font}</option>
+					{/each}
+				</select>
+				<div>...</div>
+			{/each}
 		</div>
 	</Accordion>
 </div>
