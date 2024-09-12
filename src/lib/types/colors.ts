@@ -44,9 +44,9 @@ export const defaultCardStyle: CardStyleOptions = {
 		imageBackground: 'rgba(0, 0, 0, 0)'
 	},
 	font: {
-		name: 'default',
-		accents: 'default',
-		text: 'default'
+		name: 'Gotham',
+		accents: 'Gotham',
+		text: 'Gotham'
 	},
 	fontsize: {
 		text: 9,
@@ -71,9 +71,9 @@ export const cardStylePresets: Record<
 			cardBorder: colorScheme.weave[2]
 		},
 		font: {
-			name: 'default',
-			accents: 'default',
-			text: 'default'
+			name: 'Gotham',
+			accents: 'Gotham',
+			text: 'Gotham'
 		}
 	}
 };
