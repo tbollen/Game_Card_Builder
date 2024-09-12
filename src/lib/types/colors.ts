@@ -17,6 +17,7 @@ export type CardStyleOptions = {
 		text: Color;
 		background: Color;
 		cardBorder: Color;
+		imageBackground: Color;
 	};
 	font: {
 		name: AvailableFonts;
@@ -39,7 +40,8 @@ export const defaultCardStyle: CardStyleOptions = {
 		icon: colorScheme.threat[2],
 		text: colorScheme.obsidian[0],
 		background: '#ffffff',
-		cardBorder: colorScheme.obsidian[0]
+		cardBorder: colorScheme.obsidian[0],
+		imageBackground: 'rgba(0, 0, 0, 0)'
 	},
 	font: {
 		name: 'default',
