@@ -455,8 +455,9 @@
 		<div slot="head">Styling</div>
 		<div slot="content" class="inputGridButton">
 			<!-- Preset -->
-			<label for="preset">Preset</label>
+			<label for="preset"> Style Preset </label>
 			<select
+				style="height: 2em;"
 				id="preset"
 				bind:value={$editItem.stylePreset}
 				on:change={(e) => $editItem.useStylePreset($editItem.stylePreset || 'custom')}
@@ -473,6 +474,16 @@
 						icon="mdi:backup-restore"
 						size="small"
 						click={() => $editItem.useStylePreset('default')}
+					/>
+				{:else}
+					<Button
+						color="plain"
+						icon="mdi:pencil"
+						size="small"
+						click={() => {
+							advancedMode = true;
+							$editItem.useStylePreset('custom');
+						}}
 					/>
 				{/if}
 			</div>
@@ -508,6 +519,16 @@
 								}}
 							/>
 						{/if}
+						<Button
+							color="plain"
+							icon="mdi:dice"
+							size="small"
+							click={() => {
+								presetToCustom();
+								const randomHex = Math.floor(Math.random() * 16777215).toString(16);
+								$editItem.style.color[colorType] = `#${randomHex}`;
+							}}
+						/>
 					</div>
 				{/each}
 
@@ -573,7 +594,7 @@
 
 	.inputGridButton {
 		display: grid;
-		grid-template-columns: 6em 2fr 1fr;
+		grid-template-columns: 6em 2fr min-content;
 		align-items: center;
 		gap: 0.2em;
 	}
@@ -634,6 +655,11 @@
 		font-weight: 600;
 		font-size: 0.8em;
 		justify-self: start;
+		/* Overlfow Fix */
+		width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	.divider {
@@ -666,5 +692,9 @@
 	.colorPickerLine > span {
 		font-size: 0.8em;
 		color: var(--color-text-1);
+
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 </style>
