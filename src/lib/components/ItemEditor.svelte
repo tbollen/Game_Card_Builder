@@ -15,8 +15,8 @@
 	// Import card types for editing options
 	import { cardTypes } from '$lib/modules/cardTypes';
 	import Icon, { iconExists, loadIcon } from '@iconify/svelte';
-	import { type Color, cardStylePresets } from '$lib/types/colors';
-	import { colorScheme, suggestedColors, type ThemeColor } from '$lib/styles/colorScheme';
+	import { cardStylePresets } from '$lib/types/colors';
+	import { suggestedColors } from '$lib/styles/colorScheme';
 
 	// Get charactersistics and skills
 	import { skillList, characteristics } from '$lib/modules/skillCheckList';
@@ -103,10 +103,13 @@
 	}
 
 	function presetToCustom() {
-		console.error($editItem.style);
-		$editItem.stylePreset = 'custom';
+		// $editItem.stylePreset = 'custom';
 		$editItem.useStylePreset('custom');
 	}
+
+	const availableColorOptions = Object.keys(
+		$editItem.style.color
+	) as (keyof typeof $editItem.style.color)[];
 
 	$: console.debug('Logging the editItem', $editItem);
 
@@ -456,11 +459,11 @@
 			<select
 				id="preset"
 				bind:value={$editItem.stylePreset}
-				on:change={() => $editItem.useStylePreset($editItem.stylePreset)}
+				on:change={(e) => $editItem.useStylePreset($editItem.stylePreset || 'custom')}
 				placeholder="Preset"
 			>
 				{#each Object.keys(cardStylePresets) as preset}
-					<option value={preset} disabled={preset === 'custom'}>{preset}</option>
+					<option value={preset}>{preset}</option>
 				{/each}
 			</select>
 			<div />
@@ -469,56 +472,26 @@
 					<Icon class="advancedIcon" icon="memory:anvil" />
 					Custom Styling Options
 				</div>
-				<!-- Text Color -->
-				<label for="textColor">Text</label>
-				<input
-					list="colorSuggestions"
-					type="color"
-					id="textColor"
-					bind:value={$editItem.style.color.text}
-					on:input={presetToCustom}
-				/>
-				<div>{$editItem.style.color.text}</div>
-				<!-- Background Color -->
-				<label for="backgroundColor">Background</label>
-				<input
-					list="colorSuggestions"
-					type="color"
-					id="backgroundColor"
-					bind:value={$editItem.style.color.background}
-					on:input={presetToCustom}
-				/>
-				<div>{$editItem.style.color.background}</div>
-				<!-- Border Color -->
-				<label for="borderColor">Border</label>
-				<input
-					list="colorSuggestions"
-					type="color"
-					id="borderColor"
-					bind:value={$editItem.style.color.cardBorder}
-					on:input={presetToCustom}
-				/>
-				<div>{$editItem.style.color.cardBorder}</div>
-				<!-- Icon Color -->
-				<label for="iconColor">Icon</label>
-				<input
-					list="colorSuggestions"
-					type="color"
-					id="iconColor"
-					bind:value={$editItem.style.color.icon}
-					on:input={presetToCustom}
-				/>
-				<div>{$editItem.style.color.icon}</div>
-				<!-- Accent Color -->
-				<label for="accentColor">Accent</label>
-				<input
-					list="colorSuggestions"
-					type="color"
-					id="accentColor"
-					bind:value={$editItem.style.color.accent}
-					on:input={presetToCustom}
-				/>
-				<div>{$editItem.style.color.accent}</div>
+
+				{#if $editItem.stylePreset === 'custom' || true}
+					<!-- MANUAL COLOR SHIT -->
+					{#each availableColorOptions as colorType}
+						{#if $editItem.style.color.hasOwnProperty(colorType)}
+							<label for="color-{colorType}">{colorType}</label>
+							<input
+								type="color"
+								id="color-{colorType}"
+								bind:value={$editItem.style.color[colorType]}
+								on:change={presetToCustom}
+								list="colorSuggestions"
+							/>
+							<!-- @ts-ignore -->
+							<div>{$editItem.style.color[colorType]}</div>
+						{/if}
+					{/each}
+				{:else}
+					<div class="fullLine">Set preset to 'custom' to manually edit</div>
+				{/if}
 
 				<!-- Color Suggestions -->
 				<datalist id="colorSuggestions">
