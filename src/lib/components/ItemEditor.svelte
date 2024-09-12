@@ -556,8 +556,16 @@
 						type="number"
 						id="fontSize-{fontSizeOption}"
 						bind:value={$editItem.style.fontsize[fontSizeOption]}
+						on:change={presetToCustom}
 					/>
-					<div>...</div>
+					<Button
+						color="plain"
+						icon="mdi:restore"
+						size="small"
+						click={() => {
+							$editItem.style.fontsize[fontSizeOption] = defaultCardStyle.fontsize[fontSizeOption];
+						}}
+					/>
 				{/each}
 			{/if}
 
@@ -565,12 +573,23 @@
 			<div class="fullLine headerLine">Fonts</div>
 			{#each availableFontOptions as fontOption}
 				<label for="font-{fontOption}">{fontOption}</label>
-				<select id="font-{fontOption}" bind:value={$editItem.style.font[fontOption]}>
+				<select
+					id="font-{fontOption}"
+					bind:value={$editItem.style.font[fontOption]}
+					on:change={presetToCustom}
+				>
 					{#each availableFonts as font}
 						<option value={font}>{font}</option>
 					{/each}
 				</select>
-				<div>...</div>
+				<Button
+					color="plain"
+					icon="mdi:restore"
+					size="small"
+					click={() => {
+						$editItem.style.font[fontOption] = defaultCardStyle.font[fontOption];
+					}}
+				/>
 			{/each}
 		</div>
 	</Accordion>
