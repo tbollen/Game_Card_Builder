@@ -14,7 +14,11 @@
 	style="border-color: {item.style.color.cardBorder}; background-color: {item.style.color
 		.background};"
 >
-	<div class="imgWrapper" style="border-color: {item.style.color.cardBorder}; ">
+	<div
+		class="imgWrapper"
+		style="border-color: {item.style.color.cardBorder}; background-color: {item.style.color
+			.imageBackground}; "
+	>
 		{#if nameOnBack}
 			<div class="cardName">{item.name}</div>
 		{/if}

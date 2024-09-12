@@ -36,28 +36,49 @@
 	class:print
 >
 	<div id="topbanner">
-		<div class="typeIcon left-{cardType.iconOrientation}" style="color: {item.style.color.icon}">
+		<div
+			class="typeIcon left-{cardType.iconOrientation}"
+			style="color: {item.style.color.icon}; font-size: {item.style.fontsize.icon}pt;"
+		>
 			<Icon icon={iconOverride || cardType.icon} />
 		</div>
-		<h1 class="name">
+		<h1
+			class="name"
+			style={`font-size: ${item.style.fontsize.name}pt; font-family: '${item.style.font.name}', 'Gotham', sans-serif;`}
+		>
 			{item.name}
 		</h1>
-		<div class="typeIcon right-{cardType.iconOrientation}" style="color: {item.style.color.icon}">
+		<div
+			class="typeIcon right-{cardType.iconOrientation}"
+			style="color: {item.style.color.icon}; font-size: {item.style.fontsize.icon}pt;"
+		>
 			<Icon icon={iconOverride || cardType.icon} />
 		</div>
 		{#if item?.subtitle}
-			<h3 class="subtitle" style="color: {item.style.color.text}">
+			<h3
+				class="subtitle"
+				style="color: {item.style.color.text};font-size: {item.style.fontsize
+					.subtitle}pt; font-family: '{item.style.font.subtitle}', 'Gotham', sans-serif;"
+			>
 				{item.subtitle}
 			</h3>
 		{/if}
 	</div>
-	<p class="description">
+	<p
+		class="description"
+		style="font-size: {item.style.fontsize.text}pt; font-family: '{item.style.font
+			.text}', 'Gotham', sans-serif;"
+	>
 		{@html renderedItemDescription}
 	</p>
 
 	{#if item?.aspects}
 		{#each item?.aspects as aspect}
-			<div class="aspect">
+			<div
+				class="aspect"
+				style="font-size: {item.style.fontsize.text}pt; font-family: '{item.style.font
+					.text}', 'Gotham', sans-serif;"
+			>
 				<div class="aspectDescription description">
 					{#if aspect?.name && aspect?.description}
 						<span class="aspectName inTextName">{aspect.name}</span>
@@ -70,7 +91,11 @@
 
 	{#if item?.specials}
 		{#each item?.specials as special}
-			<div class="aspect">
+			<div
+				class="aspect"
+				style="font-size: {item.style.fontsize.text}pt; font-family: '{item.style.font
+					.text}', 'Gotham', sans-serif;"
+			>
 				<div class="aspectDescription description">
 					{#if special?.name && special?.description}
 						<span class="aspectName inTextName">{special.name}</span>
@@ -96,8 +121,16 @@
 		<!-- Skill Check -->
 		{#if item?.skillCheck}
 			<div id="skillcheck" class="field">
-				<div id="characteristic">{item.skillCheck.characteristic}</div>
-				<div id="skill" style="background: {item.style.color.accent}">
+				<div id="characteristic" style="font-size: {item.style.fontsize.check / 1.4}pt;">
+					{item.skillCheck.characteristic}
+				</div>
+				<div
+					id="skill"
+					style="
+						background: {item.style.color.accent};
+						font-size: {item.style.fontsize.check}pt;
+						font-family: '{item.style.font.accents}', 'Gotham', sans-serif;"
+				>
 					{item.skillCheck.skill}
 				</div>
 			</div>
@@ -191,6 +224,11 @@
 		color: red;
 	}
 
+	.aspectDescription {
+		font-size: inherit;
+		font-family: inherit;
+	}
+
 	/* Fields */
 	#fields {
 		display: grid;
@@ -227,15 +265,16 @@
 		justify-content: center;
 		align-items: center;
 		overflow: hidden;
+		font-size: 9pt;
 	}
 
 	.fieldName {
-		font-size: 8pt;
+		font-size: 0.9em;
 		color: color-mix(in srgb, currentColor 70%, transparent);
 	}
 
 	.fieldValue {
-		font-size: 9pt;
+		font-size: 1em;
 	}
 
 	#skillcheck > * {
@@ -260,7 +299,7 @@
 
 	#skillcheck > #skill {
 		font-size: 14pt;
-		font-weight: bold;
+		font-weight: 600;
 		color: white;
 		padding: 0.18em;
 	}

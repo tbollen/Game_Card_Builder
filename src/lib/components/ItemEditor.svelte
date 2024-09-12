@@ -15,8 +15,9 @@
 	// Import card types for editing options
 	import { cardTypes } from '$lib/modules/cardTypes';
 	import Icon, { iconExists, loadIcon } from '@iconify/svelte';
-	import { type Color, cardStylePresets } from '$lib/types/colors';
-	import { colorScheme, suggestedColors, type ThemeColor } from '$lib/styles/colorScheme';
+	import { cardStylePresets, defaultCardStyle } from '$lib/types/colors';
+	import { suggestedColors } from '$lib/styles/colorScheme';
+	import { availableFonts } from '$lib/types/fonts';
 
 	// Get charactersistics and skills
 	import { skillList, characteristics } from '$lib/modules/skillCheckList';
@@ -103,9 +104,20 @@
 	}
 
 	function presetToCustom() {
-		$editItem.stylePreset = 'custom';
-		$editItem.useStylePreset($editItem.stylePreset);
+		// $editItem.stylePreset = 'custom';
+		$editItem.useStylePreset('custom');
 	}
+
+	// Style components for looping
+	const availableColorOptions = Object.keys(
+		$editItem.style.color
+	) as (keyof typeof $editItem.style.color)[];
+	const availableFontOptions = Object.keys(
+		$editItem.style.font
+	) as (keyof typeof $editItem.style.font)[];
+	const availableFontSizeOptions = Object.keys(
+		$editItem.style.fontsize
+	) as (keyof typeof $editItem.style.fontsize)[];
 
 	$: console.debug('Logging the editItem', $editItem);
 
@@ -451,70 +463,82 @@
 		<div slot="head">Styling</div>
 		<div slot="content" class="inputGridButton">
 			<!-- Preset -->
-			<label for="preset">Preset</label>
+			<label for="preset"> Style Preset </label>
 			<select
+				style="height: 2em;"
 				id="preset"
 				bind:value={$editItem.stylePreset}
-				on:change={() => $editItem.useStylePreset($editItem.stylePreset)}
+				on:change={(e) => $editItem.useStylePreset($editItem.stylePreset || 'custom')}
 				placeholder="Preset"
 			>
 				{#each Object.keys(cardStylePresets) as preset}
-					<option value={preset} disabled={preset === 'custom'}>{preset}</option>
+					<option value={preset}>{preset}</option>
 				{/each}
 			</select>
+			<div class="buttonLine">
+				{#if $editItem.stylePreset !== 'default'}
+					<Button
+						color="plain"
+						icon="mdi:backup-restore"
+						size="small"
+						click={() => $editItem.useStylePreset('default')}
+					/>
+				{:else}
+					<Button
+						color="plain"
+						icon="mdi:dice"
+						size="small"
+						click={() => {
+							$editItem.useStylePreset('random');
+						}}
+					/>
+				{/if}
+			</div>
 			<div />
-			<!-- Feature not working properly -->
-			{#if advancedMode && false}
-				<!-- Text Color -->
-				<label for="textColor">Text</label>
-				<input
-					list="colorSuggestions"
-					type="color"
-					id="textColor"
-					bind:value={$editItem.style.color.text}
-					on:change={presetToCustom}
-				/>
-				<div>{$editItem.style.color.text}</div>
-				<!-- Background Color -->
-				<label for="backgroundColor">Background</label>
-				<input
-					list="colorSuggestions"
-					type="color"
-					id="backgroundColor"
-					bind:value={$editItem.style.color.background}
-					on:change={presetToCustom}
-				/>
-				<div>{$editItem.style.color.background}</div>
-				<!-- Border Color -->
-				<label for="borderColor">Border</label>
-				<input
-					list="colorSuggestions"
-					type="color"
-					id="borderColor"
-					bind:value={$editItem.style.color.cardBorder}
-					on:change={presetToCustom}
-				/>
-				<div>{$editItem.style.color.cardBorder}</div>
-				<!-- Icon Color -->
-				<label for="iconColor">Icon</label>
-				<input
-					list="colorSuggestions"
-					type="color"
-					id="iconColor"
-					bind:value={$editItem.style.color.icon}
-					on:change={presetToCustom}
-				/>
-				<div>{$editItem.style.color.icon}</div>
-				<!-- Accent Color -->
-				<label for="accentColor">Accent</label>
-				<input
-					list="colorSuggestions"
-					type="color"
-					id="accentColor"
-					bind:value={$editItem.style.color.accent}
-					on:change={presetToCustom}
-				/>
-				<div>{$editItem.style.color.accent}</div>
+			{#if advancedMode}
+				<div class="fullLine headerLine">
+					<Icon class="advancedIcon" icon="memory:anvil" />
+					Custom Styling Options
+				</div>
+
+				<!-- Color Options -->
+				<div class="fullLine headerLine">Color</div>
+				{#each availableColorOptions as colorType}
+					<label for="color-{colorType}">{colorType}</label>
+					<div class="colorPickerLine">
+						<input
+							type="color"
+							id="color-{colorType}"
+							bind:value={$editItem.style.color[colorType]}
+							on:change={presetToCustom}
+							list="colorSuggestions"
+						/>
+						<span>{$editItem.style.color[colorType]}</span>
+					</div>
+					<div class="buttonLine">
+						{#if $editItem.stylePreset === 'custom'}
+							<Button
+								color="plain"
+								icon="mdi:restore"
+								size="small"
+								click={() => {
+									$editItem.style.color[colorType] = defaultCardStyle.color[colorType];
+									presetToCustom();
+								}}
+							/>
+						{/if}
+						<Button
+							color="plain"
+							icon="mdi:dice"
+							size="small"
+							click={() => {
+								presetToCustom();
+								const randomHex = Math.floor(Math.random() * 16777215).toString(16);
+								$editItem.style.color[colorType] = `#${randomHex}`;
+							}}
+						/>
+					</div>
+				{/each}
 
 				<!-- Color Suggestions -->
 				<datalist id="colorSuggestions">
@@ -523,7 +547,50 @@
 						<option value={c} />
 					{/each}
 				</datalist>
+
+				<!-- Font Size Options -->
+				<div class="fullLine headerLine">Text Size</div>
+				{#each availableFontSizeOptions as fontSizeOption}
+					<label for="fontSize-{fontSizeOption}">{fontSizeOption}</label>
+					<input
+						type="number"
+						id="fontSize-{fontSizeOption}"
+						bind:value={$editItem.style.fontsize[fontSizeOption]}
+						on:change={presetToCustom}
+					/>
+					<Button
+						color="plain"
+						icon="mdi:restore"
+						size="small"
+						click={() => {
+							$editItem.style.fontsize[fontSizeOption] = defaultCardStyle.fontsize[fontSizeOption];
+						}}
+					/>
+				{/each}
 			{/if}
+
+			<!-- Font Options -->
+			<div class="fullLine headerLine">Fonts</div>
+			{#each availableFontOptions as fontOption}
+				<label for="font-{fontOption}">{fontOption}</label>
+				<select
+					id="font-{fontOption}"
+					bind:value={$editItem.style.font[fontOption]}
+					on:change={presetToCustom}
+				>
+					{#each availableFonts as font}
+						<option value={font}>{font}</option>
+					{/each}
+				</select>
+				<Button
+					color="plain"
+					icon="mdi:restore"
+					size="small"
+					click={() => {
+						$editItem.style.font[fontOption] = defaultCardStyle.font[fontOption];
+					}}
+				/>
+			{/each}
 		</div>
 	</Accordion>
 </div>
@@ -578,9 +645,21 @@
 
 	.inputGridButton {
 		display: grid;
-		grid-template-columns: 6em 2fr 1fr;
+		grid-template-columns: 6em 2fr min-content;
 		align-items: center;
 		gap: 0.2em;
+	}
+
+	.fullLine {
+		grid-column: 1 / -1;
+	}
+
+	.headerLine {
+		font-weight: 500;
+		font-size: 0.9rem;
+		padding: 0.6em 0 0.2em 0;
+		margin-bottom: 0.2em;
+		border-bottom: 1px solid currentColor;
 	}
 
 	.fieldList {
@@ -627,6 +706,11 @@
 		font-weight: 600;
 		font-size: 0.8em;
 		justify-self: start;
+		/* Overlfow Fix */
+		width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	.divider {
@@ -648,5 +732,20 @@
 
 	input.warning {
 		background-color: var(--color-threat-4) !important;
+	}
+
+	.colorPickerLine {
+		display: flex;
+		gap: 0.5em;
+		align-items: center;
+	}
+
+	.colorPickerLine > span {
+		font-size: 0.8em;
+		color: var(--color-text-1);
+
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 </style>
