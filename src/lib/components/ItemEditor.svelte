@@ -478,11 +478,10 @@
 				{:else}
 					<Button
 						color="plain"
-						icon="mdi:pencil"
+						icon="mdi:dice"
 						size="small"
 						click={() => {
-							advancedMode = true;
-							$editItem.useStylePreset('custom');
+							$editItem.useStylePreset('random');
 						}}
 					/>
 				{/if}
