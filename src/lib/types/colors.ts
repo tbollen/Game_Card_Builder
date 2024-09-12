@@ -21,6 +21,7 @@ export type CardStyleOptions = {
 	};
 	font: {
 		name: AvailableFonts;
+		subtitle: AvailableFonts;
 		accents: AvailableFonts;
 		text: AvailableFonts;
 	};
@@ -45,6 +46,7 @@ export const defaultCardStyle: CardStyleOptions = {
 	},
 	font: {
 		name: 'Gotham',
+		subtitle: 'Gotham',
 		accents: 'Gotham',
 		text: 'Gotham'
 	},
