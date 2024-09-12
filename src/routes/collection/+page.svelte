@@ -187,6 +187,11 @@
 		display: flex;
 		gap: 10px;
 	}
+
+	section#viewer {
+		overflow-x: hidden;
+	}
+
 	.cardInViewer {
 		/* Reset button stuff */
 		all: unset;
@@ -196,6 +201,7 @@
 		height: fit-content;
 		width: fit-content;
 		transform: scale(0.8);
+		transition: all 0.4s ease-in-out;
 		margin: 5mm;
 		/* Click */
 		cursor: pointer;
@@ -257,8 +263,6 @@
 	.cardInViewer:hover .frontSideCard {
 		box-shadow: 10px 10px 15px var(--color-text-1);
 		transform: rotate(-5deg);
-		/* Move effect for other cards */
-		margin-right: 25px;
 	}
 
 	.cardInViewer:focus-visible .backSideCard,
