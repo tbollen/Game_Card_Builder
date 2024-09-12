@@ -28,6 +28,7 @@
 		// Set last clicked card to be active
 		items.setActiveItem(id);
 		updateItems();
+		$editItem = items.getActiveItem();
 		// Force svelte to recognise changes
 		selectedCards = selectedCards;
 	}
