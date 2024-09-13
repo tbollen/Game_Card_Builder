@@ -61,6 +61,16 @@
 	src: url('./fonts/Gotham/Gotham-Ultra.otf') format('truetype');
 }
 
+@font-face {
+	font-family: 'Pirata One';
+	src: url('./fonts/Pirata_One/PirataOne-Regular.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'UnifrakturCook';
+	src: url('./fonts/UnifrakturCook/UnifrakturCook-Bold.ttf') format('truetype');
+}
+
 /* Color */
 :root {
 	font-family: 'Gotham', sans-serif;
