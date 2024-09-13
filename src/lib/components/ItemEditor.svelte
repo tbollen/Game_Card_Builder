@@ -23,7 +23,7 @@
 	import { skillList, characteristics } from '$lib/modules/skillCheckList';
 
 	// Advanced Mode for more flexible editing
-	export let advancedMode: boolean = false;
+	import { advancedMode } from '$lib/stores/advancedMode';
 
 	// Iconify
 	function loadIconFromIconify(icon: string | undefined) {
@@ -100,12 +100,6 @@
 	onMount(() => {
 		loadIconFromIconify($editItem.icon);
 		mounted = true;
-
-		// Load configs
-		if (typeof window !== 'undefined' && window.localStorage) {
-			localStorage.getItem('advancedMode');
-			advancedMode = localStorage.getItem('advancedMode') == 'true';
-		}
 	});
 
 	$: if (mounted) {
@@ -136,7 +130,7 @@
 				{/each}
 			</select>
 			<!-- Icon Override -->
-			{#if advancedMode}
+			{#if $advancedMode}
 				<label for="iconOverride">
 					Icon
 					<Icon class="advancedIcon" icon="memory:anvil" />
@@ -293,7 +287,7 @@
 	<Accordion>
 		<div slot="head">Image</div>
 		<div slot="content" class="inputGrid">
-			{#if advancedMode}
+			{#if $advancedMode}
 				<!-- Image Name -->
 				<label for="imgName">
 					Name
@@ -425,7 +419,7 @@
 				{/if}
 			</div>
 			<div />
-			{#if advancedMode}
+			{#if $advancedMode}
 				<div class="fullLine headerLine">
 					<Icon class="advancedIcon" icon="memory:anvil" />
 					Custom Styling Options

@@ -56,23 +56,15 @@
 		setTimeout(() => (showSaved = false), 2000);
 	}
 
-	$: advancedMode = false;
-
+	import { advancedMode } from '$lib/stores/advancedMode';
 	function toggleAdvancedMode() {
-		advancedMode = !advancedMode;
-		// Set configs
-		if (typeof window !== 'undefined' && window.localStorage) {
-			localStorage.setItem('advancedMode', advancedMode ? 'true' : 'false');
-		}
+		$advancedMode = !$advancedMode;
 	}
 
 	// END OF TOOLBAR BUTTONS
 
 	onMount(() => {
 		// Load configs
-		if (typeof window !== 'undefined' && window.localStorage) {
-			localStorage.getItem('advancedMode');
-		}
 	});
 </script>
 
@@ -108,7 +100,7 @@
 					<!-- Advanced -->
 					<Button
 						click={toggleAdvancedMode}
-						stateOn={advancedMode}
+						stateOn={$advancedMode}
 						variant="flipped"
 						color="weave"
 						icon="memory:anvil"
