@@ -55,7 +55,9 @@
 
 	// Set css @page variables
 	function setCssPage() {
-		const pageSize = cardPrint ? `${cardWidth}mm ${cardHeight}mm` : 'A4 landscape';
+		const pageSize = cardPrint
+			? `${cardWidth + cardGap}mm ${cardHeight + cardGap}mm`
+			: 'A4 landscape';
 		const style = document.createElement('style');
 		style.innerHTML = `
             @page {
