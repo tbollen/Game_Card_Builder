@@ -28,3 +28,5 @@ export const cardTypes: CardType[] = _cardTypes.map((cardType) => ({
 	color: cardType.color ?? 'var(--threat)',
 	iconOrientation: cardType.iconOrientation ?? 'default'
 }));
+
+export type IsCardType = (typeof _cardTypes)[number]['name'];

@@ -10,7 +10,7 @@ import {
 	type CardStyleOptions
 } from '$lib/types/colors';
 import { type AvailableFonts } from '$lib/types/fonts';
-
+import { type IsCardType } from '$lib/modules/cardTypes';
 export type ItemFields = {
 	name?: string;
 	description?: string;
@@ -39,7 +39,7 @@ const defaultCard: Item = {
 export class Item {
 	// Initialise
 	name: string = 'New Item';
-	type: string = 'Item';
+	type: IsCardType = 'Item';
 	subtitle?: string;
 	icon?: string;
 	description: string = 'Item Description';
