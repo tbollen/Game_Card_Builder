@@ -14,6 +14,8 @@
 	// Set Cards
 	cardSet = items.items.filter((item) => cards.has(item.id));
 
+	let cardPrint = true;
+
 	const cardHeight = 88;
 	const cardWidth = 63;
 	const pageHeight = 210;
@@ -37,6 +39,7 @@
 
 	onMount(() => {
 		console.debug('printing cards...', cards);
+		setCssPage();
 		// print
 		window.print();
 		window.onafterprint = () => {
@@ -46,27 +49,62 @@
 		// go back
 		goto(`${base}/collection`);
 	});
+
+	// Set css @page variables
+	function setCssPage() {
+		const pageSize = cardPrint
+			? `${cardWidth + cardGap}mm ${cardHeight + cardGap}mm`
+			: 'A4 landscape';
+		const style = document.createElement('style');
+		style.innerHTML = `
+            :global(body) {
+                padding: 0;
+                margin: 0;
+            }
+            @page {
+                size: ${pageSize};
+                margin: 0;
+                padding: 0;
+            }
+        `;
+		document.head.appendChild(style);
+	}
 </script>
 
-{#each cardSetSplit as _cardSet, i}
-	<div
-		class="printArea"
-		style="--borderX: solid {printMarginX}mm transparent; --borderY: solid {printMarginY}mm transparent;"
-	>
-		<div class="pageMarker">{i + 1}/{cardSetSplit.length}</div>
-		{#each _cardSet as card, i}
+{#if cardPrint}
+	{#each cardSet as card, i}
+		<div
+			class="singleCardPrint"
+			style="height: {cardHeight + cardGap}mm; width: {cardWidth + cardGap}mm; padding: {cardGap /
+				2}mm;"
+		>
 			<Gamecard item={card} />
+		</div>
+		<div class="singleCardPrint" style="height: {cardHeight}mm; width: {cardWidth}mm">
 			<GamecardBack item={card} />
-		{/each}
-	</div>
-{/each}
+		</div>
+	{/each}
+{:else}
+	{#each cardSetSplit as _cardSet, i}
+		<div
+			class="printArea"
+			style="--borderX: solid {printMarginX}mm transparent; --borderY: solid {printMarginY}mm transparent;"
+		>
+			<div class="pageMarker">{i + 1}/{cardSetSplit.length}</div>
+			{#each _cardSet as card, i}
+				<Gamecard item={card} />
+				<GamecardBack item={card} />
+			{/each}
+		</div>
+	{/each}
+{/if}
 
 <style>
+	@page {
+		margin: 0;
+		page-size: 210mm 50mm;
+	}
 	@media print {
-		@page {
-			margin: 0;
-			size: A4 landscape;
-		}
 		div.printArea {
 			/* Page */
 			--page-width: 297mm;
@@ -98,6 +136,16 @@
 			position: absolute;
 			top: -8mm;
 			left: -8mm;
+		}
+
+		div.singleCardPrint {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			box-sizing: border-box;
+
+			/* Page */
+			page-break-after: always;
 		}
 	}
 </style>
