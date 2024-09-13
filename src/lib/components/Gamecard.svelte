@@ -29,30 +29,56 @@
 	$: iconOverride = item?.icon && iconExists(item.icon) ? item.icon : undefined;
 </script>
 
-<div class="card" class:print>
+<div
+	class="card"
+	style="border-color: {item.style.color.cardBorder};color: {item.style.color
+		.text}; background-color: {item.style.color.background};"
+	class:print
+>
 	<div id="topbanner">
-		<div class="typeIcon left-{cardType.iconOrientation}" style="color: {cardType.color}">
+		<div
+			class="typeIcon left-{cardType.iconOrientation}"
+			style="color: {item.style.color.icon}; font-size: {item.style.fontsize.icon}pt;"
+		>
 			<Icon icon={iconOverride || cardType.icon} />
 		</div>
-		<h1 class="name">
+		<h1
+			class="name"
+			style={`font-size: ${item.style.fontsize.name}pt; font-family: '${item.style.font.name}', 'Gotham', sans-serif;`}
+		>
 			{item.name}
 		</h1>
-		<div class="typeIcon right-{cardType.iconOrientation}" style="color: {cardType.color}">
+		<div
+			class="typeIcon right-{cardType.iconOrientation}"
+			style="color: {item.style.color.icon}; font-size: {item.style.fontsize.icon}pt;"
+		>
 			<Icon icon={iconOverride || cardType.icon} />
 		</div>
 		{#if item?.subtitle}
-			<h3 class="subtitle">
+			<h3
+				class="subtitle"
+				style="color: {item.style.color.text};font-size: {item.style.fontsize
+					.subtitle}pt; font-family: '{item.style.font.subtitle}', 'Gotham', sans-serif;"
+			>
 				{item.subtitle}
 			</h3>
 		{/if}
 	</div>
-	<p class="description">
+	<p
+		class="description"
+		style="font-size: {item.style.fontsize.text}pt; font-family: '{item.style.font
+			.text}', 'Gotham', sans-serif;"
+	>
 		{@html renderedItemDescription}
 	</p>
 
 	{#if item?.aspects}
 		{#each item?.aspects as aspect}
-			<div class="aspect">
+			<div
+				class="aspect"
+				style="font-size: {item.style.fontsize.text}pt; font-family: '{item.style.font
+					.text}', 'Gotham', sans-serif;"
+			>
 				<div class="aspectDescription description">
 					{#if aspect?.name && aspect?.description}
 						<span class="aspectName inTextName">{aspect.name}</span>
@@ -65,7 +91,11 @@
 
 	{#if item?.specials}
 		{#each item?.specials as special}
-			<div class="aspect">
+			<div
+				class="aspect"
+				style="font-size: {item.style.fontsize.text}pt; font-family: '{item.style.font
+					.text}', 'Gotham', sans-serif;"
+			>
 				<div class="aspectDescription description">
 					{#if special?.name && special?.description}
 						<span class="aspectName inTextName">{special.name}</span>
@@ -75,7 +105,11 @@
 			</div>
 		{/each}
 	{/if}
+
 	<div id="fields" data-field-number={item?.fields?.length} class:hasSkillCheck={item?.skillCheck}>
+		{#if item?.fields || item?.skillCheck}
+			<div class="fieldDivider" />
+		{/if}
 		{#if item?.fields}
 			{#each item.fields as field, i}
 				<div class="field" id="field-{i}">
@@ -83,11 +117,22 @@
 					<div class="fieldValue">{@html renderMarkdown(field.description)}</div>
 				</div>
 			{/each}
-			<!-- <div class="fieldDivider" /> -->
 		{/if}
+		<!-- Skill Check -->
 		{#if item?.skillCheck}
-			<div id="skillcheck">
-				<Skill card={item} />
+			<div id="skillcheck" class="field">
+				<div id="characteristic" style="font-size: {item.style.fontsize.check / 1.4}pt;">
+					{item.skillCheck.characteristic}
+				</div>
+				<div
+					id="skill"
+					style="
+						background: {item.style.color.accent};
+						font-size: {item.style.fontsize.check}pt;
+						font-family: '{item.style.font.accents}', 'Gotham', sans-serif;"
+				>
+					{item.skillCheck.skill}
+				</div>
 			</div>
 		{/if}
 	</div>
@@ -103,10 +148,6 @@
 		& > :last-child {
 			margin-top: auto;
 		}
-	}
-
-	.card:not(.print) {
-		background-color: var(--pearl);
 	}
 
 	.description {
@@ -144,7 +185,7 @@
 	.name {
 		/* Font */
 		text-align: center;
-		font-weight: bold;
+		font-weight: 500;
 		font-size: var(--name-size);
 		/* Position */
 		grid-column: 2;
@@ -153,7 +194,7 @@
 	}
 
 	.inTextName {
-		font-weight: 700;
+		font-weight: 600;
 	}
 	.inTextName::after {
 		content: ': ';
@@ -181,6 +222,11 @@
 
 	.dice {
 		color: red;
+	}
+
+	.aspectDescription {
+		font-size: inherit;
+		font-family: inherit;
 	}
 
 	/* Fields */
@@ -219,19 +265,42 @@
 		justify-content: center;
 		align-items: center;
 		overflow: hidden;
-	}
-
-	.fieldName {
-		font-size: 8pt;
-		color: var(--color-text-2);
-	}
-
-	.fieldValue {
 		font-size: 9pt;
 	}
 
+	.fieldName {
+		font-size: 0.9em;
+		color: color-mix(in srgb, currentColor 70%, transparent);
+	}
+
+	.fieldValue {
+		font-size: 1em;
+	}
+
+	#skillcheck > * {
+		-webkit-print-color-adjust: exact; /* For WebKit browsers */
+		print-color-adjust: exact; /* For WebKit browsers */
+		color-adjust: exact; /* Standard property */
+	}
+
 	#skillcheck {
+		display: flex;
+		flex-direction: column;
+		/* Placement */
 		align-items: flex-start;
-		grid-column: 1/3;
+		grid-column-start: 1;
+		grid-column-end: 3;
+	}
+
+	#skillcheck > #characteristic {
+		font-size: 10pt;
+		font-weight: 500;
+	}
+
+	#skillcheck > #skill {
+		font-size: 14pt;
+		font-weight: 600;
+		color: white;
+		padding: 0.18em;
 	}
 </style>

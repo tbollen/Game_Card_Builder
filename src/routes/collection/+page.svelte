@@ -16,37 +16,41 @@
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
 
-	let selectedCards = new Set();
+	// Selected Items
+	import { selectedItems } from '$lib/stores/selectedItems';
 
 	function toggleCardSelection(id: string) {
-		console.debug(`${!selectedCards.has(id) ? 'added' : 'removed'} card selection: ${id}`);
-		if (selectedCards.has(id)) {
-			selectedCards.delete(id);
+		console.debug(
+			`${!$selectedItems.has(id) ? 'added' : 'removed'} card selection: ${id}`,
+			$selectedItems
+		);
+		if ($selectedItems.has(id)) {
+			$selectedItems.delete(id);
 		} else {
-			selectedCards.add(id);
+			$selectedItems.add(id);
 		}
 		// Set last clicked card to be active
 		items.setActiveItem(id);
 		updateItems();
+		$editItem = items.getActiveItem();
 		// Force svelte to recognise changes
-		selectedCards = selectedCards;
+		$selectedItems = $selectedItems;
 	}
 
 	function deleteCard(id: string) {
 		// Confirmation
-		console.error(items.items);
 		items.destroy(id);
 		// Remove from selected cards
-		selectedCards.delete(id);
-		selectedCards = selectedCards;
+		$selectedItems.delete(id);
+		$selectedItems = $selectedItems;
 		updateItems();
 	}
 
 	function removeUnavailableCardsFromSelection() {
 		// if the ID's in the set are not in items anymore, remove them
-		for (const id of selectedCards as Set<string>) {
+		for (const id of $selectedItems as Set<string>) {
 			if (!items.idSet.has(id)) {
-				selectedCards.delete(id);
+				$selectedItems.delete(id);
 			}
 		}
 	}
@@ -91,6 +95,14 @@
 	onMount(() => {
 		renderCards = true;
 	});
+
+	function printSelectedCards() {
+		goto(`${base}/print?printMode=single`);
+	}
+
+	function printSelectedCardsOnA4() {
+		goto(`${base}/print?printMode=A4`);
+	}
 </script>
 
 <main>
@@ -104,9 +116,11 @@
 			stateOn={showTemplates}
 			click={toggleTemplates}>Show Templates</Button
 		>
-		{#if selectedCards.size > 0}
-			<Button icon="mdi:content-copy" click={() => (selectedCards = new Set())}>
-				Deselect cards ({selectedCards.size})
+		{#if $selectedItems.size > 0}
+			<Button icon="mdi:printer" click={printSelectedCards}>Print Selected</Button>
+			<Button icon="mdi:printer" click={printSelectedCardsOnA4}>Print to A4</Button>
+			<Button icon="mdi:content-copy" click={() => ($selectedItems = new Set())}>
+				Deselect cards ({$selectedItems.size})
 			</Button>
 		{/if}
 	</section>
@@ -145,12 +159,12 @@
 			{#each _items.items as card}
 				<button
 					class="cardInViewer"
-					class:isSelected={selectedCards.has(card.id)}
+					class:isSelected={$selectedItems.has(card.id)}
 					id={card.id}
 					on:click={() => toggleCardSelection(card.id)}
 				>
 					<!-- Is Active Label -->
-					{#if items.getActiveItem().id === card.id && selectedCards.size < 2}
+					{#if items.getActiveItem().id === card.id && $selectedItems.size < 2}
 						<div class="cardLabel activeLabel">
 							<Icon icon="mdi:pencil" />
 							Editor
@@ -179,6 +193,9 @@
 			{/each}
 		</section>
 	{/if}
+	<section id="printSelected">
+		{#each $selectedItems as sc}{/each}
+	</section>
 </main>
 
 <style>
@@ -186,6 +203,11 @@
 		display: flex;
 		gap: 10px;
 	}
+
+	section#viewer {
+		overflow-x: hidden;
+	}
+
 	.cardInViewer {
 		/* Reset button stuff */
 		all: unset;
@@ -195,6 +217,7 @@
 		height: fit-content;
 		width: fit-content;
 		transform: scale(0.8);
+		transition: all 0.4s ease-in-out;
 		margin: 5mm;
 		/* Click */
 		cursor: pointer;
@@ -256,8 +279,6 @@
 	.cardInViewer:hover .frontSideCard {
 		box-shadow: 10px 10px 15px var(--color-text-1);
 		transform: rotate(-5deg);
-		/* Move effect for other cards */
-		margin-right: 25px;
 	}
 
 	.cardInViewer:focus-visible .backSideCard,

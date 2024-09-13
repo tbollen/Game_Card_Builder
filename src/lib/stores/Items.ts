@@ -2,6 +2,12 @@ import { writable } from 'svelte/store';
 import { Item } from '$lib/methods/Item';
 import { defaultTemplates } from '$lib/stores/defaultTemplates';
 import { startingItems } from '$lib/stores/defaultTemplates';
+import {
+	type CardStyleOptions,
+	type CardStylePreset,
+	cardStylePresets,
+	defaultCardStyle
+} from '$lib/types/colors';
 
 // Env variables
 const replaceString = 'replaceMe';
@@ -98,6 +104,24 @@ class StoredItem extends Item {
 		this.update();
 	}
 
+	// Styling
+	useStylePreset(preset: CardStylePreset | 'random') {
+		if (preset == 'random') {
+			const _presets = Object.keys(cardStylePresets).filter(
+				(key) => key != 'custom' && key != 'default'
+			);
+			preset = _presets[Math.floor(Math.random() * _presets.length)];
+		}
+		const _stylePreset = cardStylePresets[preset];
+		// Assign for each category the values from the preset
+		this.style.color = Object.assign(this.style.color, _stylePreset.color);
+		this.style.font = Object.assign(this.style.font, _stylePreset.font);
+		this.style.fontsize = Object.assign(this.style.fontsize, _stylePreset.fontsize);
+		// Set preset
+		this.stylePreset = preset;
+		this.update();
+	}
+
 	private update() {
 		// Trigger reactivity (hacky, but effective)
 		editItem.update(() => this);
@@ -113,17 +137,30 @@ class ItemStore {
 	};
 	activeItem: StoredItem;
 
-	constructor(_items?: StoredItem[], _templates?: Item[]) {
-		// Set Items
-		this.items = _items || [];
+	constructor(
+		i: {
+			_store?: ItemStore;
+			_items?: StoredItem[];
+			_templates?: Item[];
+		} = {}
+	) {
+		// If an exisiting store is given,
+		if (i._store) {
+			// Override all other values
+			i._items = i._store.items;
+			i._templates = i._store.templates;
+		}
+		// Create items from given items (* instead of setting it, to support migrations)
+		this.items = i._items ? i._items.map((item) => new StoredItem(item)) : [];
+		// Same for templates
+		this.templates = i._templates ? i._templates.map((item) => new Item(item)) : defaultTemplates;
+
+		// Fix when no items are given
 		if (this.items.length == 0) {
 			// for each item in startingItems, add to items
 			startingItems.forEach((item) => this.addNewItem(item));
 		}
 		if (this.items.length > 0) this.setActiveItem(this.items[0].id);
-
-		// Set Templates
-		this.templates = _templates || defaultTemplates;
 
 		// Make the idSet
 		this.idSet = new Set(this.items.map((item) => item.id));
@@ -314,12 +351,15 @@ let localStoreItems = undefined;
 if (typeof window !== 'undefined' && window.localStorage) {
 	localStoreItems = localStorage.getItem('items');
 	if (localStoreItems) {
-		localStoreItems = new ItemStore(JSON.parse(localStoreItems));
+		localStoreItems = new ItemStore({ _items: JSON.parse(localStoreItems) });
 		console.log('Items loaded from local storage:', localStoreItems);
 	}
 }
 
 // Init store
 // export let items = new ItemStore();
-export let items = localStoreItems instanceof ItemStore ? localStoreItems : new ItemStore();
+export let items =
+	localStoreItems instanceof ItemStore
+		? new ItemStore({ _store: localStoreItems })
+		: new ItemStore();
 export let editItem = writable<StoredItem>(items.getFirstItem());
