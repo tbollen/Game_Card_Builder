@@ -118,6 +118,7 @@
 		>
 		{#if $selectedItems.size > 0}
 			<Button icon="mdi:printer" click={printSelectedCards}>Print Selected</Button>
+			<Button icon="mdi:printer" click={printSelectedCardsOnA4}>Print to A4</Button>
 			<Button icon="mdi:content-copy" click={() => ($selectedItems = new Set())}>
 				Deselect cards ({$selectedItems.size})
 			</Button>
