@@ -97,7 +97,7 @@
 	});
 
 	function printSelectedCards() {
-		goto(`${base}/collection/print`);
+		goto(`${base}/print`);
 	}
 </script>
 
