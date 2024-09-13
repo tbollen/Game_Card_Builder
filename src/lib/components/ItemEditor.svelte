@@ -575,30 +575,30 @@
 						}}
 					/>
 				{/each}
-			{/if}
 
-			<!-- Font Options -->
-			<div class="fullLine headerLine">Fonts</div>
-			{#each availableFontOptions as fontOption}
-				<label for="font-{fontOption}">{fontOption}</label>
-				<select
-					id="font-{fontOption}"
-					bind:value={$editItem.style.font[fontOption]}
-					on:change={presetToCustom}
-				>
-					{#each availableFonts as font}
-						<option value={font}>{font}</option>
-					{/each}
-				</select>
-				<Button
-					color="plain"
-					icon="mdi:restore"
-					size="small"
-					click={() => {
-						$editItem.style.font[fontOption] = defaultCardStyle.font[fontOption];
-					}}
-				/>
-			{/each}
+				<!-- Font Options -->
+				<div class="fullLine headerLine">Fonts</div>
+				{#each availableFontOptions as fontOption}
+					<label for="font-{fontOption}">{fontOption}</label>
+					<select
+						id="font-{fontOption}"
+						bind:value={$editItem.style.font[fontOption]}
+						on:change={presetToCustom}
+					>
+						{#each availableFonts as font}
+							<option value={font}>{font}</option>
+						{/each}
+					</select>
+					<Button
+						color="plain"
+						icon="mdi:restore"
+						size="small"
+						click={() => {
+							$editItem.style.font[fontOption] = defaultCardStyle.font[fontOption];
+						}}
+					/>
+				{/each}
+			{/if}
 		</div>
 	</Accordion>
 </div>

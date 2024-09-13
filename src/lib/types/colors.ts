@@ -77,6 +77,21 @@ export const cardStylePresets: Record<
 			accents: 'Gotham',
 			text: 'Gotham'
 		}
+	},
+	ancient: {
+		color: {
+			accent: colorScheme.threat[2],
+			icon: colorScheme.threat[2],
+			text: '#000000',
+			background: '#fcf4e6',
+			cardBorder: colorScheme.threat[2]
+		},
+		font: {
+			name: 'Pirata One',
+			subtitle: 'UnifrakturCook',
+			accents: 'Pirata One',
+			text: 'UnifrakturCook'
+		}
 	}
 };
 
