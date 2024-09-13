@@ -11,15 +11,12 @@
 	import { editItem } from '$lib/stores/Items';
 	import ItemEditor from '$lib/components/ItemEditor.svelte';
 
+	// Import selected Cards store
+	import { selectedItems } from '$lib/stores/selectedItems';
+
 	import { items } from '$lib/stores/Items';
 	import { slide } from 'svelte/transition';
 	import { onMount } from 'svelte';
-
-	// Export to PDF section
-	var cardSection: HTMLElement;
-	async function printCards() {
-		window.print();
-	}
 
 	let editMode = true;
 
@@ -45,23 +42,20 @@
 
 <main id="main">
 	<!-- Header -->
-	<section id="header" class="hideOnPrint">
+	<section id="header">
 		<Navbar />
 	</section>
 	<!-- Editor Pane -->
 	{#if editMode}
-		<section id="editor" class="hideOnPrint" transition:slide={{ duration: 200 }}>
+		<section id="editor" transition:slide={{ duration: 200 }}>
 			<div class="displayText editorTitle">Card Editor</div>
 			<ItemEditor />
-			<div id="editorFooter">
-				<Button click={printCards} icon="mdi:printer">Print Card</Button>
-			</div>
 		</section>
 	{/if}
 
 	<!-- Card Pane -->
 	<section id="cardView">
-		<div class="buttonRow hideOnPrint">
+		<div class="buttonRow">
 			<Button click={toggleEditMode} icon={editMode ? 'mdi:eye' : 'mdi:pencil'}
 				>{editMode ? 'Viewing Mode' : 'Edit Card'}</Button
 			>
@@ -69,7 +63,7 @@
 
 			<a class="mobileOnly" href="#editor">Go to editor</a>
 		</div>
-		<div id="cardArea" bind:this={cardSection}>
+		<div id="cardArea">
 			<Gamecard item={$editItem} />
 			<GamecardBack item={$editItem} />
 		</div>
@@ -90,23 +84,12 @@
 		grid-template-columns: fit-content max(2fr, fit-content);
 		grid-template-rows: min-content 1fr;
 	}
-	@media print {
-		.hideOnPrint {
-			display: none !important;
-			visibility: hidden !important;
-			position: absolute;
-			top: 0;
-			left: 0;
-		}
-		.showOnPrint {
-			display: block;
-		}
-	}
 
 	/* Changed layout for mobile */
 	.mobileOnly {
 		display: none;
 	}
+
 	@media screen and (max-width: 750px) {
 		#main {
 			grid-template-areas: 'header' 'cardView' 'editor';

@@ -3,8 +3,8 @@
 	/* margin: 5mm; */
 
 	/* Standard Poker Size */
-	height: 88mm;
-	width: 63mm;
+	height: 88mm !important;
+	width: 63mm !important;
 	box-sizing: border-box;
 
 	/* Padding */

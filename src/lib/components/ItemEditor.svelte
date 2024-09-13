@@ -77,8 +77,16 @@
 	import { onMount } from 'svelte';
 	import { derived } from 'svelte/store';
 
+	// Printing the card
+	import { goto } from '$app/navigation';
+	import { base } from '$app/paths';
+	import { selectedItems } from '$lib/stores/selectedItems';
+
 	async function printCards() {
-		window.print();
+		const itemId = $editItem.id;
+		saveItem();
+		selectedItems.set(new Set([itemId]));
+		goto(`${base}/print`);
 	}
 
 	function downloadItem() {
