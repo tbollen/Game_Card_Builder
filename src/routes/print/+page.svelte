@@ -14,7 +14,10 @@
 	// Set Cards
 	cardSet = items.items.filter((item) => cards.has(item.id));
 
-	let cardPrint = true;
+	// Get info from url parameter
+	const urlParams = new URLSearchParams(window.location.search);
+	const printMode = urlParams.get('printMode');
+	let cardPrint: boolean = printMode != 'A4';
 
 	const cardHeight = 88;
 	const cardWidth = 63;
@@ -52,15 +55,9 @@
 
 	// Set css @page variables
 	function setCssPage() {
-		const pageSize = cardPrint
-			? `${cardWidth + cardGap}mm ${cardHeight + cardGap}mm`
-			: 'A4 landscape';
+		const pageSize = cardPrint ? `${cardWidth}mm ${cardHeight}mm` : 'A4 landscape';
 		const style = document.createElement('style');
 		style.innerHTML = `
-            :global(body) {
-                padding: 0;
-                margin: 0;
-            }
             @page {
                 size: ${pageSize};
                 margin: 0;
@@ -75,12 +72,20 @@
 	{#each cardSet as card, i}
 		<div
 			class="singleCardPrint"
-			style="height: {cardHeight + cardGap}mm; width: {cardWidth + cardGap}mm; padding: {cardGap /
-				2}mm;"
+			style="
+				height: {cardHeight + cardGap}mm;
+				width: {cardWidth + cardGap}mm;
+				padding: {cardGap / 2}mm;"
 		>
 			<Gamecard item={card} />
 		</div>
-		<div class="singleCardPrint" style="height: {cardHeight}mm; width: {cardWidth}mm">
+		<div
+			class="singleCardPrint"
+			style="
+				height: {cardHeight + cardGap}mm;
+				width: {cardWidth + cardGap}mm;
+				padding: {cardGap / 2}mm;"
+		>
 			<GamecardBack item={card} />
 		</div>
 	{/each}
@@ -100,52 +105,62 @@
 {/if}
 
 <style>
+	:global(body) {
+		margin: 0;
+		padding: 0;
+	}
 	@page {
 		margin: 0;
 		page-size: 210mm 50mm;
 	}
-	@media print {
-		div.printArea {
-			/* Page */
-			--page-width: 297mm;
-			--page-height: 209mm;
-			width: var(--page-width) !important;
-			height: var(--page-height) !important;
-			box-sizing: border-box;
-			padding: 0;
-			position: relative;
 
-			/* Card Layout */
-			display: grid;
-			grid-template-columns: repeat(auto-fill, 60mm);
-			grid-template-rows: repeat(auto-fill, 90mm);
-			justify-content: space-between;
-			justify-items: center;
+	div.printArea {
+		/* Page */
+		--page-width: 297mm;
+		--page-height: 209mm;
+		width: var(--page-width) !important;
+		height: var(--page-height) !important;
+		box-sizing: border-box;
+		padding: 0;
+		position: relative;
 
-			/* Print Color Adjust */
-			-webkit-print-color-adjust: exact; /* For WebKit browsers */
-			print-color-adjust: exact; /* For WebKit browsers */
-			color-adjust: exact; /* Standard property */
-			border-top: var(--borderY);
-			border-left: var(--borderX);
-			border-right: var(--borderX);
-			border-bottom: var(--borderY);
-		}
+		/* Card Layout */
+		display: grid;
+		grid-template-columns: repeat(auto-fill, 60mm);
+		grid-template-rows: repeat(auto-fill, 90mm);
+		justify-content: space-between;
+		justify-items: center;
 
-		div.pageMarker {
-			position: absolute;
-			top: -8mm;
-			left: -8mm;
-		}
+		/* Print Color Adjust */
+		-webkit-print-color-adjust: exact; /* For WebKit browsers */
+		print-color-adjust: exact; /* For WebKit browsers */
+		color-adjust: exact; /* Standard property */
+		border-top: var(--borderY);
+		border-left: var(--borderX);
+		border-right: var(--borderX);
+		border-bottom: var(--borderY);
+	}
 
-		div.singleCardPrint {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			box-sizing: border-box;
+	div.pageMarker {
+		position: absolute;
+		top: -8mm;
+		left: -8mm;
+	}
 
-			/* Page */
-			page-break-after: always;
-		}
+	div.singleCardPrint {
+		display: grid;
+		place-items: center;
+		box-sizing: border-box;
+
+		/* Page */
+		page-break-before: always;
+
+		/* Debugging */
+		/* background-color: aqua; */
+
+		/* Print Color Adjust */
+		-webkit-print-color-adjust: exact; /* For WebKit browsers */
+		print-color-adjust: exact; /* For WebKit browsers */
+		color-adjust: exact; /* Standard property */
 	}
 </style>
