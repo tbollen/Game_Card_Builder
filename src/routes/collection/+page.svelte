@@ -97,7 +97,11 @@
 	});
 
 	function printSelectedCards() {
-		goto(`${base}/print`);
+		goto(`${base}/print?printMode=single`);
+	}
+
+	function printSelectedCardsOnA4() {
+		goto(`${base}/print?printMode=A4`);
 	}
 </script>
 
