@@ -11,9 +11,6 @@
 	import { editItem } from '$lib/stores/Items';
 	import ItemEditor from '$lib/components/ItemEditor.svelte';
 
-	// Import selected Cards store
-	import { selectedItems } from '$lib/stores/selectedItems';
-
 	import { items } from '$lib/stores/Items';
 	import { slide } from 'svelte/transition';
 	import { onMount } from 'svelte';
@@ -32,6 +29,45 @@
 		editMode = !editMode;
 	}
 
+	// ## Toolbar buttons
+	// Printing the card
+	import { goto } from '$app/navigation';
+	import { base } from '$app/paths';
+	import { selectedItems } from '$lib/stores/selectedItems';
+
+	async function printCards() {
+		const itemId = $editItem.id;
+		saveItem();
+		selectedItems.set(new Set([itemId]));
+		goto(`${base}/print`);
+	}
+
+	function downloadItem() {
+		// find if the item already exists
+		items.download();
+	}
+
+	let showSaved: boolean = false;
+
+	function saveItem() {
+		items.setItem($editItem.id, $editItem);
+		items.save();
+		showSaved = true;
+		setTimeout(() => (showSaved = false), 2000);
+	}
+
+	$: advancedMode = false;
+
+	function toggleAdvancedMode() {
+		advancedMode = !advancedMode;
+		// Set configs
+		if (typeof window !== 'undefined' && window.localStorage) {
+			localStorage.setItem('advancedMode', advancedMode ? 'true' : 'false');
+		}
+	}
+
+	// END OF TOOLBAR BUTTONS
+
 	onMount(() => {
 		// Load configs
 		if (typeof window !== 'undefined' && window.localStorage) {
@@ -48,7 +84,51 @@
 	<!-- Editor Pane -->
 	{#if editMode}
 		<section id="editor" transition:slide={{ duration: 200 }}>
-			<div class="displayText editorTitle">Card Editor</div>
+			<header id="editorHeader">
+				<div class="displayText editorTitle">Card Editor</div>
+				<div id="cardInfo" class="editorRow">
+					<div class="cardInfoBlock">
+						<div id="cardName" class="infoBlockMajor">
+							{$editItem?.name}
+						</div>
+						<div id="cardId" class="infoBlockMinor">
+							id: {$editItem?.id}
+						</div>
+					</div>
+
+					<div class="cardInfoBlock">
+						<div id="cardCreator" class="infoBlockMajor">
+							{$editItem?.creator}
+						</div>
+						<div id="cardDate" class="infoBlockMinor">123</div>
+					</div>
+				</div>
+				<!-- Buttons and Toolbar -->
+				<div id="editHeader" class="editorRow">
+					<!-- Advanced -->
+					<Button
+						click={toggleAdvancedMode}
+						stateOn={advancedMode}
+						variant="flipped"
+						color="weave"
+						icon="memory:anvil"
+					>
+						Advanced
+					</Button>
+					<!-- Download -->
+					<Button click={downloadItem} variant="filled" icon="memory:download">Download</Button>
+
+					<!-- Save -->
+					<Button
+						click={saveItem}
+						color={showSaved ? 'success' : 'blossom'}
+						variant="filled"
+						icon={showSaved ? 'mdi:check' : 'memory:floppy-disk'}>Save</Button
+					>
+					<!-- Print -->
+					<Button click={printCards} icon="mdi:printer">Print Card</Button>
+				</div>
+			</header>
 			<ItemEditor />
 		</section>
 	{/if}
@@ -157,5 +237,44 @@
 	.editorTitle {
 		text-align: center;
 		font-size: 2em;
+	}
+
+	header#editorHeader {
+		position: sticky;
+		top: 0;
+	}
+
+	/* Card Info */
+	#cardInfo {
+		display: flex;
+		gap: 0.5em;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.cardInfoBlock {
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+		font-size: 0.8rem;
+		text-align: center;
+	}
+
+	.cardInfoBlock:first-child {
+		text-align: left;
+	}
+
+	.cardInfoBlock:last-child {
+		text-align: right;
+	}
+
+	.infoBlockMinor {
+		color: var(--color-text-2);
+	}
+
+	.infoBlockMajor {
+		font-weight: 500;
+		font-size: 1rem;
 	}
 </style>
