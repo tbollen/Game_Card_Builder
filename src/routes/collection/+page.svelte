@@ -121,6 +121,14 @@
 			<Button icon="mdi:plus" color="threat" click={addNew}>New Card</Button>
 			<!-- Upload with JSON -->
 			<Button icon="mdi:upload" click={() => items.upload()}>Upload</Button>
+			<!-- Download -->
+			{#if $selectedItems.size > 0}
+				<Button icon="mdi:download" click={() => items.download(Array.from($selectedItems))}
+					>Download ({$selectedItems.size})</Button
+				>
+			{:else}
+				<Button icon="mdi:download" click={() => items.download()}>Download</Button>
+			{/if}
 			<Button
 				icon={showTemplates ? 'mdi:clipboard-outline' : 'mdi:clipboard-off-outline'}
 				stateOn={showTemplates}
@@ -140,7 +148,6 @@
 				</Button>
 				<Button size="small" icon="mdi:printer" click={printSelectedCards}>Print</Button>
 				<Button size="small" icon="mdi:printer" click={printSelectedCardsOnA4}>Print (A4)</Button>
-
 				<Button size="small" icon="mdi:trash" click={deleteSelected} color="threat">Delete</Button>
 			</div>
 		{/if}

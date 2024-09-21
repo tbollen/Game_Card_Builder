@@ -43,8 +43,7 @@
 	}
 
 	function downloadItem() {
-		// find if the item already exists
-		items.download();
+		items.download($editItem.id);
 	}
 
 	let showSaved: boolean = false;

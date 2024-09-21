@@ -333,8 +333,24 @@ class ItemStore {
 		console.log('Items saved to local storage:', localStoreItems);
 	}
 
-	download() {
-		const _items = JSON.stringify(this.items);
+	// Downloading
+
+	/**
+	 * Download items, IDs can be given to download specific items
+	 * @param id Single ID or Array of IDs to download. If empty, all items will be downloaded
+	 */
+	download(id: string | string[] = []) {
+		if (!Array.isArray(id)) id = [id];
+		let _items = this.items;
+		if (id.length > 0) {
+			_items = id.map((id) => this.getItem(id));
+		}
+		if (_items.length === 0) throw new Error('No valid IDs given');
+		this.sudoDownload(_items);
+	}
+
+	private sudoDownload(targetItems: StoredItem[] = this.items) {
+		const _items = JSON.stringify(targetItems);
 		const blob = new Blob([_items], { type: 'application/json' });
 		const url = URL.createObjectURL(blob);
 		const link = document.createElement('a');
@@ -342,6 +358,8 @@ class ItemStore {
 		link.download = 'items.json';
 		link.click();
 	}
+
+	// Uploading
 
 	uploadOverride() {
 		if (!window.confirm('Are you sure you want to override the current items?')) return;
@@ -387,6 +405,8 @@ class ItemStore {
 		// Make the file input element visible and clickable
 		fileInput.click();
 	}
+
+	//
 
 	private serialize(): JSON {
 		const stringifiedItems = JSON.stringify(this.items);
