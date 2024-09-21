@@ -106,10 +106,9 @@
 
 	function deleteSelected() {
 		if (typeof window === 'undefined') throw new Error('Window is undefined');
-		if (window.confirm('Are you sure you want to delete selected cards?')) {
-			$selectedItems.forEach((id) => deleteCard(id));
-			// Currently still gives a warning for every selected card individually
-		}
+		// Create an array of id's from the set
+		const ids = Array.from($selectedItems);
+		items.destroy(ids);
 	}
 </script>
 

@@ -238,7 +238,18 @@ class ItemStore {
 		}
 	}
 
-	destroy(_id: string) {
+	destroy(id: string | string[]) {
+		if (!Array.isArray(id)) id = [id];
+		const nameArray = id.map((id) => this.getItem(id).name);
+		if (!window.confirm(`Are you sure you want to delete ${nameArray.join(', ')}?`)) return;
+		if (id.length > 1) {
+			// If multiple items are deleted, ask if really want to delete them all
+			if (!window.confirm(`Are you really sure? Multiple items will be deleted!`)) return;
+		}
+		id.forEach((id) => this.sudoDestroy(id));
+	}
+
+	private sudoDestroy(_id: string) {
 		let _idSet = this.idSet;
 		let _items = this.items;
 		if (this.items.length < 2) {
@@ -248,11 +259,6 @@ class ItemStore {
 		try {
 			// Remove item from Items
 			const _targetItem = this.getItem(_id);
-			const confirmed = window.confirm(
-				`Are you sure you want to delete the card "${_targetItem.name}?" (id: ${_id})`
-			);
-			// If confirmed, remove item
-			if (!confirmed) return;
 			_items = _items.filter((item) => item.id !== _targetItem.id);
 			// Update idSet
 			if (!_idSet.has(_id)) return console.error(`ID (${_id}) not found in idSet`);
@@ -262,6 +268,7 @@ class ItemStore {
 			this.idSet = _idSet;
 			// Save Changes
 			this.save();
+			window.location.reload();
 		} catch (error) {
 			// If item not found, re-throw error
 			console.error(error);
@@ -336,7 +343,16 @@ class ItemStore {
 		link.click();
 	}
 
+	uploadOverride() {
+		if (!window.confirm('Are you sure you want to override the current items?')) return;
+		this.sudoUpload(true);
+	}
+
 	upload() {
+		this.sudoUpload();
+	}
+
+	private sudoUpload(override: boolean = false) {
 		// Create a file input element
 		const fileInput = document.createElement('input');
 		fileInput.type = 'file';
