@@ -32,7 +32,7 @@
 
 <section id="navigation" class="navbar">
 	<a href="{base}/" id="logo" class="displayText websiteLogo">Card Builder</a>
-	<nav>
+	<nav class="links">
 		{#each routeNames as routeName}
 			{#if !routes[routeName].hidden}
 				<div class="navItem navUnderline" class:active={currentRoute === routes[routeName].path}>
@@ -44,8 +44,8 @@
 			{/if}
 		{/each}
 	</nav>
-	<div class="linkButtons">
-		<a class="linkButton" href="https://github.com/tbollen/Game_Card_Builder" target="_blank">
+	<div class="badges">
+		<a class="badge" href="https://github.com/tbollen/Game_Card_Builder" target="_blank">
 			<Icon icon="mdi:github" />
 		</a>
 	</div>
@@ -57,15 +57,21 @@
 		/* Keep it centered */
 		grid-template-columns: 1fr min-content 1fr;
 		padding: 5px;
+		/* Areas */
+		grid-template-areas: 'logo links badges';
 	}
 
 	@media screen and (max-width: 750px) {
 		#navigation {
 			grid-template-columns: 1fr;
+			grid-template-areas: 'logo badges' 'links links';
 		}
 	}
 
-	nav {
+	.links {
+		/* Placement */
+		grid-area: links;
+		/* Layout */
 		display: flex;
 		gap: 1.5rem;
 		justify-content: center;
@@ -124,6 +130,8 @@
 	}
 
 	.websiteLogo {
+		/* Grid Placement */
+		grid-area: logo;
 		/* Reset href properties */
 		color: unset;
 		text-decoration: unset;
@@ -152,19 +160,22 @@
 		-webkit-text-fill-color: transparent;
 	}
 
-	.linkButtons {
+	.badges {
+		/* Placement */
+		grid-area: badges;
+		/* Layout */
 		display: flex;
 		justify-content: end;
 		align-items: center;
 	}
 
-	.linkButton {
+	.badge {
 		font-size: 1.5em;
 		transition: all 0.2s ease-in-out;
 		color: var(--color-text-2);
 	}
 
-	.linkButton:hover {
+	.badge:hover {
 		color: var(--color-threat-2);
 	}
 </style>
