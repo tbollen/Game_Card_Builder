@@ -120,6 +120,8 @@
 	<section id="controls">
 		<div class="toolbarCategory">
 			<Button icon="mdi:plus" color="threat" click={addNew}>New Card</Button>
+			<!-- Upload with JSON -->
+			<Button icon="mdi:upload" click={() => items.upload()}>Upload</Button>
 			<Button
 				icon={showTemplates ? 'mdi:clipboard-outline' : 'mdi:clipboard-off-outline'}
 				stateOn={showTemplates}

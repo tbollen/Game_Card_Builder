@@ -338,6 +338,7 @@ class ItemStore {
 
 	upload() {
 		// TODO
+		alert('Not yet implemented');
 	}
 
 	private serialize(): JSON {
