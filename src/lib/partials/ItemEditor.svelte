@@ -41,6 +41,8 @@
 	$: selectedSkill && updateSkill('skill');
 
 	function updateSkill(priority?: 'char' | 'skill') {
+		if ($editItem.skillCheck == null) return;
+		console.debug('Updating skill', selectedChar, selectedSkill);
 		if (selectedChar == undefined && selectedSkill == undefined) {
 			$editItem.skillCheck = undefined;
 			return;
@@ -68,9 +70,7 @@
 	}
 
 	function resetSkill() {
-		$editItem.skillCheck = undefined;
-		selectedSkill = undefined;
-		selectedChar = undefined;
+		$editItem.skillCheck = null;
 	}
 
 	// Button to add new fields
