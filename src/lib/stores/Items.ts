@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { Item } from '$lib/methods/Item';
+import { Item } from '$lib/types/Item';
 import { defaultTemplates } from '$lib/stores/defaultTemplates';
 import { startingItems } from '$lib/stores/defaultTemplates';
 import {
