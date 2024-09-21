@@ -11,9 +11,6 @@
 	import { editItem } from '$lib/stores/Items';
 	import ItemEditor from '$lib/components/ItemEditor.svelte';
 
-	// Import selected Cards store
-	import { selectedItems } from '$lib/stores/selectedItems';
-
 	import { items } from '$lib/stores/Items';
 	import { slide } from 'svelte/transition';
 	import { onMount } from 'svelte';
@@ -32,12 +29,48 @@
 		editMode = !editMode;
 	}
 
+	// ## Toolbar buttons
+	// Printing the card
+	import { goto } from '$app/navigation';
+	import { base } from '$app/paths';
+	import { selectedItems } from '$lib/stores/selectedItems';
+
+	async function printCards() {
+		const itemId = $editItem.id;
+		saveItem();
+		selectedItems.set(new Set([itemId]));
+		goto(`${base}/print`);
+	}
+
+	function downloadItem() {
+		// find if the item already exists
+		items.download();
+	}
+
+	let showSaved: boolean = false;
+
+	function saveItem() {
+		items.setItem($editItem.id, $editItem);
+		items.save();
+		showSaved = true;
+		setTimeout(() => (showSaved = false), 2000);
+	}
+
+	import { advancedMode } from '$lib/stores/advancedMode';
+	function toggleAdvancedMode() {
+		$advancedMode = !$advancedMode;
+	}
+
+	// END OF TOOLBAR BUTTONS
+	let localDate: string = '';
+	let mounted = false;
 	onMount(() => {
-		// Load configs
-		if (typeof window !== 'undefined' && window.localStorage) {
-			localStorage.getItem('advancedMode');
-		}
+		mounted = true;
 	});
+
+	$: if (mounted) {
+		localDate = new Date($editItem.dateCreated).toLocaleDateString();
+	}
 </script>
 
 <main id="main">
@@ -48,8 +81,58 @@
 	<!-- Editor Pane -->
 	{#if editMode}
 		<section id="editor" transition:slide={{ duration: 200 }}>
-			<div class="displayText editorTitle">Card Editor</div>
-			<ItemEditor />
+			<header id="editorHeader">
+				<div class="displayText editorTitle">Card Editor</div>
+				<div id="cardInfo" class="editorRow">
+					<div class="cardInfoBlock">
+						<div id="cardName" class="infoBlockMajor">
+							{$editItem?.name}
+						</div>
+						<div id="cardId" class="infoBlockMinor">
+							id: {$editItem?.id}
+						</div>
+					</div>
+
+					<div class="cardInfoBlock">
+						<div id="cardCreator" class="infoBlockMajor">
+							{$editItem?.creator}
+						</div>
+						<div id="cardDate" class="infoBlockMinor">{localDate}</div>
+					</div>
+				</div>
+				<!-- Buttons and Toolbar -->
+				<div id="toolbar" class="editorRow">
+					<!-- Advanced -->
+					<Button
+						click={toggleAdvancedMode}
+						stateOn={$advancedMode}
+						variant="flipped"
+						color="weave"
+						icon="memory:anvil"
+						size="small"
+					>
+						Advanced
+					</Button>
+					<!-- Download -->
+					<Button click={downloadItem} variant="filled" icon="memory:download" size="small"
+						>Download</Button
+					>
+
+					<!-- Save -->
+					<Button
+						click={saveItem}
+						color={showSaved ? 'success' : 'blossom'}
+						variant="filled"
+						icon={showSaved ? 'mdi:check' : 'memory:floppy-disk'}
+						size="small">Save</Button
+					>
+					<!-- Print -->
+					<Button click={printCards} icon="mdi:printer" size="small">Print Card</Button>
+				</div>
+			</header>
+			<div id="itemEditor">
+				<ItemEditor />
+			</div>
 		</section>
 	{/if}
 
@@ -127,6 +210,7 @@
 		/* Scrollbar */
 		overflow-y: auto;
 		scroll-behavior: auto;
+		padding: 0;
 	}
 
 	section#editor > #editorFooter {
@@ -157,5 +241,59 @@
 	.editorTitle {
 		text-align: center;
 		font-size: 2em;
+	}
+
+	/* Editor Header */
+
+	header#editorHeader {
+		position: sticky;
+		padding: var(--padding);
+		top: 0;
+		background-color: var(--color-surface-4);
+	}
+
+	#itemEditor {
+		padding: var(--padding);
+	}
+
+	/* Card Info */
+	#cardInfo {
+		display: flex;
+		gap: 0.5em;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.cardInfoBlock {
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+		font-size: 0.8rem;
+		text-align: center;
+	}
+
+	.cardInfoBlock:first-child {
+		text-align: left;
+	}
+
+	.cardInfoBlock:last-child {
+		text-align: right;
+	}
+
+	.infoBlockMinor {
+		color: var(--color-text-2);
+	}
+
+	.infoBlockMajor {
+		font-weight: 500;
+		font-size: 1rem;
+	}
+
+	/* Toolbar */
+	#toolbar {
+		display: flex;
+		gap: 0.3em;
+		justify-content: start;
 	}
 </style>

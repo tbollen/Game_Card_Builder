@@ -23,7 +23,7 @@
 	import { skillList, characteristics } from '$lib/modules/skillCheckList';
 
 	// Advanced Mode for more flexible editing
-	export let advancedMode: boolean = false;
+	import { advancedMode } from '$lib/stores/advancedMode';
 
 	// Iconify
 	function loadIconFromIconify(icon: string | undefined) {
@@ -77,40 +77,6 @@
 	import { onMount } from 'svelte';
 	import { derived } from 'svelte/store';
 
-	// Printing the card
-	import { goto } from '$app/navigation';
-	import { base } from '$app/paths';
-	import { selectedItems } from '$lib/stores/selectedItems';
-
-	async function printCards() {
-		const itemId = $editItem.id;
-		saveItem();
-		selectedItems.set(new Set([itemId]));
-		goto(`${base}/print`);
-	}
-
-	function downloadItem() {
-		// find if the item already exists
-		items.download();
-	}
-
-	let showSaved: boolean = false;
-
-	function saveItem() {
-		items.setItem($editItem.id, $editItem);
-		items.save();
-		showSaved = true;
-		setTimeout(() => (showSaved = false), 2000);
-	}
-
-	function toggleAdvancedMode() {
-		advancedMode = !advancedMode;
-		// Set configs
-		if (typeof window !== 'undefined' && window.localStorage) {
-			localStorage.setItem('advancedMode', advancedMode ? 'true' : 'false');
-		}
-	}
-
 	function presetToCustom() {
 		// $editItem.stylePreset = 'custom';
 		$editItem.useStylePreset('custom');
@@ -129,71 +95,16 @@
 
 	$: console.debug('Logging the editItem', $editItem);
 
-	let localDate: string = '';
 	let mounted = false;
 	onMount(() => {
 		loadIconFromIconify($editItem.icon);
 		mounted = true;
-
-		// Load configs
-		if (typeof window !== 'undefined' && window.localStorage) {
-			localStorage.getItem('advancedMode');
-			advancedMode = localStorage.getItem('advancedMode') == 'true';
-		}
 	});
-
-	$: if (mounted) {
-		localDate = new Date($editItem.dateCreated).toLocaleDateString();
-	}
 </script>
 
 <div id="editFields">
-	<div id="cardInfo" class="editorRow">
-		<div class="cardInfoBlock">
-			<div id="cardName" class="infoBlockMajor">
-				{$editItem?.name}
-			</div>
-			<div id="cardId" class="infoBlockMinor">
-				id: {$editItem?.id}
-			</div>
-		</div>
-
-		<div class="cardInfoBlock">
-			<div id="cardCreator" class="infoBlockMajor">
-				{$editItem?.creator}
-			</div>
-			<div id="cardDate" class="infoBlockMinor">
-				{localDate}
-			</div>
-		</div>
-	</div>
 	<hr class="divider" />
 	<!-- Editing Options -->
-	<div id="editHeader" class="editorRow">
-		<!-- Advanced -->
-		<Button
-			click={toggleAdvancedMode}
-			stateOn={advancedMode}
-			variant="flipped"
-			color="weave"
-			icon="memory:anvil"
-		>
-			Advanced
-		</Button>
-		<!-- Download -->
-		<Button click={downloadItem} variant="filled" icon="memory:download">Download</Button>
-
-		<!-- Save -->
-		<Button
-			click={saveItem}
-			color={showSaved ? 'success' : 'blossom'}
-			variant="filled"
-			icon={showSaved ? 'mdi:check' : 'memory:floppy-disk'}>Save</Button
-		>
-		<!-- Print -->
-		<Button click={printCards} icon="mdi:printer">Print Card</Button>
-	</div>
-	<hr class="divider" />
 	<!-- Editing -->
 	<!-- Main Fields -->
 	<Accordion>
@@ -214,7 +125,7 @@
 				{/each}
 			</select>
 			<!-- Icon Override -->
-			{#if advancedMode}
+			{#if $advancedMode}
 				<label for="iconOverride">
 					Icon
 					<Icon class="advancedIcon" icon="memory:anvil" />
@@ -371,7 +282,7 @@
 	<Accordion>
 		<div slot="head">Image</div>
 		<div slot="content" class="inputGrid">
-			{#if advancedMode}
+			{#if $advancedMode}
 				<!-- Image Name -->
 				<label for="imgName">
 					Name
@@ -503,7 +414,7 @@
 				{/if}
 			</div>
 			<div />
-			{#if advancedMode}
+			{#if $advancedMode}
 				<div class="fullLine headerLine">
 					<Icon class="advancedIcon" icon="memory:anvil" />
 					Custom Styling Options
@@ -575,68 +486,35 @@
 						}}
 					/>
 				{/each}
-			{/if}
 
-			<!-- Font Options -->
-			<div class="fullLine headerLine">Fonts</div>
-			{#each availableFontOptions as fontOption}
-				<label for="font-{fontOption}">{fontOption}</label>
-				<select
-					id="font-{fontOption}"
-					bind:value={$editItem.style.font[fontOption]}
-					on:change={presetToCustom}
-				>
-					{#each availableFonts as font}
-						<option value={font}>{font}</option>
-					{/each}
-				</select>
-				<Button
-					color="plain"
-					icon="mdi:restore"
-					size="small"
-					click={() => {
-						$editItem.style.font[fontOption] = defaultCardStyle.font[fontOption];
-					}}
-				/>
-			{/each}
+				<!-- Font Options -->
+				<div class="fullLine headerLine">Fonts</div>
+				{#each availableFontOptions as fontOption}
+					<label for="font-{fontOption}">{fontOption}</label>
+					<select
+						id="font-{fontOption}"
+						bind:value={$editItem.style.font[fontOption]}
+						on:change={presetToCustom}
+					>
+						{#each availableFonts as font}
+							<option value={font}>{font}</option>
+						{/each}
+					</select>
+					<Button
+						color="plain"
+						icon="mdi:restore"
+						size="small"
+						click={() => {
+							$editItem.style.font[fontOption] = defaultCardStyle.font[fontOption];
+						}}
+					/>
+				{/each}
+			{/if}
 		</div>
 	</Accordion>
 </div>
 
 <style>
-	/* Card Info */
-	#cardInfo {
-		display: flex;
-		gap: 0.5em;
-		flex-wrap: wrap;
-		justify-content: space-between;
-		align-items: center;
-	}
-	.cardInfoBlock {
-		display: flex;
-		flex-direction: column;
-		gap: 0;
-		font-size: 0.8rem;
-		text-align: center;
-	}
-
-	.cardInfoBlock:first-child {
-		text-align: left;
-	}
-
-	.cardInfoBlock:last-child {
-		text-align: right;
-	}
-
-	.infoBlockMinor {
-		color: var(--color-text-2);
-	}
-
-	.infoBlockMajor {
-		font-weight: 500;
-		font-size: 1rem;
-	}
-
 	/*  */
 	.editorRow {
 		display: flex;
