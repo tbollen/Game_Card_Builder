@@ -222,6 +222,12 @@
 	section#controls {
 		display: flex;
 		gap: 10px;
+		flex-wrap: wrap;
+	}
+	@media (max-width: 800px) {
+		section#controls {
+			justify-content: center;
+		}
 	}
 
 	.toolbarCategory {
