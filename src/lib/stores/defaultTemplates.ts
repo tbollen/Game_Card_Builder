@@ -1,4 +1,4 @@
-import { Item } from '$lib/methods/Item';
+import { Item } from '$lib/types/Item';
 export const defaultTemplates: Item[] = [
 	new Item({
 		name: 'Melee Weapon',
