@@ -204,6 +204,7 @@
 						<Button icon="mdi:zoom-in" stopPropagation />
 						<Button icon="mdi:pencil" stopPropagation click={() => editCard(card.id)} />
 						<Button icon="mdi:content-copy" stopPropagation click={() => duplicateCard(card.id)} />
+						<Button icon="mdi:download" stopPropagation click={() => items.download(card.id)} />
 						<Button
 							icon="mdi:trash-can"
 							color="threat"
