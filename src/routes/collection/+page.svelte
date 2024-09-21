@@ -118,21 +118,30 @@
 		<Navbar />
 	</section>
 	<section id="controls">
-		<Button icon="mdi:plus" color="threat" click={addNew}>New Card</Button>
-		<Button
-			icon={showTemplates ? 'mdi:clipboard-outline' : 'mdi:clipboard-off-outline'}
-			stateOn={showTemplates}
-			click={toggleTemplates}>Show Templates</Button
-		>
-		{#if $selectedItems.size > 0}
-			<Button icon="mdi:printer" click={printSelectedCards}>Print Selected</Button>
-			<Button icon="mdi:printer" click={printSelectedCardsOnA4}>Print to A4</Button>
-			<Button icon="mdi:content-copy" click={() => ($selectedItems = new Set())}>
-				Deselect cards ({$selectedItems.size})
-			</Button>
-			<Button icon="mdi:trash" click={deleteSelected} color="threat"
-				>Delete Selected ({$selectedItems.size})</Button
+		<div class="toolbarCategory">
+			<Button icon="mdi:plus" color="threat" click={addNew}>New Card</Button>
+			<Button
+				icon={showTemplates ? 'mdi:clipboard-outline' : 'mdi:clipboard-off-outline'}
+				stateOn={showTemplates}
+				click={toggleTemplates}>Show Templates</Button
 			>
+		</div>
+		{#if $selectedItems.size > 0}
+			<div class="toolbarCategory">
+				<div class="toolbarLabel">{$selectedItems.size} Items Selected</div>
+				<Button
+					size="small"
+					variant="outlined"
+					icon="mdi:content-copy"
+					click={() => ($selectedItems = new Set())}
+				>
+					Deselect
+				</Button>
+				<Button size="small" icon="mdi:printer" click={printSelectedCards}>Print</Button>
+				<Button size="small" icon="mdi:printer" click={printSelectedCardsOnA4}>Print (A4)</Button>
+
+				<Button size="small" icon="mdi:trash" click={deleteSelected} color="threat">Delete</Button>
+			</div>
 		{/if}
 	</section>
 	{#if renderCards}
@@ -213,6 +222,28 @@
 	section#controls {
 		display: flex;
 		gap: 10px;
+	}
+
+	.toolbarCategory {
+		display: flex;
+		flex-wrap: wrap;
+		column-gap: 8px;
+		row-gap: 4px;
+		/* Placement */
+		position: relative;
+		padding-bottom: 2.5px;
+	}
+
+	.toolbarCategory:has(.toolbarLabel) {
+		border-bottom: 1px solid var(--color-obsidian-2);
+	}
+
+	.toolbarLabel {
+		font-weight: 600;
+		font-size: 9pt;
+		/* Placement */
+		position: absolute;
+		top: calc(100% + 2.5px);
 	}
 
 	section#viewer {
