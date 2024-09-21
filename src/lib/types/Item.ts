@@ -45,7 +45,7 @@ export class Item {
 	description: string = 'Item Description';
 	aspects?: ItemFields[];
 	specials?: ItemFields[];
-	skillCheck?: SkillCheck;
+	skillCheck?: SkillCheck | null;
 	fields?: ItemFields[];
 	image: {
 		url?: string;
@@ -72,6 +72,7 @@ export class Item {
 			_itemReference = JSON.parse(JSON.stringify(_item)); // JSON methods for deep cloning
 		}
 		Object.assign(this, _itemReference);
+		if (_itemReference.skillCheck === null) this.skillCheck = null; // Null skillcheck
 	}
 	// Methods
 }

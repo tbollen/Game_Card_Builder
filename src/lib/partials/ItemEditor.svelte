@@ -41,6 +41,14 @@
 	$: selectedSkill && updateSkill('skill');
 
 	function updateSkill(priority?: 'char' | 'skill') {
+		if (
+			(priority == 'char' && selectedChar == undefined) ||
+			(priority == 'skill' && selectedSkill == undefined)
+		) {
+			$editItem.skillCheck = undefined;
+			return;
+		}
+		console.debug('Updating skill', selectedChar, selectedSkill);
 		if (selectedChar == undefined && selectedSkill == undefined) {
 			$editItem.skillCheck = undefined;
 			return;
@@ -68,9 +76,7 @@
 	}
 
 	function resetSkill() {
-		$editItem.skillCheck = undefined;
-		selectedSkill = undefined;
-		selectedChar = undefined;
+		$editItem.skillCheck = null;
 	}
 
 	// Button to add new fields
@@ -231,11 +237,18 @@
 				<div class="fieldItem">
 					<label for="characteristic">Characteristic</label>
 					<select id="characteristic" bind:value={selectedChar}>
+						{#if !$editItem.skillCheck || selectedChar == undefined}
+							<option selected disabled value="">None selected</option>
+						{/if}
 						{#each characteristics as characteristic}
-							<option value={characteristic}>{characteristic}</option>{/each}
+							<option value={characteristic}>{characteristic}</option>
+						{/each}
 					</select>
 					<label for="skill">Skill</label>
 					<select id="skill" bind:value={selectedSkill}>
+						{#if !$editItem.skillCheck || selectedChar == undefined}
+							<option selected disabled value="">None selected</option>
+						{/if}
 						{#each Object.entries(skillList) as [charName, skills]}
 							{#each skills as skill}
 								<option
