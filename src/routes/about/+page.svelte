@@ -13,4 +13,4 @@
 <h1 class="text-3xl font-bold underline">About this app</h1>
 
 <button on:click={() => (showDialog = true)}> show modal </button>
-<Dialog bind:show={showDialog} />
+<Dialog type="options" bind:show={showDialog} />
