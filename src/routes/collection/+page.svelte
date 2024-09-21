@@ -103,6 +103,14 @@
 	function printSelectedCardsOnA4() {
 		goto(`${base}/print?printMode=A4`);
 	}
+
+	function deleteSelected() {
+		if (typeof window === 'undefined') throw new Error('Window is undefined');
+		if (window.confirm('Are you sure you want to delete selected cards?')) {
+			$selectedItems.forEach((id) => deleteCard(id));
+			// Currently still gives a warning for every selected card individually
+		}
+	}
 </script>
 
 <main>
@@ -110,18 +118,30 @@
 		<Navbar />
 	</section>
 	<section id="controls">
-		<Button icon="mdi:plus" color="threat" click={addNew}>New Card</Button>
-		<Button
-			icon={showTemplates ? 'mdi:clipboard-outline' : 'mdi:clipboard-off-outline'}
-			stateOn={showTemplates}
-			click={toggleTemplates}>Show Templates</Button
-		>
+		<div class="toolbarCategory">
+			<Button icon="mdi:plus" color="threat" click={addNew}>New Card</Button>
+			<Button
+				icon={showTemplates ? 'mdi:clipboard-outline' : 'mdi:clipboard-off-outline'}
+				stateOn={showTemplates}
+				click={toggleTemplates}>Show Templates</Button
+			>
+		</div>
 		{#if $selectedItems.size > 0}
-			<Button icon="mdi:printer" click={printSelectedCards}>Print Selected</Button>
-			<Button icon="mdi:printer" click={printSelectedCardsOnA4}>Print to A4</Button>
-			<Button icon="mdi:content-copy" click={() => ($selectedItems = new Set())}>
-				Deselect cards ({$selectedItems.size})
-			</Button>
+			<div class="toolbarCategory">
+				<div class="toolbarLabel">{$selectedItems.size} Items Selected</div>
+				<Button
+					size="small"
+					variant="outlined"
+					icon="mdi:content-copy"
+					click={() => ($selectedItems = new Set())}
+				>
+					Deselect
+				</Button>
+				<Button size="small" icon="mdi:printer" click={printSelectedCards}>Print</Button>
+				<Button size="small" icon="mdi:printer" click={printSelectedCardsOnA4}>Print (A4)</Button>
+
+				<Button size="small" icon="mdi:trash" click={deleteSelected} color="threat">Delete</Button>
+			</div>
 		{/if}
 	</section>
 	{#if renderCards}
@@ -202,6 +222,34 @@
 	section#controls {
 		display: flex;
 		gap: 10px;
+		flex-wrap: wrap;
+	}
+	@media (max-width: 800px) {
+		section#controls {
+			justify-content: center;
+		}
+	}
+
+	.toolbarCategory {
+		display: flex;
+		flex-wrap: wrap;
+		column-gap: 8px;
+		row-gap: 4px;
+		/* Placement */
+		position: relative;
+		padding-bottom: 2.5px;
+	}
+
+	.toolbarCategory:has(.toolbarLabel) {
+		border-bottom: 1px solid var(--color-obsidian-2);
+	}
+
+	.toolbarLabel {
+		font-weight: 600;
+		font-size: 9pt;
+		/* Placement */
+		position: absolute;
+		top: calc(100% + 2.5px);
 	}
 
 	section#viewer {
