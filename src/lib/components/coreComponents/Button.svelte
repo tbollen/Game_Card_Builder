@@ -13,6 +13,7 @@
 	export let variant: 'filled' | 'outlined' | 'flipped' | 'contrast-outlined' = 'filled';
 	export let disableTransition: boolean = false;
 	export let hideSlotOnHover: boolean = false;
+	export let hideSlot: boolean = false;
 	export let stopPropagation: boolean = false;
 
 	let isHovering: boolean = false;
@@ -44,7 +45,7 @@
 		{/if}
 	</div>
 	<!-- Slot -->
-	{#if ($$slots.default && hideSlotOnHover && isHovering) || !hideSlotOnHover}
+	{#if (($$slots.default && hideSlotOnHover && isHovering) || !hideSlotOnHover) && !hideSlot}
 		<span class:slot={hideSlotOnHover} transition:slide={{ axis: 'x', duration: 200 }}>
 			<slot />
 		</span>
