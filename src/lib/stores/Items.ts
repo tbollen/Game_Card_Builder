@@ -337,8 +337,20 @@ class ItemStore {
 	}
 
 	upload() {
-		// TODO
-		alert('Not yet implemented');
+		const fileInput = document.createElement('input');
+		fileInput.type = 'file';
+		fileInput.accept = '.json';
+		fileInput.addEventListener('change', (e) => {
+			const selectedFile = (e.target as HTMLInputElement)?.files?.[0];
+			if (!selectedFile) return;
+			const reader = new FileReader();
+			reader.onload = (event) => {
+				const file = event.target?.result as string;
+				console.log('File contents:', JSON.parse(file));
+			};
+			reader.readAsText(selectedFile);
+		});
+		fileInput.click();
 	}
 
 	private serialize(): JSON {
