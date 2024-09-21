@@ -337,19 +337,38 @@ class ItemStore {
 	}
 
 	upload() {
+		// Create a file input element
 		const fileInput = document.createElement('input');
 		fileInput.type = 'file';
-		fileInput.accept = '.json';
+		fileInput.accept = '.json'; // Only accept JSON files
+
+		// When a file is selected, read its contents
 		fileInput.addEventListener('change', (e) => {
 			const selectedFile = (e.target as HTMLInputElement)?.files?.[0];
-			if (!selectedFile) return;
+			if (!selectedFile) return; // If no file is selected, exit
+
+			// Create a FileReader to read the file
 			const reader = new FileReader();
 			reader.onload = (event) => {
 				const file = event.target?.result as string;
-				console.log('File contents:', JSON.parse(file));
+				console.log('Uploaded file items:', JSON.parse(file));
+				// Create the items from the uploaded file
+				const newItems = JSON.parse(file);
+				// Create new Items from the uploaded file
+				Object.entries(newItems).forEach(([id, item]) => {
+					if (!item || typeof item !== 'object') throw new Error('Invalid item');
+					const _item: Partial<StoredItem> = { ...item };
+					this.addNewItem(_item);
+				});
+
+				// Reload the page to show the new items
+				window.location.reload();
 			};
+			// Start reading the file
 			reader.readAsText(selectedFile);
 		});
+
+		// Make the file input element visible and clickable
 		fileInput.click();
 	}
 
