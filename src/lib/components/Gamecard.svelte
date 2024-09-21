@@ -107,7 +107,7 @@
 	{/if}
 
 	<div id="fields" data-field-number={item?.fields?.length} class:hasSkillCheck={item?.skillCheck}>
-		{#if item?.fields || item?.skillCheck}
+		{#if (item?.fields && item?.fields?.length > 0) || item?.skillCheck}
 			<div class="fieldDivider" />
 		{/if}
 		{#if item?.fields}
