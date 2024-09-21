@@ -62,10 +62,15 @@
 	}
 
 	// END OF TOOLBAR BUTTONS
-
+	let localDate: string = '';
+	let mounted = false;
 	onMount(() => {
-		// Load configs
+		mounted = true;
 	});
+
+	$: if (mounted) {
+		localDate = new Date($editItem.dateCreated).toLocaleDateString();
+	}
 </script>
 
 <main id="main">
@@ -92,11 +97,11 @@
 						<div id="cardCreator" class="infoBlockMajor">
 							{$editItem?.creator}
 						</div>
-						<div id="cardDate" class="infoBlockMinor">123</div>
+						<div id="cardDate" class="infoBlockMinor">{localDate}</div>
 					</div>
 				</div>
 				<!-- Buttons and Toolbar -->
-				<div id="editHeader" class="editorRow">
+				<div id="toolbar" class="editorRow">
 					<!-- Advanced -->
 					<Button
 						click={toggleAdvancedMode}
@@ -104,24 +109,30 @@
 						variant="flipped"
 						color="weave"
 						icon="memory:anvil"
+						size="small"
 					>
 						Advanced
 					</Button>
 					<!-- Download -->
-					<Button click={downloadItem} variant="filled" icon="memory:download">Download</Button>
+					<Button click={downloadItem} variant="filled" icon="memory:download" size="small"
+						>Download</Button
+					>
 
 					<!-- Save -->
 					<Button
 						click={saveItem}
 						color={showSaved ? 'success' : 'blossom'}
 						variant="filled"
-						icon={showSaved ? 'mdi:check' : 'memory:floppy-disk'}>Save</Button
+						icon={showSaved ? 'mdi:check' : 'memory:floppy-disk'}
+						size="small">Save</Button
 					>
 					<!-- Print -->
-					<Button click={printCards} icon="mdi:printer">Print Card</Button>
+					<Button click={printCards} icon="mdi:printer" size="small">Print Card</Button>
 				</div>
 			</header>
-			<ItemEditor />
+			<div id="itemEditor">
+				<ItemEditor />
+			</div>
 		</section>
 	{/if}
 
@@ -199,6 +210,7 @@
 		/* Scrollbar */
 		overflow-y: auto;
 		scroll-behavior: auto;
+		padding: 0;
 	}
 
 	section#editor > #editorFooter {
@@ -231,9 +243,17 @@
 		font-size: 2em;
 	}
 
+	/* Editor Header */
+
 	header#editorHeader {
 		position: sticky;
+		padding: var(--padding);
 		top: 0;
+		background-color: var(--color-surface-4);
+	}
+
+	#itemEditor {
+		padding: var(--padding);
 	}
 
 	/* Card Info */
@@ -268,5 +288,12 @@
 	.infoBlockMajor {
 		font-weight: 500;
 		font-size: 1rem;
+	}
+
+	/* Toolbar */
+	#toolbar {
+		display: flex;
+		gap: 0.3em;
+		justify-content: start;
 	}
 </style>

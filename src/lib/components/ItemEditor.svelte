@@ -95,16 +95,11 @@
 
 	$: console.debug('Logging the editItem', $editItem);
 
-	let localDate: string = '';
 	let mounted = false;
 	onMount(() => {
 		loadIconFromIconify($editItem.icon);
 		mounted = true;
 	});
-
-	$: if (mounted) {
-		localDate = new Date($editItem.dateCreated).toLocaleDateString();
-	}
 </script>
 
 <div id="editFields">
