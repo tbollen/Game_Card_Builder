@@ -4,12 +4,12 @@
 	// Import Components
 	import Gamecard from '$lib/components/Gamecard.svelte';
 	import GamecardBack from '$lib/components/GamecardBack.svelte';
-	import Navbar from '$lib/components/Navbar.svelte';
+	import Navbar from '$lib/partials/Navbar.svelte';
 	import DiceIcon from '$lib/components/coreComponents/DiceIcon.svelte';
 
 	// Import Item Store
 	import { editItem } from '$lib/stores/Items';
-	import ItemEditor from '$lib/components/ItemEditor.svelte';
+	import ItemEditor from '$lib/partials/ItemEditor.svelte';
 
 	import { items } from '$lib/stores/Items';
 	import { slide } from 'svelte/transition';
@@ -43,8 +43,7 @@
 	}
 
 	function downloadItem() {
-		// find if the item already exists
-		items.download();
+		items.download($editItem.id);
 	}
 
 	let showSaved: boolean = false;

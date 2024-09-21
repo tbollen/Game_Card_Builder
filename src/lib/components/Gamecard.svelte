@@ -1,7 +1,7 @@
 <script lang="ts">
 	// Import Item Store
 	import { editItem } from '$lib/stores/Items';
-	import { type Item } from '$lib/methods/Item';
+	import { type Item } from '$lib/types/Item';
 	//
 	export let item: Item = $editItem;
 	export let print: boolean = true;

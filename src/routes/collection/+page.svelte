@@ -1,6 +1,6 @@
 <!-- Collection -->
 <script lang="ts">
-	import Navbar from '$lib/components/Navbar.svelte';
+	import Navbar from '$lib/partials/Navbar.svelte';
 	import Button from '$lib/components/coreComponents/Button.svelte';
 	import Gamecard from '$lib/components/Gamecard.svelte';
 	import GamecardBack from '$lib/components/GamecardBack.svelte';
@@ -67,7 +67,7 @@
 		updateItems();
 	}
 
-	import { type Item } from '$lib/methods/Item';
+	import { type Item } from '$lib/types/Item';
 	import Icon from '@iconify/svelte';
 	function createFromTemplate(base: Item) {
 		items.addNewItem(base);
@@ -106,10 +106,9 @@
 
 	function deleteSelected() {
 		if (typeof window === 'undefined') throw new Error('Window is undefined');
-		if (window.confirm('Are you sure you want to delete selected cards?')) {
-			$selectedItems.forEach((id) => deleteCard(id));
-			// Currently still gives a warning for every selected card individually
-		}
+		// Create an array of id's from the set
+		const ids = Array.from($selectedItems);
+		items.destroy(ids);
 	}
 </script>
 
@@ -120,6 +119,16 @@
 	<section id="controls">
 		<div class="toolbarCategory">
 			<Button icon="mdi:plus" color="threat" click={addNew}>New Card</Button>
+			<!-- Upload with JSON -->
+			<Button icon="mdi:upload" click={() => items.upload()}>Upload</Button>
+			<!-- Download -->
+			{#if $selectedItems.size > 0}
+				<Button icon="mdi:download" click={() => items.download(Array.from($selectedItems))}
+					>Download ({$selectedItems.size})</Button
+				>
+			{:else}
+				<Button icon="mdi:download" click={() => items.download()}>Download</Button>
+			{/if}
 			<Button
 				icon={showTemplates ? 'mdi:clipboard-outline' : 'mdi:clipboard-off-outline'}
 				stateOn={showTemplates}
@@ -139,7 +148,6 @@
 				</Button>
 				<Button size="small" icon="mdi:printer" click={printSelectedCards}>Print</Button>
 				<Button size="small" icon="mdi:printer" click={printSelectedCardsOnA4}>Print (A4)</Button>
-
 				<Button size="small" icon="mdi:trash" click={deleteSelected} color="threat">Delete</Button>
 			</div>
 		{/if}
@@ -196,6 +204,7 @@
 						<Button icon="mdi:zoom-in" stopPropagation />
 						<Button icon="mdi:pencil" stopPropagation click={() => editCard(card.id)} />
 						<Button icon="mdi:content-copy" stopPropagation click={() => duplicateCard(card.id)} />
+						<Button icon="mdi:download" stopPropagation click={() => items.download(card.id)} />
 						<Button
 							icon="mdi:trash-can"
 							color="threat"

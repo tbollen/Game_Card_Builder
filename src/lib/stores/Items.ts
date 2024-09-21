@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { Item } from '$lib/methods/Item';
+import { Item } from '$lib/types/Item';
 import { defaultTemplates } from '$lib/stores/defaultTemplates';
 import { startingItems } from '$lib/stores/defaultTemplates';
 import {
@@ -238,7 +238,18 @@ class ItemStore {
 		}
 	}
 
-	destroy(_id: string) {
+	destroy(id: string | string[]) {
+		if (!Array.isArray(id)) id = [id];
+		const nameArray = id.map((id) => this.getItem(id).name);
+		if (!window.confirm(`Are you sure you want to delete ${nameArray.join(', ')}?`)) return;
+		if (id.length > 1) {
+			// If multiple items are deleted, ask if really want to delete them all
+			if (!window.confirm(`Are you really sure? Multiple items will be deleted!`)) return;
+		}
+		id.forEach((id) => this.sudoDestroy(id));
+	}
+
+	private sudoDestroy(_id: string) {
 		let _idSet = this.idSet;
 		let _items = this.items;
 		if (this.items.length < 2) {
@@ -248,11 +259,6 @@ class ItemStore {
 		try {
 			// Remove item from Items
 			const _targetItem = this.getItem(_id);
-			const confirmed = window.confirm(
-				`Are you sure you want to delete the card "${_targetItem.name}?" (id: ${_id})`
-			);
-			// If confirmed, remove item
-			if (!confirmed) return;
 			_items = _items.filter((item) => item.id !== _targetItem.id);
 			// Update idSet
 			if (!_idSet.has(_id)) return console.error(`ID (${_id}) not found in idSet`);
@@ -262,6 +268,7 @@ class ItemStore {
 			this.idSet = _idSet;
 			// Save Changes
 			this.save();
+			window.location.reload();
 		} catch (error) {
 			// If item not found, re-throw error
 			console.error(error);
@@ -326,8 +333,24 @@ class ItemStore {
 		console.log('Items saved to local storage:', localStoreItems);
 	}
 
-	download() {
-		const _items = JSON.stringify(this.items);
+	// Downloading
+
+	/**
+	 * Download items, IDs can be given to download specific items
+	 * @param id Single ID or Array of IDs to download. If empty, all items will be downloaded
+	 */
+	download(id: string | string[] = []) {
+		if (!Array.isArray(id)) id = [id];
+		let _items = this.items;
+		if (id.length > 0) {
+			_items = id.map((id) => this.getItem(id));
+		}
+		if (_items.length === 0) throw new Error('No valid IDs given');
+		this.sudoDownload(_items);
+	}
+
+	private sudoDownload(targetItems: StoredItem[] = this.items) {
+		const _items = JSON.stringify(targetItems);
 		const blob = new Blob([_items], { type: 'application/json' });
 		const url = URL.createObjectURL(blob);
 		const link = document.createElement('a');
@@ -336,9 +359,54 @@ class ItemStore {
 		link.click();
 	}
 
-	upload() {
-		// TODO
+	// Uploading
+
+	uploadOverride() {
+		if (!window.confirm('Are you sure you want to override the current items?')) return;
+		this.sudoUpload(true);
 	}
+
+	upload() {
+		this.sudoUpload();
+	}
+
+	private sudoUpload(override: boolean = false) {
+		// Create a file input element
+		const fileInput = document.createElement('input');
+		fileInput.type = 'file';
+		fileInput.accept = '.json'; // Only accept JSON files
+
+		// When a file is selected, read its contents
+		fileInput.addEventListener('change', (e) => {
+			const selectedFile = (e.target as HTMLInputElement)?.files?.[0];
+			if (!selectedFile) return; // If no file is selected, exit
+
+			// Create a FileReader to read the file
+			const reader = new FileReader();
+			reader.onload = (event) => {
+				const file = event.target?.result as string;
+				console.log('Uploaded file items:', JSON.parse(file));
+				// Create the items from the uploaded file
+				const newItems = JSON.parse(file);
+				// Create new Items from the uploaded file
+				Object.entries(newItems).forEach(([id, item]) => {
+					if (!item || typeof item !== 'object') throw new Error('Invalid item');
+					const _item: Partial<StoredItem> = { ...item };
+					this.addNewItem(_item);
+				});
+
+				// Reload the page to show the new items
+				window.location.reload();
+			};
+			// Start reading the file
+			reader.readAsText(selectedFile);
+		});
+
+		// Make the file input element visible and clickable
+		fileInput.click();
+	}
+
+	//
 
 	private serialize(): JSON {
 		const stringifiedItems = JSON.stringify(this.items);
