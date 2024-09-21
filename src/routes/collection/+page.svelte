@@ -103,6 +103,14 @@
 	function printSelectedCardsOnA4() {
 		goto(`${base}/print?printMode=A4`);
 	}
+
+	function deleteSelected() {
+		if (typeof window === 'undefined') throw new Error('Window is undefined');
+		if (window.confirm('Are you sure you want to delete selected cards?')) {
+			$selectedItems.forEach((id) => deleteCard(id));
+			// Currently still gives a warning for every selected card individually
+		}
+	}
 </script>
 
 <main>
@@ -122,6 +130,9 @@
 			<Button icon="mdi:content-copy" click={() => ($selectedItems = new Set())}>
 				Deselect cards ({$selectedItems.size})
 			</Button>
+			<Button icon="mdi:trash" click={deleteSelected} color="threat"
+				>Delete Selected ({$selectedItems.size})</Button
+			>
 		{/if}
 	</section>
 	{#if renderCards}
