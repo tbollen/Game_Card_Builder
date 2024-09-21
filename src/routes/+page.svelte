@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Navbar from '$lib/components/Navbar.svelte';
+	import Navbar from '$lib/partials/Navbar.svelte';
 	import AbsoluteBackground from '$lib/components/coreComponents/AbsoluteBackground.svelte';
 	import { getImageData } from '$lib/metadata/imageAttributionList';
 

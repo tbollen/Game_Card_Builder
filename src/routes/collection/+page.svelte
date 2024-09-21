@@ -1,6 +1,6 @@
 <!-- Collection -->
 <script lang="ts">
-	import Navbar from '$lib/components/Navbar.svelte';
+	import Navbar from '$lib/partials/Navbar.svelte';
 	import Button from '$lib/components/coreComponents/Button.svelte';
 	import Gamecard from '$lib/components/Gamecard.svelte';
 	import GamecardBack from '$lib/components/GamecardBack.svelte';
@@ -67,7 +67,7 @@
 		updateItems();
 	}
 
-	import { type Item } from '$lib/methods/Item';
+	import { type Item } from '$lib/types/Item';
 	import Icon from '@iconify/svelte';
 	function createFromTemplate(base: Item) {
 		items.addNewItem(base);
