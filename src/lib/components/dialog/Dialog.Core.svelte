@@ -1,53 +1,40 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
-	import Button from './Button.svelte';
+	import Button from '$lib/components/coreComponents/Button.svelte';
 
-	// Props
-	let show: boolean = false;
+	// Define the props
 	export let message: string = '';
-	export let options: { name: string; response: any }[] = [
-		{ name: 'Ok', response: true },
-		{ name: 'Cancel', response: false }
-	];
-
-	// Promises
-	let resolvePromise: (value: any) => void;
-	let rejectPromise: (reason: any) => void;
-
-	// Open and close functions
-	export function open(): Promise<any> {
-		show = true;
-		return new Promise((resolve, reject) => {
-			resolvePromise = resolve;
-			rejectPromise = reject;
-		});
-	}
-
-	function closeDialog(response: any = null) {
-		dialog.close();
-		show = false;
-		response !== null ? resolvePromise(response) : rejectPromise('Dialog closed');
-	}
+	export let options: { name: string; response: any }[] = [];
+	export let close: (response: any) => void; // Add close as a prop
 
 	let dialog: HTMLDialogElement;
 
-	$: if (dialog && show) dialog.showModal();
+	$: if (dialog) dialog.showModal();
+
+	function dismiss() {
+		close(null); // Pass null or a default value
+	}
+
+	// Handle option clicks
+	function handleOption(option: { name: string; response: any }) {
+		close(option.response);
+	}
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
-<dialog bind:this={dialog} on:click|self={() => closeDialog(null)} transition:fly>
+<dialog bind:this={dialog} on:click|self={dismiss} transition:fly>
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div on:click|stopPropagation>
 		<section id="head">
 			<span class="message">{message}</span>
 			<div class="closeButton">
-				<Button click={() => closeDialog(null)} color="threat" icon="mdi:close" />
+				<Button click={dismiss} color="threat" icon="mdi:close" />
 			</div>
 		</section>
 
 		<div id="options" class="buttons">
 			{#each options as option}
-				<Button click={() => closeDialog(option.response)}>{option.name}</Button>
+				<Button click={() => handleOption(option)}>{option.name}</Button>
 			{/each}
 		</div>
 	</div>

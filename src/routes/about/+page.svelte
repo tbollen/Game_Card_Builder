@@ -3,14 +3,20 @@
 	import Navbar from '$lib/partials/Navbar.svelte';
 
 	// Test with modals
-	import Dialog from '$lib/components/coreComponents/Dialog.svelte';
+	import Dialog from '$lib/components/dialog/Dialog.Core.svelte';
 	import Button from '$lib/components/coreComponents/Button.svelte';
-	let showDialog = false;
+
+	import dialog from '$lib/components/dialog/dialogs';
+
+	function openDialog() {
+		dialog.confirm('Are you sure?').then((response) => {
+			alert(response);
+		});
+	}
 </script>
 
 <Navbar />
 
 <h1 class="text-3xl font-bold underline">About this app</h1>
 
-<button on:click={() => (showDialog = true)}> show modal </button>
-<Dialog type="options" bind:show={showDialog} />
+<button on:click={openDialog}> show modal </button>
