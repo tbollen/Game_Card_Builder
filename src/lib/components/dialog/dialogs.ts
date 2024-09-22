@@ -17,10 +17,10 @@ class Dialog {
 		});
 	}
 
-	static alert(message: string): Promise<any> {
+	static alert(message: string, content: any = null): Promise<any> {
 		return new Promise(async (resolve) => {
 			try {
-				const response = await ds.open(message, []);
+				const response = await ds.open(message, [], content);
 				resolve(response);
 			} catch {
 				resolve(null); // Handle error gracefully

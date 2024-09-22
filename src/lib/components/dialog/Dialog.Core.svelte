@@ -6,6 +6,7 @@
 	export let message: string = '';
 	export let options: { name: string; response: any }[] = [];
 	export let close: (response: any) => void; // Add close as a prop
+	export let slot: any;
 
 	let dialog: HTMLDialogElement;
 
@@ -31,6 +32,13 @@
 				<Button click={dismiss} color="threat" icon="mdi:close" />
 			</div>
 		</section>
+
+		<!-- Slot content -->
+		{#if slot}
+			<div id="slot-container">
+				<slot><span id="dialogSlot">{slot}</span></slot>
+			</div>
+		{/if}
 
 		<div id="options" class="buttons">
 			{#each options as option}

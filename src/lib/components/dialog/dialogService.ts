@@ -6,6 +6,7 @@ export type Option = { name: string; response: any; icon?: string };
 const { subscribe, set } = writable<{
 	message: string;
 	options: any[];
+	slot?: any; // slot content
 	close: (response: any) => void;
 } | null>(null);
 
@@ -20,6 +21,7 @@ function createDialog() {
 	const dialogProps = {
 		message: '',
 		options: [],
+		slot: null,
 		close: (response: any) => {
 			closeDialog();
 			resolvePromise(response); // Resolve the promise when closing
@@ -39,13 +41,17 @@ function createDialog() {
 
 let resolvePromise: (value: any) => void;
 
-function open(message: string, options: { name: string; response: any }[]): Promise<any> {
+function open(
+	message: string,
+	options: { name: string; response: any }[],
+	slot?: any
+): Promise<any> {
 	if (!dialogInstance) {
 		createDialog();
 	}
 
 	// Set the dialog properties
-	dialogInstance.$set({ message, options });
+	dialogInstance.$set({ message, options, slot });
 
 	return new Promise((resolve) => {
 		resolvePromise = resolve; // Save the resolve function for later
