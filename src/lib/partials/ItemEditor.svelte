@@ -252,8 +252,7 @@
 						{#each Object.entries(skillList) as [charName, skills]}
 							{#each skills as skill}
 								<option
-									class:preferredOption={selectedChar != undefined &&
-										skillList[selectedChar].includes(skill)}
+									class:preferredOption={selectedChar && skillList[selectedChar].includes(skill)}
 									value={skill}>[{charName}]: {skill}</option
 								>
 							{/each}
