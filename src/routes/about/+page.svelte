@@ -7,16 +7,10 @@
 	import Button from '$lib/components/coreComponents/Button.svelte';
 
 	import dialog from '$lib/components/dialog/dialogs';
-
-	function openDialog() {
-		dialog.choose(['a', 'b']).then((response) => {
-			alert(response);
-		});
-	}
 </script>
 
-<Navbar />
+<section id="header" style="padding: var(--padding);">
+	<Navbar />
+</section>
 
 <h1 class="text-3xl font-bold underline">About this app</h1>
-
-<button on:click={openDialog}> show modal </button>
