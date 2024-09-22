@@ -17,6 +17,17 @@ class Dialog {
 		});
 	}
 
+	static alert(message: string): Promise<any> {
+		return new Promise(async (resolve) => {
+			try {
+				const response = await ds.open(message, []);
+				resolve(response);
+			} catch {
+				resolve(null); // Handle error gracefully
+			}
+		});
+	}
+
 	static choose(options: Option[] | string[], message: string = 'Pick an option'): Promise<any> {
 		// Check if options is an array of strings
 		const _options =
