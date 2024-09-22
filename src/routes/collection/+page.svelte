@@ -269,7 +269,7 @@
 		justify-items: center;
 		align-items: center;
 		gap: 5mm;
-		padding: 0mm 10%;
+		padding: 0mm min(10%, 15mm);
 	}
 
 	.cardInViewer {
