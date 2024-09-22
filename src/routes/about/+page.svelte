@@ -9,7 +9,7 @@
 	import dialog from '$lib/components/dialog/dialogs';
 
 	function openDialog() {
-		dialog.confirm('Are you sure?').then((response) => {
+		dialog.choose(['a', 'b']).then((response) => {
 			alert(response);
 		});
 	}

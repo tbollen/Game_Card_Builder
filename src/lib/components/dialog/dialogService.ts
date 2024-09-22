@@ -1,6 +1,8 @@
 import { writable } from 'svelte/store';
 import Dialog from './Dialog.Core.svelte';
 
+export type Option = { name: string; response: any; icon?: string };
+
 const { subscribe, set } = writable<{
 	message: string;
 	options: any[];
