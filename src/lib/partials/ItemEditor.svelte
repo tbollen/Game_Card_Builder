@@ -392,21 +392,21 @@
 	<hr class="divider" />
 	<Accordion>
 		<div slot="head">Styling</div>
-		<div slot="content" class="inputGridButton">
+		<div slot="content" class="inputGrid">
 			<!-- Preset -->
 			<label for="preset"> Style Preset </label>
-			<select
-				style="height: 2em;"
-				id="preset"
-				bind:value={$editItem.stylePreset}
-				on:change={(e) => $editItem.useStylePreset($editItem.stylePreset || 'custom')}
-				placeholder="Preset"
-			>
-				{#each Object.keys(cardStylePresets) as preset}
-					<option value={preset}>{preset}</option>
-				{/each}
-			</select>
 			<div class="buttonLine">
+				<select
+					style="height: 2em;"
+					id="preset"
+					bind:value={$editItem.stylePreset}
+					on:change={(e) => $editItem.useStylePreset($editItem.stylePreset || 'custom')}
+					placeholder="Preset"
+				>
+					{#each Object.keys(cardStylePresets) as preset}
+						<option value={preset}>{preset}</option>
+					{/each}
+				</select>
 				{#if $editItem.stylePreset !== 'default'}
 					<Button
 						color="plain"
@@ -436,17 +436,17 @@
 				<div class="fullLine headerLine">Color</div>
 				{#each availableColorOptions as colorType}
 					<label for="color-{colorType}">{colorType}</label>
-					<div class="colorPickerLine">
-						<input
-							type="color"
-							id="color-{colorType}"
-							bind:value={$editItem.style.color[colorType]}
-							on:change={presetToCustom}
-							list="colorSuggestions"
-						/>
-						<span>{$editItem.style.color[colorType]}</span>
-					</div>
 					<div class="buttonLine">
+						<div class="colorPickerLine">
+							<input
+								type="color"
+								id="color-{colorType}"
+								bind:value={$editItem.style.color[colorType]}
+								on:change={presetToCustom}
+								list="colorSuggestions"
+							/>
+							<span>{$editItem.style.color[colorType]}</span>
+						</div>
 						{#if $editItem.stylePreset === 'custom'}
 							<Button
 								color="plain"
@@ -483,43 +483,48 @@
 				<div class="fullLine headerLine">Text Size</div>
 				{#each availableFontSizeOptions as fontSizeOption}
 					<label for="fontSize-{fontSizeOption}">{fontSizeOption}</label>
-					<input
-						type="number"
-						id="fontSize-{fontSizeOption}"
-						bind:value={$editItem.style.fontsize[fontSizeOption]}
-						on:change={presetToCustom}
-					/>
-					<Button
-						color="plain"
-						icon="mdi:restore"
-						size="small"
-						click={() => {
-							$editItem.style.fontsize[fontSizeOption] = defaultCardStyle.fontsize[fontSizeOption];
-						}}
-					/>
+					<div class="buttonLine">
+						<input
+							type="number"
+							id="fontSize-{fontSizeOption}"
+							bind:value={$editItem.style.fontsize[fontSizeOption]}
+							on:change={presetToCustom}
+						/>
+						<Button
+							color="plain"
+							icon="mdi:restore"
+							size="small"
+							click={() => {
+								$editItem.style.fontsize[fontSizeOption] =
+									defaultCardStyle.fontsize[fontSizeOption];
+							}}
+						/>
+					</div>
 				{/each}
 
 				<!-- Font Options -->
 				<div class="fullLine headerLine">Fonts</div>
 				{#each availableFontOptions as fontOption}
 					<label for="font-{fontOption}">{fontOption}</label>
-					<select
-						id="font-{fontOption}"
-						bind:value={$editItem.style.font[fontOption]}
-						on:change={presetToCustom}
-					>
-						{#each availableFonts as font}
-							<option value={font}>{font}</option>
-						{/each}
-					</select>
-					<Button
-						color="plain"
-						icon="mdi:restore"
-						size="small"
-						click={() => {
-							$editItem.style.font[fontOption] = defaultCardStyle.font[fontOption];
-						}}
-					/>
+					<div class="buttonLine">
+						<select
+							id="font-{fontOption}"
+							bind:value={$editItem.style.font[fontOption]}
+							on:change={presetToCustom}
+						>
+							{#each availableFonts as font}
+								<option value={font}>{font}</option>
+							{/each}
+						</select>
+						<Button
+							color="plain"
+							icon="mdi:restore"
+							size="small"
+							click={() => {
+								$editItem.style.font[fontOption] = defaultCardStyle.font[fontOption];
+							}}
+						/>
+					</div>
 				{/each}
 			{/if}
 		</div>
@@ -536,14 +541,7 @@
 	}
 	.inputGrid {
 		display: grid;
-		grid-template-columns: 6em 1fr;
-		align-items: center;
-		gap: 0.2em;
-	}
-
-	.inputGridButton {
-		display: grid;
-		grid-template-columns: 6em 2fr min-content;
+		grid-template-columns: 6em minmax(0, 16em);
 		align-items: center;
 		gap: 0.2em;
 	}
@@ -598,6 +596,7 @@
 		display: flex;
 		gap: 1em;
 		align-items: center;
+		justify-content: space-between;
 	}
 
 	label {

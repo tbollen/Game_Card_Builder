@@ -207,7 +207,7 @@
 		min-width: 20em;
 		box-sizing: border-box;
 		/* Scrollbar */
-		overflow-y: auto;
+		overflow-y: scroll;
 		scroll-behavior: auto;
 		padding: 0;
 	}
