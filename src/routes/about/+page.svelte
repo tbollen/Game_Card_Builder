@@ -9,8 +9,16 @@
 	import dialog from '$lib/components/dialog/dialogs';
 </script>
 
-<section id="header" style="padding: var(--padding);">
+<section id="header">
 	<Navbar />
 </section>
 
-<h1 class="text-3xl font-bold underline">About this app</h1>
+<section id="content">
+	<h1 class="text-3xl font-bold underline">About this app</h1>
+</section>
+
+<style>
+	section {
+		padding: var(--padding);
+	}
+</style>
