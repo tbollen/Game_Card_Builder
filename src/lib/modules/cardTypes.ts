@@ -23,7 +23,35 @@ const _cardTypes: CardType[] = [
 	},
 	{
 		name: 'Talisman',
-		icon: 'mdi:ring'
+		icon: 'lucide:ship-wheel'
+	},
+	{
+		name: 'Scroll',
+		icon: 'mdi:scroll'
+	},
+	{
+		name: 'Potion',
+		icon: 'mdi:flask-round-bottom'
+	},
+	{
+		name: 'Instrument',
+		icon: 'mdi:guitar-acoustic'
+	},
+	{
+		name: 'Move',
+		icon: 'material-symbols:sprint-rounded'
+	},
+	{
+		name: 'Bomb',
+		icon: 'mdi:bomb'
+	},
+	{
+		name: 'Trap',
+		icon: 'mdi:mine'
+	},
+	{
+		name: 'Jewel',
+		icon: 'mdi:diamond-stone'
 	}
 ];
 
