@@ -137,7 +137,7 @@ class ItemStore {
 		idLength: 8,
 		setName: 'c'
 	};
-	activeItem: StoredItem;
+	activeItem?: StoredItem;
 
 	constructor(
 		i: {
@@ -162,17 +162,18 @@ class ItemStore {
 			// for each item in startingItems, add to items
 			startingItems.forEach((item) => this.addNewItem(item));
 		}
-		if (this.items.length > 0) this.setActiveItem(this.items[0].id);
 
 		// Make the idSet
 		this.idSet = new Set(this.items.map((item) => item.id));
-		this.activeItem = this.getActiveItem();
+		// Initialise active item, by setting this.activeItem correctly!
+		this.initActiveItem();
 	}
 	// Basic Methods
 
 	getItem(_target: string | StoredItem): StoredItem {
-		if (_target instanceof StoredItem) return _target;
-		const _item = this.items.find((item) => item.id === _target);
+		if (_target instanceof StoredItem) return _target; // If item is given, return it
+		// Otherwise, return the item with the given id
+		const _item = this.items.find((item) => item.id.toString() === _target.toString());
 		if (!_item) throw new Error(`Item with id: ${_target} not found in items`);
 		return _item;
 	}
@@ -279,12 +280,14 @@ class ItemStore {
 
 	// Active Item Stuff
 	private async initActiveItem() {
-		if (this.activeItem) return; // Already initialized, return
+		if (this.activeItem !== undefined)
+			return console.error('Active Item already initialized', this.activeItem); // Already initialized, return
 		try {
 			// Await the result of getLocalStorage since it's asynchronous
 			const _localStorageID = await this.getLocalStorage(lsk.activeItem);
+			console.debug('Active Item ID:', _localStorageID, this.idSet);
 			// Set activeItem based on the value from localStorage
-			this.activeItem = this.getItem(_localStorageID);
+			this.setActiveItem(_localStorageID.toString());
 		} catch (error) {
 			// If localStorage is empty, or the ID is not valid, set activeItem to the first item
 			console.error(error);
@@ -300,7 +303,6 @@ class ItemStore {
 	setActiveItem(_target: string | StoredItem) {
 		if (_target instanceof StoredItem) this.activeItem = _target;
 		else this.activeItem = this.getItem(_target);
-		// Save to remember active item
 		this.save();
 	}
 
@@ -341,7 +343,7 @@ class ItemStore {
 	save() {
 		const _items = JSON.stringify(this.items);
 		this.setLocalStorage(lsk.items, _items);
-		this.setLocalStorage(lsk.activeItem, JSON.stringify(this.activeItem.id));
+		this.setLocalStorage(lsk.activeItem, JSON.stringify(this.getActiveItem().id));
 	}
 
 	// LocalStorage
@@ -379,7 +381,7 @@ class ItemStore {
 		if (!value || !(key in localStorage)) {
 			throw new Error(`Key ${key} not found in localStorage`);
 		}
-		return value;
+		return JSON.parse(value);
 	}
 
 	// Downloading
