@@ -16,6 +16,8 @@
 	import { onMount } from 'svelte';
 
 	let editMode = true;
+	// Sync Edititem with Items
+	$editItem = items.getActiveItem();
 
 	function newEmptyItem() {
 		const saveFirst = window.confirm('Do you want to save before creating a New Card?');
