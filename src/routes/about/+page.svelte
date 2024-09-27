@@ -10,7 +10,7 @@
 
 	// Version info
 	const lastUpdated = import.meta.env.VITE_LAST_UPDATED;
-	console.log(import.meta.env.MODE);
+	console.log(import.meta.env);
 </script>
 
 <section id="header">
