@@ -8,4 +8,4 @@ jobs:
   build_site:
     runs-on: ubuntu-latest
     env:
-      LAST_UPDATED: '${{ github.event.head_commit.timestamp }}'
+      VITE_LAST_UPDATED: '${{ github.event.head_commit.timestamp }}'

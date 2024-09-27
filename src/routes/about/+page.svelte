@@ -9,7 +9,8 @@
 	import dialog from '$lib/components/dialog/dialogs';
 
 	// Version info
-	const lastUpdated = import.meta.env.LAST_UPDATED;
+	const lastUpdated = import.meta.env.VITE_LAST_UPDATED;
+	console.log(import.meta.env.MODE);
 </script>
 
 <section id="header">
