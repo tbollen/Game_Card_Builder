@@ -8,6 +8,7 @@ import {
 	cardStylePresets,
 	defaultCardStyle
 } from '$lib/types/colors';
+import { localStorageKeys as lsk } from '$lib/metadata/localStorageKeys';
 
 // Env variables
 const replaceString = 'replaceMe';
@@ -127,6 +128,7 @@ class StoredItem extends Item {
 		editItem.update(() => this);
 	}
 }
+// ItemStore
 class ItemStore {
 	items: StoredItem[] = [];
 	templates: Item[] = [];
@@ -284,6 +286,8 @@ class ItemStore {
 	setActiveItem(_target: string | StoredItem) {
 		if (_target instanceof StoredItem) this.activeItem = _target;
 		else this.activeItem = this.getItem(_target);
+		// Save to remember active item
+		this.save();
 	}
 
 	// Item editing
@@ -319,18 +323,44 @@ class ItemStore {
 		this.items = [...this.items];
 	}
 
+	// Saving
 	save() {
-		// Wait for localStorage to init
-		if (typeof window === 'undefined' || !window.localStorage)
-			return console.error('Cannot save to localStorage: localStorage not Initialized');
 		const _items = JSON.stringify(this.items);
-		console.debug('Saving the items to localStorage', this.items);
-		localStorage.setItem('items', _items);
+		this.setLocalStorage(lsk.items, _items);
+		this.setLocalStorage(lsk.activeItem, JSON.stringify(this.activeItem.id));
+	}
 
-		// Check
-		const localStoreItems = localStorage.getItem('items');
-		if (!localStoreItems) return;
-		console.log('Items saved to local storage:', localStoreItems);
+	// LocalStorage
+	private async checkLocalStorage(): Promise<boolean> {
+		// Check if we're running in a browser environment and localStorage is available
+		if (typeof window === 'undefined' || !window.localStorage) {
+			await new Promise((resolve) => {
+				const interval = setInterval(() => {
+					// Wait until window and localStorage are both available
+					if (typeof window !== 'undefined' && window.localStorage) {
+						clearInterval(interval);
+						resolve(true);
+					}
+				}, 100);
+			});
+			return true; // localStorage is now initialized
+		}
+		return true; // localStorage is already initialized
+	}
+
+	private async setLocalStorage(key: string, value: string, debug: boolean = true) {
+		if (!(await this.checkLocalStorage())) return;
+		localStorage.setItem(key, value);
+		// Debugging
+		if (!debug) return;
+		console.debug('Set localStorage', key, JSON.parse(value));
+	}
+
+	private async getLocalStorage(key: string): Promise<string | null> {
+		if (!(await this.checkLocalStorage()))
+			throw new Error('Cannot get localStorage: localStorage not Initialized');
+		if (!(key in localStorage)) throw new Error(`Key ${key} not found in localStorage`);
+		return localStorage.getItem(key);
 	}
 
 	// Downloading
@@ -413,11 +443,12 @@ class ItemStore {
 		return JSON.parse(stringifiedItems);
 	}
 }
+// END OF ITEMSTORE
 
 // Get items from local storage
 let localStoreItems = undefined;
 if (typeof window !== 'undefined' && window.localStorage) {
-	localStoreItems = localStorage.getItem('items');
+	localStoreItems = localStorage.getItem(lsk.items);
 	if (localStoreItems) {
 		localStoreItems = new ItemStore({ _items: JSON.parse(localStoreItems) });
 		console.log('Items loaded from local storage:', localStoreItems);
@@ -430,4 +461,4 @@ export let items =
 	localStoreItems instanceof ItemStore
 		? new ItemStore({ _store: localStoreItems })
 		: new ItemStore();
-export let editItem = writable<StoredItem>(items.getFirstItem());
+export let editItem = writable<StoredItem>(items.getActiveItem());
