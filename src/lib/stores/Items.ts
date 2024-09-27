@@ -278,9 +278,23 @@ class ItemStore {
 	}
 
 	// Active Item Stuff
+	private async initActiveItem() {
+		if (this.activeItem) return; // Already initialized, return
+		try {
+			// Await the result of getLocalStorage since it's asynchronous
+			const _localStorageID = await this.getLocalStorage(lsk.activeItem);
+			// Set activeItem based on the value from localStorage
+			this.activeItem = this.getItem(_localStorageID);
+		} catch (error) {
+			// If localStorage is empty, or the ID is not valid, set activeItem to the first item
+			console.error(error);
+			this.activeItem = this.getFirstItem();
+		}
+	}
+
 	getActiveItem(): StoredItem {
-		if (!this.activeItem) this.activeItem = this.items[0];
-		return this.activeItem;
+		if (this.activeItem) return this.activeItem;
+		return this.getFirstItem();
 	}
 
 	setActiveItem(_target: string | StoredItem) {
@@ -356,11 +370,16 @@ class ItemStore {
 		console.debug('Set localStorage', key, JSON.parse(value));
 	}
 
-	private async getLocalStorage(key: string): Promise<string | null> {
-		if (!(await this.checkLocalStorage()))
+	private async getLocalStorage(key: string): Promise<string> {
+		if (!(await this.checkLocalStorage())) {
 			throw new Error('Cannot get localStorage: localStorage not Initialized');
-		if (!(key in localStorage)) throw new Error(`Key ${key} not found in localStorage`);
-		return localStorage.getItem(key);
+		}
+
+		const value = localStorage.getItem(key);
+		if (!value || !(key in localStorage)) {
+			throw new Error(`Key ${key} not found in localStorage`);
+		}
+		return value;
 	}
 
 	// Downloading
