@@ -41,11 +41,7 @@ function createDialog() {
 
 let resolvePromise: (value: any) => void;
 
-function open(
-	message: string,
-	options: { name: string; response: any }[],
-	slot?: any
-): Promise<any> {
+function open(message: string, options: Option[] = [], slot?: any): Promise<any> {
 	if (!dialogInstance) {
 		createDialog();
 	}

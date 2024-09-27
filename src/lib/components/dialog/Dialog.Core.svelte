@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
 	import Button from '$lib/components/coreComponents/Button.svelte';
+	import { type Option } from './dialogService';
 
 	// Define the props
 	export let message: string = '';
-	export let options: { name: string; response: any }[] = [];
+	export let options: Option[] = [];
 	export let close: (response: any) => void; // Add close as a prop
 	export let slot: any;
 
@@ -42,7 +43,7 @@
 
 		<div id="options" class="buttons">
 			{#each options as option}
-				<Button click={() => handleOption(option)}>{option.name}</Button>
+				<Button icon={option.icon} click={() => handleOption(option)}>{option.name}</Button>
 			{/each}
 		</div>
 	</div>
