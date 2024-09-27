@@ -7,6 +7,9 @@
 	import Button from '$lib/components/coreComponents/Button.svelte';
 
 	import dialog from '$lib/components/dialog/dialogs';
+
+	// Version info
+	const lastUpdated = import.meta.env.LAST_UPDATED;
 </script>
 
 <section id="header">
@@ -15,6 +18,7 @@
 
 <section id="content">
 	<h1 class="text-3xl font-bold underline">About this app</h1>
+	{lastUpdated}
 </section>
 
 <style>
