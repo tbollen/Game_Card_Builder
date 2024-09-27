@@ -263,6 +263,13 @@
 
 	section#viewer {
 		overflow-x: hidden;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(65mm, 1fr));
+		grid-auto-flow: dense;
+		justify-items: center;
+		align-items: center;
+		gap: 5mm;
+		padding: 0mm min(10%, 15mm);
 	}
 
 	.cardInViewer {
@@ -283,6 +290,7 @@
 	.cardInViewer:hover,
 	.cardInViewer:focus-visible {
 		z-index: 100;
+		transform: scale(0.8) translatex(-30%);
 	}
 
 	.editOptions {
