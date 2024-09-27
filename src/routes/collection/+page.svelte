@@ -111,7 +111,7 @@
 	async function printDialog() {
 		const printType = await Dialog.choose([
 			{ name: 'Single Cards', response: 'single', icon: 'mdi:cards' },
-			{ name: 'A4 (multiple)', response: 'a4', icon: 'mdi:view-grid' }
+			{ name: 'A4 (multiple)', response: 'A4', icon: 'mdi:view-grid' }
 		]);
 		if (printType === null) return;
 		goto(`${base}/print?printMode=${printType}`);
