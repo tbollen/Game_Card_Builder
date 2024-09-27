@@ -125,8 +125,10 @@
 			<!-- Create New Card -->
 			<Button icon="mdi:plus" color="threat" click={addNew}>New Card</Button>
 			<!-- Image View -->
-			<Button icon="mdi:eye" stateOn={imageView} click={() => (imageView = !imageView)}
-				>Image View</Button
+			<Button
+				icon={imageView ? 'mdi:file-image' : 'mdi:file-document'}
+				stateOn={imageView}
+				click={() => (imageView = !imageView)}>View</Button
 			>
 			<!-- Upload with JSON -->
 			<Button icon="mdi:upload" click={() => items.upload()}>Upload</Button>
