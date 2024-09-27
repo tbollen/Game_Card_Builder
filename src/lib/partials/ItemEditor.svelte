@@ -109,7 +109,7 @@
 </script>
 
 <div id="editFields">
-	<hr class="divider" />
+	<!-- <hr class="divider" /> -->
 	<!-- Editing Options -->
 	<!-- Editing -->
 	<!-- Main Fields -->

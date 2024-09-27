@@ -245,10 +245,24 @@
 	/* Editor Header */
 
 	header#editorHeader {
+		/* Placement */
 		position: sticky;
-		padding: var(--padding);
 		top: 0;
+		/* layout */
+		display: flex;
+		flex-direction: column;
+		gap: 0.2em;
+		padding: var(--padding);
+		/* Style */
 		background-color: var(--color-surface-4);
+		border-bottom: solid 1px var(--color-obsidian-2);
+	}
+
+	/* Toolbar */
+	#toolbar {
+		display: flex;
+		gap: 0.3em;
+		justify-content: start;
 	}
 
 	#itemEditor {
@@ -287,12 +301,5 @@
 	.infoBlockMajor {
 		font-weight: 500;
 		font-size: 1rem;
-	}
-
-	/* Toolbar */
-	#toolbar {
-		display: flex;
-		gap: 0.3em;
-		justify-content: start;
 	}
 </style>
