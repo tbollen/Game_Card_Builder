@@ -73,6 +73,7 @@
 
 	import { type Item } from '$lib/types/Item';
 	import Icon from '@iconify/svelte';
+	import Dialog from '$lib/components/dialog/dialogs';
 	function createFromTemplate(base: Item) {
 		items.addNewItem(base);
 		updateItems();
@@ -100,19 +101,20 @@
 		renderCards = true;
 	});
 
-	function printSelectedCards() {
-		goto(`${base}/print?printMode=single`);
-	}
-
-	function printSelectedCardsOnA4() {
-		goto(`${base}/print?printMode=A4`);
-	}
-
 	function deleteSelected() {
 		if (typeof window === 'undefined') throw new Error('Window is undefined');
 		// Create an array of id's from the set
 		const ids = Array.from($selectedItems);
 		items.destroy(ids);
+	}
+
+	async function printDialog() {
+		const printType = await Dialog.choose([
+			{ name: 'Single Cards', response: 'single', icon: 'mdi:cards' },
+			{ name: 'A4 (multiple)', response: 'a4', icon: 'mdi:view-grid' }
+		]);
+		if (printType === null) return;
+		goto(`${base}/print?printMode=${printType}`);
 	}
 </script>
 
@@ -157,8 +159,7 @@
 				>
 					Deselect
 				</Button>
-				<Button size="small" icon="mdi:printer" click={printSelectedCards}>Print</Button>
-				<Button size="small" icon="mdi:printer" click={printSelectedCardsOnA4}>Print (A4)</Button>
+				<Button size="small" icon="mdi:printer" click={printDialog}>Print</Button>
 				<Button size="small" icon="mdi:trash" click={deleteSelected} color="threat">Delete</Button>
 			</div>
 		{/if}
