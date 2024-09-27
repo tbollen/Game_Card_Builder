@@ -19,6 +19,10 @@
 	// Selected Items
 	import { selectedItems } from '$lib/stores/selectedItems';
 
+	let imageView: boolean = false;
+
+	// Functions
+
 	function toggleCardSelection(id: string) {
 		console.debug(
 			`${!$selectedItems.has(id) ? 'added' : 'removed'} card selection: ${id}`,
@@ -118,7 +122,12 @@
 	</section>
 	<section id="controls">
 		<div class="toolbarCategory">
+			<!-- Create New Card -->
 			<Button icon="mdi:plus" color="threat" click={addNew}>New Card</Button>
+			<!-- Image View -->
+			<Button icon="mdi:eye" stateOn={imageView} click={() => (imageView = !imageView)}
+				>Image View</Button
+			>
 			<!-- Upload with JSON -->
 			<Button icon="mdi:upload" click={() => items.upload()}>Upload</Button>
 			<!-- Download -->
@@ -160,7 +169,7 @@
 			<!-- TEMPLATES -->
 			{#if showTemplates}
 				{#each _items.templates as card}
-					<button class="cardInViewer cardTemplate">
+					<button class="cardInViewer cardTemplate" class:imageView>
 						<!-- Edit Options -->
 						<div class="templateLabel cardLabel">
 							<Icon icon="mdi:clipboard-outline" />
@@ -187,6 +196,7 @@
 			{#each _items.items as card}
 				<button
 					class="cardInViewer"
+					class:imageView
 					class:isSelected={$selectedItems.has(card.id)}
 					id={card.id}
 					on:click={() => toggleCardSelection(card.id)}
@@ -333,6 +343,9 @@
 		left: 0%;
 		z-index: -1;
 		transition: all 0.4s ease-in-out;
+		/* vars for image View */
+		--bsc-translate-y: 0%;
+		transform: rotate(0deg) translateY(var(--bsc-translate-y));
 	}
 
 	.cardTemplate > .frontSideCard,
@@ -343,13 +356,13 @@
 	.cardInViewer:focus-visible .frontSideCard,
 	.cardInViewer:hover .frontSideCard {
 		box-shadow: 10px 10px 15px var(--color-text-1);
-		transform: rotate(-5deg);
+		transform: rotate(-5deg) translateY(var(--bsf-translate-y));
 	}
 
 	.cardInViewer:focus-visible .backSideCard,
 	.cardInViewer:hover .backSideCard {
 		left: 60%;
-		transform: rotate(5deg);
+		transform: rotate(5deg) translateY(var(--bsc-translate-y));
 		box-shadow: 10px 10px 15px var(--color-text-3);
 	}
 
@@ -362,6 +375,21 @@
 		opacity: 1;
 		z-index: -1;
 	}
+	/* Image View things */
+
+	.imageView {
+		padding-bottom: 20%;
+	}
+
+	.imageView > .frontSideCard {
+		z-index: -1;
+	}
+
+	.imageView > .backSideCard {
+		--bsc-translate-y: 20%;
+	}
+
+	/* Label */
 
 	.cardLabel {
 		/* Placement */
