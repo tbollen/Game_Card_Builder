@@ -11,6 +11,7 @@
 
 	// Popup & Tooltips
 	import { tooltip } from '$lib/modules/tooltip';
+	import renderMarkdown from '$lib/modules/renderDiceIconsInText';
 
 	// Import card types for editing options
 	import { cardTypes } from '$lib/modules/cardTypes';
@@ -24,6 +25,9 @@
 
 	// Advanced Mode for more flexible editing
 	import { advancedMode } from '$lib/stores/advancedMode';
+
+	// Path for href
+	import { base } from '$app/paths';
 
 	// Iconify
 	function loadIconFromIconify(icon: string | undefined) {
@@ -162,6 +166,10 @@
 				placeholder="Edit the description here"
 				bind:value={$editItem.description}
 			/>
+			<small class="useTip"
+				>You can add dice icons like such '[pr]'' = {@html renderMarkdown('[pr]')}
+				<a href="{base}/about">click here</a> for more info
+			</small>
 			<!-- Aspects -->
 			<label for="editorAspects" class="category buttonLine"> Aspects </label>
 			{#if $editItem.aspects?.length}
