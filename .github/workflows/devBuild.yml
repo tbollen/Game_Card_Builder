@@ -1,0 +1,22 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: 'development'
+
+jobs:
+  build_site:
+    runs-on: ubuntu-latest
+    env:
+      VITE_LAST_UPDATED: '${{ github.event.head_commit.timestamp }}'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Set ENV Variables
+        env:
+          VITE_LAST_UPDATED: '${{ env.VITE_LAST_UPDATED }}'
+        run: echo "VITE_LAST_UPDATED=${{ env.VITE_LAST_UPDATED }}" >> .env

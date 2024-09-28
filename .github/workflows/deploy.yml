@@ -7,6 +7,8 @@ on:
 jobs:
   build_site:
     runs-on: ubuntu-latest
+    env:
+      LAST_UPDATED: '${{ github.event.head_commit.timestamp }}'
     steps:
       - name: Checkout
         uses: actions/checkout@v4

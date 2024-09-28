@@ -22,6 +22,10 @@ const _cardTypes: CardType[] = [
 		icon: 'mdi:sparkles'
 	},
 	{
+		name: 'Armor',
+		icon: 'mdi:shield'
+	},
+	{
 		name: 'Talisman',
 		icon: 'lucide:ship-wheel'
 	},

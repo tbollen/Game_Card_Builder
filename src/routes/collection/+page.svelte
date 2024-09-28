@@ -19,6 +19,10 @@
 	// Selected Items
 	import { selectedItems } from '$lib/stores/selectedItems';
 
+	let imageView: boolean = false;
+
+	// Functions
+
 	function toggleCardSelection(id: string) {
 		console.debug(
 			`${!$selectedItems.has(id) ? 'added' : 'removed'} card selection: ${id}`,
@@ -69,6 +73,7 @@
 
 	import { type Item } from '$lib/types/Item';
 	import Icon from '@iconify/svelte';
+	import Dialog from '$lib/components/dialog/dialogs';
 	function createFromTemplate(base: Item) {
 		items.addNewItem(base);
 		updateItems();
@@ -96,19 +101,20 @@
 		renderCards = true;
 	});
 
-	function printSelectedCards() {
-		goto(`${base}/print?printMode=single`);
-	}
-
-	function printSelectedCardsOnA4() {
-		goto(`${base}/print?printMode=A4`);
-	}
-
 	function deleteSelected() {
 		if (typeof window === 'undefined') throw new Error('Window is undefined');
 		// Create an array of id's from the set
 		const ids = Array.from($selectedItems);
 		items.destroy(ids);
+	}
+
+	async function printDialog() {
+		const printType = await Dialog.choose([
+			{ name: 'Single Cards', response: 'single', icon: 'mdi:cards' },
+			{ name: 'A4 (multiple)', response: 'A4', icon: 'mdi:view-grid' }
+		]);
+		if (printType === null) return;
+		goto(`${base}/print?printMode=${printType}`);
 	}
 </script>
 
@@ -118,7 +124,14 @@
 	</section>
 	<section id="controls">
 		<div class="toolbarCategory">
+			<!-- Create New Card -->
 			<Button icon="mdi:plus" color="threat" click={addNew}>New Card</Button>
+			<!-- Image View -->
+			<Button
+				icon={imageView ? 'mdi:file-image' : 'mdi:file-document'}
+				stateOn={imageView}
+				click={() => (imageView = !imageView)}>View</Button
+			>
 			<!-- Upload with JSON -->
 			<Button icon="mdi:upload" click={() => items.upload()}>Upload</Button>
 			<!-- Download -->
@@ -146,8 +159,7 @@
 				>
 					Deselect
 				</Button>
-				<Button size="small" icon="mdi:printer" click={printSelectedCards}>Print</Button>
-				<Button size="small" icon="mdi:printer" click={printSelectedCardsOnA4}>Print (A4)</Button>
+				<Button size="small" icon="mdi:printer" click={printDialog}>Print</Button>
 				<Button size="small" icon="mdi:trash" click={deleteSelected} color="threat">Delete</Button>
 			</div>
 		{/if}
@@ -160,7 +172,7 @@
 			<!-- TEMPLATES -->
 			{#if showTemplates}
 				{#each _items.templates as card}
-					<button class="cardInViewer cardTemplate">
+					<button class="cardInViewer cardTemplate" class:imageView>
 						<!-- Edit Options -->
 						<div class="templateLabel cardLabel">
 							<Icon icon="mdi:clipboard-outline" />
@@ -187,6 +199,7 @@
 			{#each _items.items as card}
 				<button
 					class="cardInViewer"
+					class:imageView
 					class:isSelected={$selectedItems.has(card.id)}
 					id={card.id}
 					on:click={() => toggleCardSelection(card.id)}
@@ -333,6 +346,9 @@
 		left: 0%;
 		z-index: -1;
 		transition: all 0.4s ease-in-out;
+		/* vars for image View */
+		--bsc-translate-y: 0%;
+		transform: rotate(0deg) translateY(var(--bsc-translate-y));
 	}
 
 	.cardTemplate > .frontSideCard,
@@ -343,13 +359,13 @@
 	.cardInViewer:focus-visible .frontSideCard,
 	.cardInViewer:hover .frontSideCard {
 		box-shadow: 10px 10px 15px var(--color-text-1);
-		transform: rotate(-5deg);
+		transform: rotate(-5deg) translateY(var(--bsf-translate-y));
 	}
 
 	.cardInViewer:focus-visible .backSideCard,
 	.cardInViewer:hover .backSideCard {
 		left: 60%;
-		transform: rotate(5deg);
+		transform: rotate(5deg) translateY(var(--bsc-translate-y));
 		box-shadow: 10px 10px 15px var(--color-text-3);
 	}
 
@@ -362,6 +378,21 @@
 		opacity: 1;
 		z-index: -1;
 	}
+	/* Image View things */
+
+	.imageView {
+		padding-bottom: 20%;
+	}
+
+	.imageView > .frontSideCard {
+		z-index: -1;
+	}
+
+	.imageView > .backSideCard {
+		--bsc-translate-y: 20%;
+	}
+
+	/* Label */
 
 	.cardLabel {
 		/* Placement */
