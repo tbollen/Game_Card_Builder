@@ -33,6 +33,31 @@
 		{
 			name: 'Challenge',
 			shorthand: '[ch]'
+		},
+		// Success/Failure
+		{
+			name: 'Success',
+			shorthand: '[su]'
+		},
+		{
+			name: 'Failure',
+			shorthand: '[fa]'
+		},
+		{
+			name: 'Despair',
+			shorthand: '[de]'
+		},
+		{
+			name: 'Triumph',
+			shorthand: '[tr]'
+		},
+		{
+			name: 'Advantage',
+			shorthand: '[ad]'
+		},
+		{
+			name: 'Disadvantage',
+			shorthand: '[da]'
 		}
 	];
 
