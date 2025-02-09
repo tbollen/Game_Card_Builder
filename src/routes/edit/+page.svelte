@@ -74,11 +74,10 @@
 	}
 </script>
 
+<header>
+	<Navbar />
+</header>
 <main id="main">
-	<!-- Header -->
-	<section id="header">
-		<Navbar />
-	</section>
 	<!-- Editor Pane -->
 	{#if editMode}
 		<section id="editor" transition:slide={{ duration: 200 }}>
@@ -162,11 +161,10 @@
 	#main {
 		display: grid;
 		/* Section with scroll */
-		height: 100dvh;
+		height: calc(100dvh - var(--navbar-height, 3rem));
 		overflow-y: hidden;
-		grid-template-areas: 'header header' 'cardView editor';
+		grid-template-areas: 'cardView editor';
 		grid-template-columns: fit-content max(2fr, fit-content);
-		grid-template-rows: min-content 1fr;
 	}
 
 	/* Changed layout for mobile */
@@ -176,8 +174,8 @@
 
 	@media screen and (max-width: 750px) {
 		#main {
-			grid-template-areas: 'header' 'cardView' 'editor';
-			grid-template-rows: min-content min-content min-content;
+			grid-template-areas: 'cardView' 'editor';
+			grid-template-rows: min-content min-content;
 			grid-template-columns: 1fr;
 			height: fit-content;
 		}
