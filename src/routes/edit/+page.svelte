@@ -4,7 +4,6 @@
 	// Import Components
 	import Gamecard from '$lib/components/Gamecard.svelte';
 	import GamecardBack from '$lib/components/GamecardBack.svelte';
-	import Navbar from '$lib/partials/Navbar.svelte';
 	import DiceIcon from '$lib/components/coreComponents/DiceIcon.svelte';
 
 	// Import Item Store
@@ -74,9 +73,6 @@
 	}
 </script>
 
-<header>
-	<Navbar />
-</header>
 <main id="main">
 	<!-- Editor Pane -->
 	{#if editMode}

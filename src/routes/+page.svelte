@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Navbar from '$lib/partials/Navbar.svelte';
 	import AbsoluteBackground from '$lib/components/coreComponents/AbsoluteBackground.svelte';
 	import { getImageData } from '$lib/metadata/imageAttributionList';
 
@@ -8,9 +7,6 @@
 </script>
 
 <main id="main">
-	<section id="navbar">
-		<Navbar />
-	</section>
 	{#if firstTimeVisit}
 		<section id="welcome">
 			<AbsoluteBackground
