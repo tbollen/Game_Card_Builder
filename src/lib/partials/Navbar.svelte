@@ -1,25 +1,57 @@
 <script lang="ts">
 	// Set Routes
 	import { base } from '$app/paths';
-	const routes: Record<string, { path: string; icon: string; hidden?: boolean }> = {
-		Home: {
+	interface BaseRoute {
+		path?: string;
+		name: string;
+		icon: string;
+		hidden?: boolean;
+	}
+	interface MasterRoute {
+		name: string;
+		icon: string;
+		hidden?: boolean;
+		dropdown: BaseRoute[]; // An array that can contain either a BaseRoute or a MasterRoute, these will display on hover
+	}
+	const routes: Array<BaseRoute | MasterRoute> = [
+		{
 			path: '/',
+			name: 'Home',
 			icon: 'mdi:home',
 			hidden: true
 		},
-		Editor: {
+		{
 			path: 'edit',
+			name: 'Card Editor',
 			icon: 'mdi:pencil'
 		},
-		Collection: {
+		{
+			name: 'Cards',
+			icon: 'mdi:cards',
+			dropdown: [
+				{
+					path: 'collection',
+					name: 'Overview',
+					icon: 'mdi:view-grid'
+				},
+				{
+					path: 'edit',
+					name: 'Editor',
+					icon: 'mdi:pencil'
+				}
+			]
+		},
+		{
 			path: 'collection',
+			name: 'Card Collection',
 			icon: 'mdi:book-outline'
 		},
-		About: {
+		{
 			path: 'about',
+			name: 'About',
 			icon: 'mdi:information-outline'
 		}
-	};
+	];
 	const routeNames = Object.keys(routes);
 
 	let currentRoute: string;
@@ -33,12 +65,28 @@
 <section id="navigation" class="navbar">
 	<a href="{base}/" id="logo" class="displayText websiteLogo">Card Builder</a>
 	<nav class="links">
-		{#each routeNames as routeName}
-			{#if !routes[routeName].hidden}
-				<div class="navItem navUnderline" class:active={currentRoute === routes[routeName].path}>
-					<a href="{base}/{routes[routeName].path}">
+		{#each routes as route}
+			{#if route.hidden}
+				<!-- Skip hidden routes -->
+			{:else if typeof route === 'object' && 'dropdown' in route}
+				<!-- Route is a MasterRoute, show dropdown on hover -->
+				<div class="navItem navDropdown navUnderline">
+					{route.name}
+					<div class="navDropdownMenu">
+						{#each route.dropdown as dropdownRoute}
+							<div class="dropdownNavItem">
+								<Icon icon={dropdownRoute.icon} />
+								<a href="{base}/{dropdownRoute.path}"> {dropdownRoute.name}</a>
+							</div>
+						{/each}
+					</div>
+				</div>
+			{:else}
+				<!-- BaseRoute -->
+				<div class="navItem navUnderline" class:active={currentRoute === route.path}>
+					<a href="{base}/{route.path}">
 						<!-- <Icon icon={routes[routeName].icon} /> -->
-						{routeName}
+						{route.name}
 					</a>
 				</div>
 			{/if}
@@ -54,9 +102,12 @@
 <style>
 	#navigation {
 		display: grid;
+		height: var(--navbar-height, 3rem);
+		box-sizing: border-box;
 		/* Keep it centered */
 		grid-template-columns: 1fr min-content 1fr;
 		padding: 5px;
+		align-items: center;
 		/* Areas */
 		grid-template-areas: 'logo links badges';
 	}
@@ -74,7 +125,7 @@
 		/* Layout */
 		display: flex;
 		gap: 1.5rem;
-		justify-content: center;
+		align-items: center;
 	}
 
 	.navItem {
@@ -82,6 +133,8 @@
 		flex-direction: column;
 		align-items: center;
 		height: min-content;
+		font-weight: normal;
+		padding: 4px;
 		/* For active state */
 		position: relative;
 		padding: 2px 4px;
@@ -90,8 +143,49 @@
 			font-weight 0.2s ease-in-out;
 	}
 
-	.navItem a {
+	.navDropdown {
+		position: relative;
+	}
+
+	.navDropdownMenu {
+		/* Placement */
+		position: absolute;
+		top: 100%;
+		left: 0;
+		/* Layout */
+		z-index: 1;
+		display: flex;
+		flex-direction: column;
+		gap: 0.2em;
+		/* Sizing */
+		height: calc-size(0px, size);
+		overflow: hidden;
+		width: min-content;
+		min-width: max(100%, 8rem);
+		/* Styling */
+		background-color: var(--color-pearl-3);
+		border-radius: 5px;
+		/* Animate */
+		transition: height 0.2s ease-in-out;
+	}
+
+	.dropdownNavItem {
+		display: relative;
+		font-weight: normal;
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		padding: 8px;
+	}
+
+	.navItem:hover .navDropdownMenu {
+		height: calc-size(auto, size);
+	}
+
+	.navItem a,
+	.navDropdownMenu a {
 		color: unset;
+		text-wrap: nowrap;
 		text-decoration: unset;
 	}
 
@@ -122,6 +216,10 @@
 
 	.navItem:hover {
 		font-weight: bold;
+	}
+
+	.dropdownNavItem:hover {
+		background-color: var(--color-threat-4);
 	}
 
 	.navUnderline:hover::after {
