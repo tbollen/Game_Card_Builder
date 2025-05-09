@@ -76,6 +76,9 @@
 /* Color */
 :root {
 	font-family: 'Gotham', sans-serif;
+
+	/* Size parameters */
+	--navbar-height: 3.2em;
 	/* Color scheme */
 	/* Mains */
 	--pearl: #f7f6f1;

@@ -1,6 +1,5 @@
 <!-- Collection -->
 <script lang="ts">
-	import Navbar from '$lib/partials/Navbar.svelte';
 	import Button from '$lib/components/coreComponents/Button.svelte';
 	import Gamecard from '$lib/components/Gamecard.svelte';
 	import GamecardBack from '$lib/components/GamecardBack.svelte';
@@ -119,9 +118,6 @@
 </script>
 
 <main>
-	<section id="header">
-		<Navbar />
-	</section>
 	<section id="controls">
 		<div class="toolbarCategory">
 			<!-- Create New Card -->
