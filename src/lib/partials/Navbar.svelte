@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CharacterAvatar from './CharacterAvatar.svelte';
 	// Set Routes
 	import { base } from '$app/paths';
 	interface BaseRoute {
@@ -21,10 +22,34 @@
 			hidden: true
 		},
 		{
-			path: 'edit',
-			name: 'Card Editor',
-			icon: 'mdi:pencil'
+			name: 'Campaign',
+			icon: 'mdi:book',
+			hidden: true,
+			dropdown: [
+				{
+					path: 'overview',
+					name: 'Overview',
+					icon: 'mdi:view-grid'
+				}
+			]
 		},
+		{
+			name: 'Character',
+			icon: 'mdi:account',
+			dropdown: [
+				{
+					path: 'character',
+					name: 'Backstory',
+					icon: 'mdi:sword'
+				},
+				{
+					path: 'character_sheet',
+					name: 'Character Sheet',
+					icon: 'mdi:script'
+				}
+			]
+		},
+
 		{
 			name: 'Cards',
 			icon: 'mdi:cards',
@@ -41,19 +66,19 @@
 				}
 			]
 		},
-		{
-			path: 'collection',
-			name: 'Card Collection',
-			icon: 'mdi:book-outline'
-		},
+
 		{
 			path: 'about',
 			name: 'About',
 			icon: 'mdi:information-outline'
 		}
 	];
-	const routeNames = Object.keys(routes);
 
+	const character = {
+		name: 'Neovald',
+		id: 'neovald',
+		image: 'https://robohash.org/Neovald'
+	};
 	let currentRoute: string;
 	$: currentRoute = $page.url.pathname;
 
@@ -64,6 +89,7 @@
 
 <section id="navigation" class="navbar">
 	<a href="{base}/" id="logo" class="displayText websiteLogo">Card Builder</a>
+	<!-- Navigation -->
 	<nav class="links">
 		{#each routes as route}
 			{#if route.hidden}
@@ -92,10 +118,12 @@
 			{/if}
 		{/each}
 	</nav>
+	<!-- Badges -->
 	<div class="badges">
-		<a class="badge" href="https://github.com/tbollen/Game_Card_Builder" target="_blank">
+		<!-- <a class="badge" href="https://github.com/tbollen/Game_Card_Builder" target="_blank">
 			<Icon icon="mdi:github" />
-		</a>
+		</a> -->
+		<CharacterAvatar {character} />
 	</div>
 </section>
 
