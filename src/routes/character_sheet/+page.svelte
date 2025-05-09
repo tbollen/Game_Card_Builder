@@ -4,7 +4,7 @@
 		image: 'https://robohash.org/test',
 		id: 'test',
 		aspects: ['Aspect 1', 'Aspect 2', 'Aspect 3', 'Aspect 4', 'Aspect 5']
-	};
+	}; //TODO get character and user data
 
 	let values: number[] = [];
 
